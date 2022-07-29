@@ -18,6 +18,8 @@ public class RoadBehaviour : MonoBehaviour
     public Vector3 startPostPosition;
     public Vector3 endPostPosition;
 
+    public List<GameObject> carsOnThisRoad;
+
 
     public Vector3 CalculateMidPoint(Vector3 v1, Vector3 v2)
     {
@@ -47,8 +49,8 @@ public class RoadBehaviour : MonoBehaviour
         _startPostTransform = transform.Find("StartPost").transform;
         _endPostTransform = transform.Find("EndPost").transform;
         startPostPosition = _startPostTransform.position;
-        endPostPosition = _endPostTransform.position;
-        
+        endPostPosition = _endPostTransform.position; 
+
         BuildRoad();
     }
 
