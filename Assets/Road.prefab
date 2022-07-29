@@ -129,10 +129,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7fed32a4669b03146adf39d53e676b1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsStraightRoad: 1
-  RoadSegment: {fileID: 7499813677853692753, guid: 48aad6d16e9221144a37bbcda98d249c, type: 3}
-  StartPostPosition: {x: 0, y: 0, z: 0}
-  EndPostPosition: {x: 0, y: 0, z: 0}
+  isStraightRoad: 1
+  baseRoadSegment: {fileID: 7499813677853692753, guid: 48aad6d16e9221144a37bbcda98d249c, type: 3}
+  startPostPosition: {x: 0, y: 0, z: 0}
+  endPostPosition: {x: 0, y: 0, z: 0}
 --- !u!1 &6973281871053741224
 GameObject:
   m_ObjectHideFlags: 0
