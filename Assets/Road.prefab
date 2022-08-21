@@ -92,7 +92,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8309277609839326783}
-  - component: {fileID: 1158142372138430335}
+  - component: {fileID: 8007814262337667264}
   m_Layer: 0
   m_Name: Road
   m_TagString: Untagged
@@ -117,7 +117,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1158142372138430335
+--- !u!114 &8007814262337667264
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -129,11 +129,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7fed32a4669b03146adf39d53e676b1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isStraightRoad: 1
-  baseRoadSegment: {fileID: 7499813677853692753, guid: 48aad6d16e9221144a37bbcda98d249c, type: 3}
   startPostPosition: {x: 0, y: 0, z: 0}
   endPostPosition: {x: 0, y: 0, z: 0}
+  roadWidth: 0
   carsOnThisRoad: []
+  baseRoadSegment: {fileID: 7499813677853692753, guid: 48aad6d16e9221144a37bbcda98d249c, type: 3}
 --- !u!1 &6973281871053741224
 GameObject:
   m_ObjectHideFlags: 0

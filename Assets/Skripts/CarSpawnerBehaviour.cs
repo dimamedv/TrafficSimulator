@@ -26,7 +26,7 @@ public class CarSpawnerBehaviour : MonoBehaviour
         GameObject createdCar = Instantiate(carPrefab, spawnPosition, transform.rotation);
         createdCar.GetComponent<CarBehaviour>().currentRoad = _parentRoad;
 
-        _parentRoad.GetComponent<RoadBehaviour>().carsOnThisRoad.Add(createdCar);
+        _parentRoad.GetComponent<StraightRoad>().carsOnThisRoad.Add(createdCar);
     }
 
     // Update is called once per frame

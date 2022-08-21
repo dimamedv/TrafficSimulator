@@ -3,36 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class CrookedRoad : MonoBehaviour
+public class CrookedRoad : AbstractRoad
 {
-    // Образующие точки кривой Безье
-    public Transform p0;
-    public Transform p1;
-    public Transform p2;
+    // Образующая треться точка
+    public Transform formingPointTransform;
+    
     // Количество фрагментов дороги (Детализация)
     public int details;
-    // Ширина дороги
-    public float roadWidth;
-    // Координаты точек Безье
-    private List<Vector3> bezierPoints;
+    
     // Вершины дороги
-    private List<Vector3> vertexRoad;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        bezierPoints = new List<Vector3>();
-        vertexRoad = new List<Vector3>();
-        
-        // Создаем массив из формирующих точек кривой безье
-        DrawQuadraticBezierCurve(p0.position, p1.position, p2.position);
-
-        // По ним получаем координаты точек, которые являются изломами дороги
-        getVertexPoints();
-
-        // По этим координатам создаем меш дороги
-        CreateMesh();
-    }
+    private List<Vector3> _vertexRoad;
 
     // Составляет кривую Безье по трем координатам
     private void DrawQuadraticBezierCurve(Vector3 point0, Vector3 point1, Vector3 point2)
@@ -42,22 +22,24 @@ public class CrookedRoad : MonoBehaviour
         for (int i = 0; i < details; i++)
         {
             B = (1 - t) * (1 - t) * point0 + 2 * (1 - t) * t * point1 + t * t * point2;
-            bezierPoints.Add(B);
+            _roadPoints.Add(B);
             t += (1 / (float)details);
         }
-        bezierPoints.Add(point2);
+        _roadPoints.Add(point2);
     }
 
+    
     private void getVertexPoints()
     {
-        GetEndpoints(bezierPoints[0], bezierPoints[1]);
+        GetEndpoints(_roadPoints[0], _roadPoints[1]);
 
         for (int i = 1; i < details; i++)
-            GetBendOfRoad(bezierPoints[i - 1], bezierPoints[i], bezierPoints[i + 1]);
+            GetBendOfRoad(_roadPoints[i - 1], _roadPoints[i], _roadPoints[i + 1]);
 
-        GetEndpoints(bezierPoints[bezierPoints.Count - 1], bezierPoints[bezierPoints.Count - 2]);
+        GetEndpoints(_roadPoints[_roadPoints.Count - 1], _roadPoints[_roadPoints.Count - 2]);
     }
 
+    
     private float getDistance(Vector3 v1, Vector3 v2) { 
         double x = v1.x - v2.x;
         double z = v1.z - v2.z;
@@ -76,16 +58,17 @@ public class CrookedRoad : MonoBehaviour
 
         if (getDistance(v1, b) > getDistance(v2, b))
         {
-            vertexRoad.Add(v1);
-            vertexRoad.Add(v2);
+            _vertexRoad.Add(v1);
+            _vertexRoad.Add(v2);
         }
         else
         {
-            vertexRoad.Add(v2);
-            vertexRoad.Add(v1);
+            _vertexRoad.Add(v2);
+            _vertexRoad.Add(v1);
         }
     }
 
+    
     // Записывает координаты вершин для конца дороги в лист vertexRoad
     private void GetEndpoints(Vector3 a, Vector3 b)
     {
@@ -96,6 +79,7 @@ public class CrookedRoad : MonoBehaviour
         addOuterVertexFirst(a, b, offset);
     }
 
+    
     // Записывает координаты вершин на месте изгиба дороги в лист vertexRoad
     private void GetBendOfRoad(Vector3 a, Vector3 b, Vector3 c)
     {
@@ -113,6 +97,7 @@ public class CrookedRoad : MonoBehaviour
         addOuterVertexFirst(b, c, offset);
     }
 
+    
     private void CreateMesh()
     {
         MeshFilter mf = GetComponent<MeshFilter>();
@@ -120,16 +105,16 @@ public class CrookedRoad : MonoBehaviour
         mf.mesh = mesh;
 
         // Скорее всего можно упростить
-        Vector3[] V = new Vector3[vertexRoad.Count];
-        for (int i = 0; i < vertexRoad.Count; i++) V[i] = vertexRoad[i];
+        Vector3[] V = new Vector3[_vertexRoad.Count];
+        for (int i = 0; i < _vertexRoad.Count; i++) V[i] = _vertexRoad[i];
         mesh.vertices = V;
 
         // Количество адресов будет равно количеству вершин в треугольнике на количество треугольников
         // в квадрате. А так как полигоны нужно сделать с двух сторон, то домножаем еще на 2
-        int[] triangles = new int[bezierPoints.Count * 3 * 2 * 2];
+        int[] triangles = new int[_roadPoints.Count * 3 * 2 * 2];
 
         // Сначала адреса вершин треугольника должны возрастать, а потом убывать
-        for (int i = 0; i < (bezierPoints.Count - 1) * 2 * 2; i++)
+        for (int i = 0; i < (_roadPoints.Count - 1) * 2 * 2; i++)
         {
             // Номер треугольника
             int j = i / 2;
@@ -141,5 +126,21 @@ public class CrookedRoad : MonoBehaviour
         }
 
         mesh.triangles = triangles;
+    }
+
+
+    protected override void BuildRoad()
+    {
+        _roadPoints = new List<Vector3>();
+        _vertexRoad = new List<Vector3>();
+        
+        // Создаем массив из формирующих точек кривой безье
+        DrawQuadraticBezierCurve(_startPostTransform.position, formingPointTransform.position, _endPostTransform.position);
+
+        // По ним получаем координаты точек, которые являются изломами дороги
+        getVertexPoints();
+
+        // По этим координатам создаем меш дороги
+        CreateMesh();
     }
 }
