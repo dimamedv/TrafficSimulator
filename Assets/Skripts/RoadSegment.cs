@@ -13,18 +13,6 @@ public class RoadSegment : MonoBehaviour
     {
         return v1 + (v2 - v1) / 2;
     }
-    
-    // Start is called before the first frame update
-    void Awake()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     private void FixedUpdate()
     {
