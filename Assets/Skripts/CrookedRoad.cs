@@ -17,48 +17,21 @@ public class CrookedRoad : MonoBehaviour
     private List<Vector3> bezierPoints;
     // Вершины дороги
     private List<Vector3> vertexRoad;
-    // Временная хуйня
-    public GameObject gm;
-    private LineRenderer lineRenderer;
 
     // Start is called before the first frame update
     void Start()
     {
-        lineRenderer = GetComponent<LineRenderer>();
         bezierPoints = new List<Vector3>();
         vertexRoad = new List<Vector3>();
+        
         // Создаем массив из формирующих точек кривой безье
         DrawQuadraticBezierCurve(p0.position, p1.position, p2.position);
 
-        GetEndpoints(bezierPoints[0], bezierPoints[1]);
+        // По ним получаем координаты точек, которые являются изломами дороги
+        getVertexPoints();
 
-        for (int i = 1; i < details; i++)
-            GetBendOfRoad(bezierPoints[i - 1], bezierPoints[i], bezierPoints[i + 1]);
-
-        GetEndpoints(bezierPoints[bezierPoints.Count - 1], bezierPoints[bezierPoints.Count - 2]);
-
-        //GetBendOfRoad(bezierPoints[0], bezierPoints[1], bezierPoints[2]);
-
-        /*
-        for (int i = 0; i < bezierPoints.Count; i++)
-        {
-            Transform t = gm.transform;
-            t.position = bezierPoints[i];
-            Instantiate(gm, bezierPoints[i], Quaternion.identity);
-        }
-
-        for (int i = 0; i < vertexRoad.Count; i++)
-        {
-            Transform t = gm.transform;
-            t.position = vertexRoad[i];
-            Instantiate(gm, vertexRoad[i], Quaternion.identity);
-        }
-        */
-        DrawLine(bezierPoints.Count, ref bezierPoints);
-
+        // По этим координатам создаем меш дороги
         CreateMesh();
-
-
     }
 
     // Составляет кривую Безье по трем координатам
@@ -75,26 +48,29 @@ public class CrookedRoad : MonoBehaviour
         bezierPoints.Add(point2);
     }
 
+    private void getVertexPoints()
+    {
+        GetEndpoints(bezierPoints[0], bezierPoints[1]);
+
+        for (int i = 1; i < details; i++)
+            GetBendOfRoad(bezierPoints[i - 1], bezierPoints[i], bezierPoints[i + 1]);
+
+        GetEndpoints(bezierPoints[bezierPoints.Count - 1], bezierPoints[bezierPoints.Count - 2]);
+    }
+
     private float getDistance(Vector3 v1, Vector3 v2) { 
         double x = v1.x - v2.x;
         double z = v1.z - v2.z;
         return (float)Math.Sqrt(x * x + z * z);
-}
-
-    private void DrawLine(int count, ref List<Vector3> v)
-    {
-        lineRenderer.positionCount = count;
-        for (int i = 0; i < count; i++)
-            lineRenderer.SetPosition(i, v[i]);
     }
 
-    // Записывает координаты вершин для конца дороги в лист vertexRoad
-    private void GetEndpoints(Vector3 a, Vector3 b)
+    /* Добавляет сначала внешнюю точку в List vertexRoad, потом внутренюю
+    ** a - Первая точка принадлежащая кривой Безье
+    ** b - Вторая (следующая) точка принадлежащая кривой Безье
+    ** offset - Смещение вершины дороги, относительно a
+    */
+    private void addOuterVertexFirst(Vector3 a, Vector3 b, Vector3 offset)
     {
-        Vector3 delta = b - a;
-        double arctgA = Math.Atan(delta.x / delta.z);
-        // Скорее всего можно упростить
-        Vector3 offset = new Vector3((float)Math.Cos(-arctgA) * roadWidth, 0f, (float)Math.Sin(-arctgA) * roadWidth);
         Vector3 v1 = a + offset;
         Vector3 v2 = a - offset;
 
@@ -110,6 +86,16 @@ public class CrookedRoad : MonoBehaviour
         }
     }
 
+    // Записывает координаты вершин для конца дороги в лист vertexRoad
+    private void GetEndpoints(Vector3 a, Vector3 b)
+    {
+        Vector3 delta = b - a;
+        double arctgA = Math.Atan(delta.x / delta.z);
+        // Скорее всего можно упростить
+        Vector3 offset = new Vector3((float)Math.Cos(-arctgA) * roadWidth, 0f, (float)Math.Sin(-arctgA) * roadWidth);
+        addOuterVertexFirst(a, b, offset);
+    }
+
     // Записывает координаты вершин на месте изгиба дороги в лист vertexRoad
     private void GetBendOfRoad(Vector3 a, Vector3 b, Vector3 c)
     {
@@ -123,18 +109,8 @@ public class CrookedRoad : MonoBehaviour
         double arccos = Math.Acos((AB.x * BC.x + AB.z * BC.z) / (lenAB * lenBC)) / 2;
         // Скорее всего можно упростить
         Vector3 offset = new Vector3((float)Math.Cos(arccos - arctgA + Math.PI / 2) * roadWidth, 0f, (float)Math.Sin(arccos - arctgA + Math.PI/2) * roadWidth);
-        Vector3 v1 = b + offset;
-        Vector3 v2 = b - offset;
 
-        if (getDistance(v1, c) > getDistance(v2, c))
-        {
-            vertexRoad.Add(v1);
-            vertexRoad.Add(v2);
-        } else
-        {
-            vertexRoad.Add(v2);
-            vertexRoad.Add(v1);
-        }
+        addOuterVertexFirst(b, c, offset);
     }
 
     private void CreateMesh()
@@ -148,19 +124,22 @@ public class CrookedRoad : MonoBehaviour
         for (int i = 0; i < vertexRoad.Count; i++) V[i] = vertexRoad[i];
         mesh.vertices = V;
 
-        int[] triangles = new int[bezierPoints.Count * 6];
-        
-        for (int i = 0; i < bezierPoints.Count - 1; i++)
+        // Количество адресов будет равно количеству вершин в треугольнике на количество треугольников
+        // в квадрате. А так как полигоны нужно сделать с двух сторон, то домножаем еще на 2
+        int[] triangles = new int[bezierPoints.Count * 3 * 2 * 2];
+
+        // Сначала адреса вершин треугольника должны возрастать, а потом убывать
+        for (int i = 0; i < (bezierPoints.Count - 1) * 2 * 2; i++)
         {
-            int p = i * 2;
-            triangles[i * 6] = p;
-            triangles[i * 6 + 1] = p + 2;
-            triangles[i * 6 + 2] = p + 1;
-            triangles[i * 6 + 3] = p + 1;
-            triangles[i * 6 + 4] = p + 2;
-            triangles[i * 6 + 5] = p + 3;
+            // Номер треугольника
+            int j = i / 2;
+            // Отоброжение одной стороны треугольника
+            for (int k = 0; k < 3; k++) triangles[i * 3 + k] = j++;
+            i++;
+            // Отображение другой стороны треугольника
+            for (int k = 0; k < 3; k++) triangles[i * 3 + k] = --j;
         }
+
         mesh.triangles = triangles;
-        
     }
 }
