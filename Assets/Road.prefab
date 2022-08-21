@@ -129,10 +129,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7fed32a4669b03146adf39d53e676b1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsStraightRoad: 1
-  RoadSegment: {fileID: 7499813677853692753, guid: 48aad6d16e9221144a37bbcda98d249c, type: 3}
-  StartPostPosition: {x: 0, y: 0, z: 0}
-  EndPostPosition: {x: 0, y: 0, z: 0}
+  isStraightRoad: 1
+  baseRoadSegment: {fileID: 7499813677853692753, guid: 48aad6d16e9221144a37bbcda98d249c, type: 3}
+  startPostPosition: {x: 0, y: 0, z: 0}
+  endPostPosition: {x: 0, y: 0, z: 0}
+  carsOnThisRoad: []
 --- !u!1 &6973281871053741224
 GameObject:
   m_ObjectHideFlags: 0
@@ -144,6 +145,7 @@ GameObject:
   - component: {fileID: 2538058187935983515}
   - component: {fileID: 6827056109017466608}
   - component: {fileID: 8886627369262012491}
+  - component: {fileID: 5599218457622240157}
   m_Layer: 0
   m_Name: StartPost
   m_TagString: Untagged
@@ -216,3 +218,17 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &5599218457622240157
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6973281871053741224}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 368212e9b5628b248a7966dd0cecf314, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hasSpawner: 0
+  carSpawner: {fileID: 6104648846233892702, guid: 582b3a23d858c214f90eca2d17506a56, type: 3}

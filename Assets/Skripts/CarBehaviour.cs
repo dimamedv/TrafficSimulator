@@ -6,6 +6,9 @@ using UnityEngine;
 
 public class CarBehaviour : MonoBehaviour
 {
+    public GameObject currentRoad;
+    public GameObject finishPost;
+    
     // Start is called before the first frame update
     private void Awake()
     {
@@ -19,7 +22,6 @@ public class CarBehaviour : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        Vector3 forwardVector = transform.forward;
-        transform.position = transform.position + forwardVector * 0.1f;
+        
     }
 }
