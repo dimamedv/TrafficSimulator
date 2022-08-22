@@ -4,20 +4,19 @@ using UnityEngine;
 
 public abstract class AbstractRoad : MonoBehaviour
 {
+    public RoadCharacteristics charact;
     protected Transform _startPostTransform;
     protected Transform _endPostTransform;
-    public Vector3 startPostPosition;
-    public Vector3 endPostPosition;
+    protected Vector3 startPostPosition;
+    protected Vector3 endPostPosition;
     
-    // Точки, через которые проходит автомобиль
-    protected List<Vector3> _roadPoints;
-
-    public float roadWidth;
+    
 
     public List<GameObject> carsOnThisRoad;
     
     void Awake()
     {
+        charact = GetComponent<RoadCharacteristics>();
         _startPostTransform = transform.Find("StartPost").transform;
         _endPostTransform = transform.Find("EndPost").transform;
         startPostPosition = _startPostTransform.position;
@@ -31,7 +30,7 @@ public abstract class AbstractRoad : MonoBehaviour
         startPostPosition = _startPostTransform.position;
         endPostPosition = _endPostTransform.position;
 
-        if (_roadPoints[0] != startPostPosition || _roadPoints[^1] != endPostPosition)
+        if (charact.points[0] != startPostPosition || charact.points[^1] != endPostPosition)
         {
             BuildRoad();
         }
