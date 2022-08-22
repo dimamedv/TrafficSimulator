@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using Unity.VisualScripting;
+using UnityEngine.UIElements;
 
 public class CrookedRoad : AbstractRoad
 {
@@ -13,6 +15,13 @@ public class CrookedRoad : AbstractRoad
     
     // Вершины дороги
     private List<Vector3> _vertexRoad;
+
+    // Длины сегментов дороги
+    private List<float> lengthSegments;
+
+    // Префиксные суммы длин сегментов дороги
+    private List<float> prefixSumSegments;
+
 
     // Составляет кривую Безье по трем координатам
     private void DrawQuadraticBezierCurve(Vector3 point0, Vector3 point1, Vector3 point2)
@@ -27,8 +36,7 @@ public class CrookedRoad : AbstractRoad
         }
         _roadPoints.Add(point2);
     }
-
-    
+ 
     private void getVertexPoints()
     {
         GetEndpoints(_roadPoints[0], _roadPoints[1]);
@@ -39,7 +47,6 @@ public class CrookedRoad : AbstractRoad
         GetEndpoints(_roadPoints[_roadPoints.Count - 1], _roadPoints[_roadPoints.Count - 2]);
     }
 
-    
     private float getDistance(Vector3 v1, Vector3 v2) { 
         double x = v1.x - v2.x;
         double z = v1.z - v2.z;
@@ -68,7 +75,6 @@ public class CrookedRoad : AbstractRoad
         }
     }
 
-    
     // Записывает координаты вершин для конца дороги в лист vertexRoad
     private void GetEndpoints(Vector3 a, Vector3 b)
     {
@@ -79,7 +85,6 @@ public class CrookedRoad : AbstractRoad
         addOuterVertexFirst(a, b, offset);
     }
 
-    
     // Записывает координаты вершин на месте изгиба дороги в лист vertexRoad
     private void GetBendOfRoad(Vector3 a, Vector3 b, Vector3 c)
     {
@@ -97,7 +102,6 @@ public class CrookedRoad : AbstractRoad
         addOuterVertexFirst(b, c, offset);
     }
 
-    
     private void CreateMesh()
     {
         MeshFilter mf = GetComponent<MeshFilter>();
@@ -128,7 +132,6 @@ public class CrookedRoad : AbstractRoad
         mesh.triangles = triangles;
     }
 
-
     protected override void BuildRoad()
     {
         _roadPoints = new List<Vector3>();
@@ -142,5 +145,20 @@ public class CrookedRoad : AbstractRoad
 
         // По этим координатам создаем меш дороги
         CreateMesh();
+
+        // Рассчитывает длину каждой секции дороги
+        getLengthOfRoadSections();
+    }
+
+    private void getLengthOfRoadSections()
+    {
+        lengthSegments = new List<float>(_roadPoints.Count);
+        prefixSumSegments = new List<float>(_roadPoints.Count + 1);
+
+        for (int i = 0; i < _roadPoints.Count; i++)
+        {
+            lengthSegments[i] = getDistance(_roadPoints[i], _roadPoints[i + 1]);
+            prefixSumSegments[i + 1] = prefixSumSegments[i] + lengthSegments[i];
+        }
     }
 }
