@@ -24,14 +24,7 @@ public class CarSpawnerBehaviour : MonoBehaviour
         Vector3 spawnPosition = transform.position;
         spawnPosition.y += 1;
         GameObject createdCar = Instantiate(carPrefab, spawnPosition, transform.rotation);
-        createdCar.GetComponent<CarBehaviour>().currentRoad = _parentRoad;
-
-        _parentRoad.GetComponent<StraightRoad>().carsOnThisRoad.Add(createdCar);
     }
 
-    // Update is called once per frame
-    void FixedUpdate()
-    {
-        
-    }
+    
 }
