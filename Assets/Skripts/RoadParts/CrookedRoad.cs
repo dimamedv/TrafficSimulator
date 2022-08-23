@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using Unity.VisualScripting;
 using UnityEngine.UIElements;
+using UnityEditor;
 
 public class CrookedRoad : AbstractRoad
 {
@@ -19,23 +20,23 @@ public class CrookedRoad : AbstractRoad
     {
         float t = 0f;
         Vector3 B;
-        for (int i = 0; i < charact.details; i++)
+        for (int i = 0; i < road.details; i++)
         {
             B = (1 - t) * (1 - t) * point0 + 2 * (1 - t) * t * point1 + t * t * point2;
-            charact.points.Add(B);
-            t += (1 / (float)charact.details);
+            road.points.Add(B);
+            t += (1 / (float)road.details);
         }
-        charact.points.Add(point2);
+        road.points.Add(point2);
     }
  
     private void getVertexPoints()
     {
-        GetEndpoints(charact.points[0], charact.points[1]);
+        GetEndpoints(road.points[0], road.points[1]);
 
-        for (int i = 1; i < charact.details; i++)
-            GetBendOfRoad(charact.points[i - 1], charact.points[i], charact.points[i + 1]);
+        for (int i = 1; i < road.details; i++)
+            GetBendOfRoad(road.points[i - 1], road.points[i], road.points[i + 1]);
 
-        GetEndpoints(charact.points[charact.points.Count - 1], charact.points[charact.points.Count - 2]);
+        GetEndpoints(road.points[road.points.Count - 1], road.points[road.points.Count - 2]);
     }
 
     private float getDistance(Vector3 v1, Vector3 v2) { 
@@ -71,8 +72,10 @@ public class CrookedRoad : AbstractRoad
     {
         Vector3 delta = b - a;
         double arctgA = Math.Atan(delta.x / delta.z);
+        float cos = (float)Math.Cos(-arctgA);
+        float sin = (float)Math.Sin(-arctgA);
         // Скорее всего можно упростить
-        Vector3 offset = new Vector3((float)Math.Cos(-arctgA) * charact.width, 0f, (float)Math.Sin(-arctgA) * charact.width);
+        Vector3 offset = new Vector3(cos * road.width, 0f, sin * road.width);
         addOuterVertexFirst(a, b, offset);
     }
 
@@ -87,9 +90,12 @@ public class CrookedRoad : AbstractRoad
         double lenBC = Math.Sqrt(BC.x * BC.x + BC.z * BC.z);
         // Арккосинус угла p1p2p3 деленный на два
         double arccos = Math.Acos((AB.x * BC.x + AB.z * BC.z) / (lenAB * lenBC)) / 2;
-        // Скорее всего можно упростить
-        Vector3 offset = new Vector3((float)Math.Cos(arccos - arctgA + Math.PI / 2) * charact.width, 0f, (float)Math.Sin(arccos - arctgA + Math.PI/2) * charact.width);
+        double alfa = arccos - arctgA + Math.PI / 2;
+        float cos = (float)Math.Cos(alfa);
+        float sin = (float)Math.Sin(alfa);
+        Vector3 offset = new Vector3(cos * road.width, 0f, sin * road.width);
 
+        road.angles.Add(new Vector3(cos, 0.0f, sin));
         addOuterVertexFirst(b, c, offset);
     }
 
@@ -106,10 +112,9 @@ public class CrookedRoad : AbstractRoad
 
         // Количество адресов будет равно количеству вершин в треугольнике на количество треугольников
         // в квадрате. А так как полигоны нужно сделать с двух сторон, то домножаем еще на 2
-        int[] triangles = new int[charact.points.Count * 3 * 2 * 2];
+        int[] triangles = new int[road.points.Count * 3 * 2 * 2];
 
-        // Сначала адреса вершин треугольника должны возрастать, а потом убывать
-        for (int i = 0; i < (charact.points.Count - 1) * 2 * 2; i++)
+        for (int i = 0; i < (road.points.Count - 1) * 2 * 2; i++)
         {
             // Номер треугольника
             int j = i / 2;
@@ -125,9 +130,10 @@ public class CrookedRoad : AbstractRoad
 
     protected override void BuildRoad()
     {
-        charact.points = new List<Vector3>();
+        road.points = new List<Vector3>();
         _vertexRoad = new List<Vector3>();
-        
+        road.angles = new List<Vector3>();
+
         // Создаем массив из формирующих точек кривой безье
         DrawQuadraticBezierCurve(_startPostTransform.position, formingPointTransform.position, _endPostTransform.position);
 
@@ -143,13 +149,13 @@ public class CrookedRoad : AbstractRoad
 
     private void getLengthOfRoadSections()
     {
-        charact.lengthSegments = new List<float>(charact.points.Count);
-        charact.prefixSumSegments = new List<float>(charact.points.Count + 1);
+        road.lengthSegments = new List<float>(road.points.Count);
+        road.prefixSumSegments = new List<float>(road.points.Count + 1);
 
-        for (int i = 0; i < charact.points.Count - 1; i++)
+        for (int i = 0; i < road.points.Count - 1; i++)
         {
-            charact.lengthSegments[i] = getDistance(charact.points[i], charact.points[i + 1]);
-            charact.prefixSumSegments[i + 1] = charact.prefixSumSegments[i] + charact.lengthSegments[i];
+            road.lengthSegments[i] = getDistance(road.points[i], road.points[i + 1]);
+            road.prefixSumSegments[i + 1] = road.prefixSumSegments[i] + road.lengthSegments[i];
         }
     }
 }

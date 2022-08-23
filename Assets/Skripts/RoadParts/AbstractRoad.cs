@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class AbstractRoad : MonoBehaviour
 {
-    public RoadCharacteristics charact;
+    public RoadCharacteristics road;
     protected Transform _startPostTransform;
     protected Transform _endPostTransform;
     protected Vector3 startPostPosition;
@@ -16,7 +16,7 @@ public abstract class AbstractRoad : MonoBehaviour
     
     void Awake()
     {
-        charact = GetComponent<RoadCharacteristics>();
+        road = GetComponent<RoadCharacteristics>();
         _startPostTransform = transform.Find("StartPost").transform;
         _endPostTransform = transform.Find("EndPost").transform;
         startPostPosition = _startPostTransform.position;
@@ -30,7 +30,7 @@ public abstract class AbstractRoad : MonoBehaviour
         startPostPosition = _startPostTransform.position;
         endPostPosition = _endPostTransform.position;
 
-        if (charact.points[0] != startPostPosition || charact.points[^1] != endPostPosition)
+        if (road.points[0] != startPostPosition || road.points[^1] != endPostPosition)
         {
             BuildRoad();
         }

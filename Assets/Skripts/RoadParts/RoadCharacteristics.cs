@@ -19,14 +19,12 @@ public class RoadCharacteristics : MonoBehaviour
     // Точки, через которые проходит автомобиль
     public List<Vector3> points;
 
+    // Угол до следующей точки. (cosA, 0, sinA)
+    public List<Vector3> angles;
+
     // Длины сегментов дороги
     public List<float> lengthSegments;
 
     // Префиксные суммы длин сегментов дороги
     public List<float> prefixSumSegments;
-
-    private void Awake()
-    {
-        points = new List<Vector3>(details);
-    }
 }
