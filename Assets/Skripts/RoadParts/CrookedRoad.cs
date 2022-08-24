@@ -1,44 +1,49 @@
- using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Unity.VisualScripting;
 using UnityEngine.UIElements;
+using UnityEditor;
+using System.Runtime.ConstrainedExecution;
 
 public class CrookedRoad : AbstractRoad
 {
     // Образующая треться точка
     public Transform formingPointTransform;
-    
+
     // Вершины дороги
     private List<Vector3> _vertexRoad;
 
+    private Vector3 _curFormingPointPosition;
 
     // Составляет кривую Безье по трем координатам
     private void DrawQuadraticBezierCurve(Vector3 point0, Vector3 point1, Vector3 point2)
     {
         float t = 0f;
         Vector3 B;
-        for (int i = 0; i < charact.details; i++)
+        for (int i = 0; i < details; i++)
         {
             B = (1 - t) * (1 - t) * point0 + 2 * (1 - t) * t * point1 + t * t * point2;
-            charact.points.Add(B);
-            t += (1 / (float)charact.details);
+            points.Add(B);
+            t += (1 / (float)details);
         }
-        charact.points.Add(point2);
+
+        points.Add(point2);
     }
- 
+
     private void getVertexPoints()
     {
-        GetEndpoints(charact.points[0], charact.points[1]);
+        GetEndPoints(points[0], points[1]);
 
-        for (int i = 1; i < charact.details; i++)
-            GetBendOfRoad(charact.points[i - 1], charact.points[i], charact.points[i + 1]);
+        for (int i = 1; i < details; i++)
+            GetBendOfRoad(points[i - 1], points[i], points[i + 1]);
 
-        GetEndpoints(charact.points[charact.points.Count - 1], charact.points[charact.points.Count - 2]);
+        GetEndPoints(points[points.Count - 1], points[points.Count - 2]);
     }
 
-    private float getDistance(Vector3 v1, Vector3 v2) { 
+    private float getDistance(Vector3 v1, Vector3 v2)
+    {
         double x = v1.x - v2.x;
         double z = v1.z - v2.z;
         return (float)Math.Sqrt(x * x + z * z);
@@ -49,8 +54,12 @@ public class CrookedRoad : AbstractRoad
     ** b - Вторая (следующая) точка принадлежащая кривой Безье
     ** offset - Смещение вершины дороги, относительно a
     */
-    private void addOuterVertexFirst(Vector3 a, Vector3 b, Vector3 offset)
+    private void addOuterVertexFirst(Vector3 a, Vector3 b, double alfa)
     {
+        float cos = (float)Math.Cos(alfa);
+        float sin = (float)Math.Sin(alfa);
+        // Скорее всего можно упростить
+        Vector3 offset = new Vector3(cos * width, 0f, sin * width);
         Vector3 v1 = a + offset;
         Vector3 v2 = a - offset;
 
@@ -58,22 +67,22 @@ public class CrookedRoad : AbstractRoad
         {
             _vertexRoad.Add(v1);
             _vertexRoad.Add(v2);
+            angles.Add(new Vector3(sin, 0.0f, -cos));
         }
         else
         {
             _vertexRoad.Add(v2);
             _vertexRoad.Add(v1);
+            angles.Add(new Vector3(-sin, 0.0f, cos));
         }
     }
 
     // Записывает координаты вершин для конца дороги в лист vertexRoad
-    private void GetEndpoints(Vector3 a, Vector3 b)
+    private void GetEndPoints(Vector3 a, Vector3 b)
     {
         Vector3 delta = b - a;
-        double arctgA = Math.Atan(delta.x / delta.z);
-        // Скорее всего можно упростить
-        Vector3 offset = new Vector3((float)Math.Cos(-arctgA) * charact.width, 0f, (float)Math.Sin(-arctgA) * charact.width);
-        addOuterVertexFirst(a, b, offset);
+        double arctgA = -Math.Atan(delta.x / delta.z);
+        addOuterVertexFirst(a, b, arctgA);
     }
 
     // Записывает координаты вершин на месте изгиба дороги в лист vertexRoad
@@ -87,10 +96,8 @@ public class CrookedRoad : AbstractRoad
         double lenBC = Math.Sqrt(BC.x * BC.x + BC.z * BC.z);
         // Арккосинус угла p1p2p3 деленный на два
         double arccos = Math.Acos((AB.x * BC.x + AB.z * BC.z) / (lenAB * lenBC)) / 2;
-        // Скорее всего можно упростить
-        Vector3 offset = new Vector3((float)Math.Cos(arccos - arctgA + Math.PI / 2) * charact.width, 0f, (float)Math.Sin(arccos - arctgA + Math.PI/2) * charact.width);
-
-        addOuterVertexFirst(b, c, offset);
+        double alfa = arccos - arctgA + Math.PI / 2;
+        addOuterVertexFirst(b, c, alfa);
     }
 
     private void CreateMesh()
@@ -106,10 +113,9 @@ public class CrookedRoad : AbstractRoad
 
         // Количество адресов будет равно количеству вершин в треугольнике на количество треугольников
         // в квадрате. А так как полигоны нужно сделать с двух сторон, то домножаем еще на 2
-        int[] triangles = new int[charact.points.Count * 3 * 2 * 2];
+        int[] triangles = new int[points.Count * 3 * 2 * 2];
 
-        // Сначала адреса вершин треугольника должны возрастать, а потом убывать
-        for (int i = 0; i < (charact.points.Count - 1) * 2 * 2; i++)
+        for (int i = 0; i < (points.Count - 1) * 2 * 2; i++)
         {
             // Номер треугольника
             int j = i / 2;
@@ -125,11 +131,13 @@ public class CrookedRoad : AbstractRoad
 
     protected override void BuildRoad()
     {
-        charact.points = new List<Vector3>();
+        points = new List<Vector3>();
         _vertexRoad = new List<Vector3>();
-        
+        angles = new List<Vector3>();
+
         // Создаем массив из формирующих точек кривой безье
-        DrawQuadraticBezierCurve(_startPostTransform.position, formingPointTransform.position, _endPostTransform.position);
+        DrawQuadraticBezierCurve(_startPostTransform.position, formingPointTransform.position,
+            _endPostTransform.position);
 
         // По ним получаем координаты точек, которые являются изломами дороги
         getVertexPoints();
@@ -139,17 +147,32 @@ public class CrookedRoad : AbstractRoad
 
         // Рассчитывает длину каждой секции дороги
         getLengthOfRoadSections();
+        
+        _curFormingPointPosition = formingPointTransform.position;
     }
 
     private void getLengthOfRoadSections()
     {
-        charact.lengthSegments = new List<float>(charact.points.Count);
-        charact.prefixSumSegments = new List<float>(charact.points.Count + 1);
+        prefixSumSegments.Add(0.0f);
 
-        for (int i = 0; i < charact.points.Count - 1; i++)
+        for (int i = 0; i < points.Count - 1; i++)
         {
-            charact.lengthSegments[i] = getDistance(charact.points[i], charact.points[i + 1]);
-            charact.prefixSumSegments[i + 1] = charact.prefixSumSegments[i] + charact.lengthSegments[i];
+            lengthSegments.Add(getDistance(points[i], points[i + 1]));
+            prefixSumSegments.Add(prefixSumSegments[i] + lengthSegments[i]);
         }
+    }
+
+    protected override bool isNeedsRebuild()
+    {
+        return points[0] != _startPostTransform.position
+               || points[^1] != _endPostTransform.position
+               || formingPointTransform.position != _curFormingPointPosition;
+    }
+
+    public void Awake()
+    {
+        base.Awake();
+
+        _curFormingPointPosition = formingPointTransform.position;
     }
 }

@@ -4,33 +4,52 @@ using UnityEngine;
 
 public abstract class AbstractRoad : MonoBehaviour
 {
-    public RoadCharacteristics charact;
+    // Стартовая точка
+    public GameObject _startPost;
+
+    // Конечная точка
+    public GameObject _endPost;
+
+    // Ширина дороги
+    public float width;
+
+    // Количество фрагментов дороги (Детализация)
+    public int details;
+
+    // Точки, через которые проходит автомобиль
+    public List<Vector3> points;
+
+    // Угол до следующей точки. (cosA, 0, sinA)
+    public List<Vector3> angles;
+
+    // Длины сегментов дороги
+    public List<float> lengthSegments;
+
+    // Префиксные суммы длин сегментов дороги
+    public List<float> prefixSumSegments;
+
     protected Transform _startPostTransform;
     protected Transform _endPostTransform;
-    protected Vector3 startPostPosition;
-    protected Vector3 endPostPosition;
+    protected Vector3 curStartPosition;
+    protected Vector3 curEndPosition;
     
     
 
     public List<GameObject> carsOnThisRoad;
     
-    void Awake()
+    public void Awake()
     {
-        charact = GetComponent<RoadCharacteristics>();
         _startPostTransform = transform.Find("StartPost").transform;
         _endPostTransform = transform.Find("EndPost").transform;
-        startPostPosition = _startPostTransform.position;
-        endPostPosition = _endPostTransform.position;
+        curStartPosition = _startPostTransform.position;
+        curEndPosition = _endPostTransform.position;
 
         BuildRoad();
     }
-    
+
     void FixedUpdate()
     {
-        startPostPosition = _startPostTransform.position;
-        endPostPosition = _endPostTransform.position;
-
-        if (charact.points[0] != startPostPosition || charact.points[^1] != endPostPosition)
+        if (isNeedsRebuild())
         {
             BuildRoad();
         }
@@ -38,4 +57,5 @@ public abstract class AbstractRoad : MonoBehaviour
 
 
     protected abstract void BuildRoad();
+    protected abstract bool isNeedsRebuild();
 }
