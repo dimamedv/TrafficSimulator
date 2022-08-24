@@ -30,29 +30,26 @@ public abstract class AbstractRoad : MonoBehaviour
 
     protected Transform _startPostTransform;
     protected Transform _endPostTransform;
-    protected Vector3 startPostPosition;
-    protected Vector3 endPostPosition;
+    protected Vector3 curStartPosition;
+    protected Vector3 curEndPosition;
     
     
 
     public List<GameObject> carsOnThisRoad;
     
-    void Awake()
+    public void Awake()
     {
         _startPostTransform = transform.Find("StartPost").transform;
         _endPostTransform = transform.Find("EndPost").transform;
-        startPostPosition = _startPostTransform.position;
-        endPostPosition = _endPostTransform.position;
+        curStartPosition = _startPostTransform.position;
+        curEndPosition = _endPostTransform.position;
 
         BuildRoad();
     }
-    
+
     void FixedUpdate()
     {
-        startPostPosition = _startPostTransform.position;
-        endPostPosition = _endPostTransform.position;
-
-        if (points[0] != startPostPosition || points[^1] != endPostPosition)
+        if (points[0] != _startPostTransform.position || points[^1] != _endPostTransform.position)
         {
             BuildRoad();
         }
@@ -60,4 +57,5 @@ public abstract class AbstractRoad : MonoBehaviour
 
 
     protected abstract void BuildRoad();
+    protected abstract bool NeedsRebuild();
 }

@@ -1,4 +1,4 @@
- using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
@@ -11,10 +11,11 @@ public class CrookedRoad : AbstractRoad
 {
     // Образующая треться точка
     public Transform formingPointTransform;
-    
+
     // Вершины дороги
     private List<Vector3> _vertexRoad;
 
+    private Vector3 _curFormingPointPosition;
 
     // Составляет кривую Безье по трем координатам
     private void DrawQuadraticBezierCurve(Vector3 point0, Vector3 point1, Vector3 point2)
@@ -27,9 +28,10 @@ public class CrookedRoad : AbstractRoad
             points.Add(B);
             t += (1 / (float)details);
         }
+
         points.Add(point2);
     }
- 
+
     private void getVertexPoints()
     {
         GetEndPoints(points[0], points[1]);
@@ -40,7 +42,8 @@ public class CrookedRoad : AbstractRoad
         GetEndPoints(points[points.Count - 1], points[points.Count - 2]);
     }
 
-    private float getDistance(Vector3 v1, Vector3 v2) { 
+    private float getDistance(Vector3 v1, Vector3 v2)
+    {
         double x = v1.x - v2.x;
         double z = v1.z - v2.z;
         return (float)Math.Sqrt(x * x + z * z);
@@ -137,7 +140,8 @@ public class CrookedRoad : AbstractRoad
         angles = new List<Vector3>();
 
         // Создаем массив из формирующих точек кривой безье
-        DrawQuadraticBezierCurve(_startPostTransform.position, formingPointTransform.position, _endPostTransform.position);
+        DrawQuadraticBezierCurve(_startPostTransform.position, formingPointTransform.position,
+            _endPostTransform.position);
 
         // По ним получаем координаты точек, которые являются изломами дороги
         getVertexPoints();
@@ -147,6 +151,12 @@ public class CrookedRoad : AbstractRoad
 
         // Рассчитывает длину каждой секции дороги
         getLengthOfRoadSections();
+        
+        _curFormingPointPosition = new Vector3();
+
+        _curFormingPointPosition.x = formingPointTransform.position.x;
+        _curFormingPointPosition.y = formingPointTransform.position.y;
+        _curFormingPointPosition.z = formingPointTransform.position.z;
     }
 
     private void getLengthOfRoadSections()
@@ -158,5 +168,25 @@ public class CrookedRoad : AbstractRoad
             lengthSegments.Add(getDistance(points[i], points[i + 1]));
             prefixSumSegments.Add(prefixSumSegments[i] + lengthSegments[i]);
         }
+    }
+
+    protected override bool NeedsRebuild()
+    {
+        return points[0] != _startPostTransform.position
+               || points[^1] != _endPostTransform.position
+               //TODO: repair this ****
+               || formingPointTransform.position != _curFormingPointPosition;
+    }
+
+    public void Awake()
+    {
+        base.Awake();
+
+        _curFormingPointPosition = new Vector3();
+
+        _curFormingPointPosition.x = formingPointTransform.position.x;
+        _curFormingPointPosition.y = formingPointTransform.position.y;
+        _curFormingPointPosition.z = formingPointTransform.position.z;
+         
     }
 }
