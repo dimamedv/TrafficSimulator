@@ -544,7 +544,31 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+<<<<<<< HEAD
     - target: {fileID: 1184602965101029159, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
+=======
+    - target: {fileID: 8874307780827772754, guid: f13efa9449690914383c856f2026799d, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 94.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8874307780827772754, guid: f13efa9449690914383c856f2026799d, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8874307780827772754, guid: f13efa9449690914383c856f2026799d, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 31.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8874307781305873089, guid: f13efa9449690914383c856f2026799d, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 5.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 8874307781305873089, guid: f13efa9449690914383c856f2026799d, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 78.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8874307782214972717, guid: f13efa9449690914383c856f2026799d, type: 3}
+>>>>>>> 35de32eeb707320838f505f4ce90dbf520a6464c
       propertyPath: m_Name
       value: CrookedRoad
       objectReference: {fileID: 0}
@@ -592,5 +616,27 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+<<<<<<< HEAD
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
+=======
+    - target: {fileID: 8874307782214972887, guid: f13efa9449690914383c856f2026799d, type: 3}
+      propertyPath: width
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8874307782214972887, guid: f13efa9449690914383c856f2026799d, type: 3}
+      propertyPath: details
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 8874307782214972887, guid: f13efa9449690914383c856f2026799d, type: 3}
+      propertyPath: _endPost
+      value: 
+      objectReference: {fileID: 2051937240}
+    - target: {fileID: 8874307782214972887, guid: f13efa9449690914383c856f2026799d, type: 3}
+      propertyPath: _startPost
+      value: 
+      objectReference: {fileID: 1569199025}
+    m_RemovedComponents:
+    - {fileID: 8874307782214972886, guid: f13efa9449690914383c856f2026799d, type: 3}
+  m_SourcePrefab: {fileID: 100100000, guid: f13efa9449690914383c856f2026799d, type: 3}
+>>>>>>> 35de32eeb707320838f505f4ce90dbf520a6464c
