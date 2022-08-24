@@ -49,7 +49,7 @@ public abstract class AbstractRoad : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (points[0] != _startPostTransform.position || points[^1] != _endPostTransform.position)
+        if (isNeedsRebuild())
         {
             BuildRoad();
         }
@@ -57,5 +57,5 @@ public abstract class AbstractRoad : MonoBehaviour
 
 
     protected abstract void BuildRoad();
-    protected abstract bool NeedsRebuild();
+    protected abstract bool isNeedsRebuild();
 }

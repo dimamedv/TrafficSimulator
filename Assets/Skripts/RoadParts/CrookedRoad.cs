@@ -148,11 +148,7 @@ public class CrookedRoad : AbstractRoad
         // Рассчитывает длину каждой секции дороги
         getLengthOfRoadSections();
         
-        _curFormingPointPosition = new Vector3();
-
-        _curFormingPointPosition.x = formingPointTransform.position.x;
-        _curFormingPointPosition.y = formingPointTransform.position.y;
-        _curFormingPointPosition.z = formingPointTransform.position.z;
+        _curFormingPointPosition = formingPointTransform.position;
     }
 
     private void getLengthOfRoadSections()
@@ -166,11 +162,10 @@ public class CrookedRoad : AbstractRoad
         }
     }
 
-    protected override bool NeedsRebuild()
+    protected override bool isNeedsRebuild()
     {
         return points[0] != _startPostTransform.position
                || points[^1] != _endPostTransform.position
-               //TODO: repair this ****
                || formingPointTransform.position != _curFormingPointPosition;
     }
 
@@ -178,11 +173,6 @@ public class CrookedRoad : AbstractRoad
     {
         base.Awake();
 
-        _curFormingPointPosition = new Vector3();
-
-        _curFormingPointPosition.x = formingPointTransform.position.x;
-        _curFormingPointPosition.y = formingPointTransform.position.y;
-        _curFormingPointPosition.z = formingPointTransform.position.z;
-         
+        _curFormingPointPosition = formingPointTransform.position;
     }
 }

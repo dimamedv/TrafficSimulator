@@ -32,7 +32,6 @@ public class CarBehaviour : MonoBehaviour
         distance += speed * Time.deltaTime;
 
         int a = MyMath.binarySearch(ref parentRoad.prefixSumSegments, parentRoad.prefixSumSegments.Count, distance);
-        Debug.Log(parentRoad.prefixSumSegments.Count);
         float r = distance - parentRoad.prefixSumSegments[a];
         Vector3 offset = parentRoad.angles[a] * r;
         Vector3 v = parentRoad.points[a] + offset; 
@@ -40,7 +39,6 @@ public class CarBehaviour : MonoBehaviour
 
         Vector3 rotation = new Vector3(0.0f, (float)(Math.Acos(parentRoad.angles[a].z) / Math.PI * 180) + 180, 0.0f);
         Quaternion rotationQuaternion = Quaternion.Euler(rotation);
-        Debug.Log(rotationQuaternion);
         transform.rotation = rotationQuaternion;
     }
 }

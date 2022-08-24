@@ -23,7 +23,7 @@ public class StraightRoad : AbstractRoad
         _roadSegment = createdRoadSegment;
     }
 
-    protected override bool NeedsRebuild()
+    protected override bool isNeedsRebuild()
     {
         return points[0] != _startPostTransform.position || points[^1] != _endPostTransform.position;
     }
