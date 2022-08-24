@@ -2,19 +2,37 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-using Unity.VisualScripting;
-using UnityEngine.UIElements;
-using UnityEditor;
-using System.Runtime.ConstrainedExecution;
 
-public class CrookedRoad : AbstractRoad
+public class CrookedRoad : MonoBehaviour
 {
-    // Образующая треться точка
-    public Transform formingPointTransform;
-    
+    // Образующие точки кривой Безье
+    public Transform p0;
+    public Transform p1;
+    public Transform p2;
+    // Количество фрагментов дороги (Детализация)
+    public int details;
+    // Ширина дороги
+    public float roadWidth;
+    // Координаты точек Безье
+    private List<Vector3> bezierPoints;
     // Вершины дороги
-    private List<Vector3> _vertexRoad;
+    private List<Vector3> vertexRoad;
 
+    // Start is called before the first frame update
+    void Start()
+    {
+        bezierPoints = new List<Vector3>();
+        vertexRoad = new List<Vector3>();
+        
+        // Создаем массив из формирующих точек кривой безье
+        DrawQuadraticBezierCurve(p0.position, p1.position, p2.position);
+
+        // По ним получаем координаты точек, которые являются изломами дороги
+        getVertexPoints();
+
+        // По этим координатам создаем меш дороги
+        CreateMesh();
+    }
 
     // Составляет кривую Безье по трем координатам
     private void DrawQuadraticBezierCurve(Vector3 point0, Vector3 point1, Vector3 point2)
@@ -24,20 +42,20 @@ public class CrookedRoad : AbstractRoad
         for (int i = 0; i < details; i++)
         {
             B = (1 - t) * (1 - t) * point0 + 2 * (1 - t) * t * point1 + t * t * point2;
-            points.Add(B);
+            bezierPoints.Add(B);
             t += (1 / (float)details);
         }
-        points.Add(point2);
+        bezierPoints.Add(point2);
     }
- 
+
     private void getVertexPoints()
     {
-        GetEndPoints(points[0], points[1]);
+        GetEndpoints(bezierPoints[0], bezierPoints[1]);
 
         for (int i = 1; i < details; i++)
-            GetBendOfRoad(points[i - 1], points[i], points[i + 1]);
+            GetBendOfRoad(bezierPoints[i - 1], bezierPoints[i], bezierPoints[i + 1]);
 
-        GetEndPoints(points[points.Count - 1], points[points.Count - 2]);
+        GetEndpoints(bezierPoints[bezierPoints.Count - 1], bezierPoints[bezierPoints.Count - 2]);
     }
 
     private float getDistance(Vector3 v1, Vector3 v2) { 
@@ -58,26 +76,23 @@ public class CrookedRoad : AbstractRoad
 
         if (getDistance(v1, b) > getDistance(v2, b))
         {
-            _vertexRoad.Add(v1);
-            _vertexRoad.Add(v2);
+            vertexRoad.Add(v1);
+            vertexRoad.Add(v2);
         }
         else
         {
-            _vertexRoad.Add(v2);
-            _vertexRoad.Add(v1);
+            vertexRoad.Add(v2);
+            vertexRoad.Add(v1);
         }
     }
 
     // Записывает координаты вершин для конца дороги в лист vertexRoad
-    private void GetEndPoints(Vector3 a, Vector3 b)
+    private void GetEndpoints(Vector3 a, Vector3 b)
     {
         Vector3 delta = b - a;
         double arctgA = Math.Atan(delta.x / delta.z);
-        float cos = (float)Math.Cos(-arctgA);
-        float sin = (float)Math.Sin(-arctgA);
         // Скорее всего можно упростить
-        Vector3 offset = new Vector3(cos * width, 0f, sin * width);
-        angles.Add(new Vector3(sin, 0.0f, cos));
+        Vector3 offset = new Vector3((float)Math.Cos(-arctgA) * roadWidth, 0f, (float)Math.Sin(-arctgA) * roadWidth);
         addOuterVertexFirst(a, b, offset);
     }
 
@@ -92,12 +107,9 @@ public class CrookedRoad : AbstractRoad
         double lenBC = Math.Sqrt(BC.x * BC.x + BC.z * BC.z);
         // Арккосинус угла p1p2p3 деленный на два
         double arccos = Math.Acos((AB.x * BC.x + AB.z * BC.z) / (lenAB * lenBC)) / 2;
-        double alfa = arccos - arctgA + Math.PI / 2;
-        float cos = (float)Math.Cos(alfa);
-        float sin = (float)Math.Sin(alfa);
-        Vector3 offset = new Vector3(cos * width, 0f, sin * width);
+        // Скорее всего можно упростить
+        Vector3 offset = new Vector3((float)Math.Cos(arccos - arctgA + Math.PI / 2) * roadWidth, 0f, (float)Math.Sin(arccos - arctgA + Math.PI/2) * roadWidth);
 
-        angles.Add(new Vector3(sin, 0.0f, cos));
         addOuterVertexFirst(b, c, offset);
     }
 
@@ -108,15 +120,16 @@ public class CrookedRoad : AbstractRoad
         mf.mesh = mesh;
 
         // Скорее всего можно упростить
-        Vector3[] V = new Vector3[_vertexRoad.Count];
-        for (int i = 0; i < _vertexRoad.Count; i++) V[i] = _vertexRoad[i];
+        Vector3[] V = new Vector3[vertexRoad.Count];
+        for (int i = 0; i < vertexRoad.Count; i++) V[i] = vertexRoad[i];
         mesh.vertices = V;
 
         // Количество адресов будет равно количеству вершин в треугольнике на количество треугольников
         // в квадрате. А так как полигоны нужно сделать с двух сторон, то домножаем еще на 2
-        int[] triangles = new int[points.Count * 3 * 2 * 2];
+        int[] triangles = new int[bezierPoints.Count * 3 * 2 * 2];
 
-        for (int i = 0; i < (points.Count - 1) * 2 * 2; i++)
+        // Сначала адреса вершин треугольника должны возрастать, а потом убывать
+        for (int i = 0; i < (bezierPoints.Count - 1) * 2 * 2; i++)
         {
             // Номер треугольника
             int j = i / 2;
@@ -128,35 +141,5 @@ public class CrookedRoad : AbstractRoad
         }
 
         mesh.triangles = triangles;
-    }
-
-    protected override void BuildRoad()
-    {
-        points = new List<Vector3>();
-        _vertexRoad = new List<Vector3>();
-        angles = new List<Vector3>();
-
-        // Создаем массив из формирующих точек кривой безье
-        DrawQuadraticBezierCurve(_startPostTransform.position, formingPointTransform.position, _endPostTransform.position);
-
-        // По ним получаем координаты точек, которые являются изломами дороги
-        getVertexPoints();
-
-        // По этим координатам создаем меш дороги
-        CreateMesh();
-
-        // Рассчитывает длину каждой секции дороги
-        getLengthOfRoadSections();
-    }
-
-    private void getLengthOfRoadSections()
-    {
-        prefixSumSegments.Add(0.0f);
-
-        for (int i = 0; i < points.Count - 1; i++)
-        {
-            lengthSegments.Add(getDistance(points[i], points[i + 1]));
-            prefixSumSegments.Add(prefixSumSegments[i] + lengthSegments[i]);
-        }
     }
 }

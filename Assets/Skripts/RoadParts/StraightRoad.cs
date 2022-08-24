@@ -13,7 +13,7 @@ public class StraightRoad : AbstractRoad
 
     protected override void BuildRoad()
     {
-        road.points = new List<Vector3>() { startPostPosition, endPostPosition };
+        points = new List<Vector3>() { startPostPosition, endPostPosition };
         Destroy(_roadSegment);
 
         GameObject createdRoadSegment = Instantiate(baseRoadSegment, transform);

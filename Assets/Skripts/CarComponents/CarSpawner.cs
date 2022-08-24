@@ -7,21 +7,18 @@ public class CarSpawner : MonoBehaviour
 {
     // Префаб создаваемой машины.
     public GameObject carPrefab;
-
     // Дорога, с которой начинает движение авто
-    public RoadCharacteristics road;
-
+    public AbstractRoad road;
     // Время, которое будет ждать спавнер
     public float time;
-
-    //
+    // Отсчитывае
     private float timeUpdate;
 
 
     // Start is called before the first frame update
     private void Awake()
     {
-        timeUpdate = time;
+        timeUpdate = 2;
     }
 
     private void FixedUpdate()
@@ -30,8 +27,7 @@ public class CarSpawner : MonoBehaviour
         if (timeUpdate <= 0)
         {
             GameObject createdCar = Instantiate(carPrefab, road._startPost.transform);
-            createdCar.GetComponent<CarCharacteristics>().parentRoad = road;
-            createdCar.AddComponent<CarMovement>();
+            createdCar.GetComponent<CarBehaviour>().parentRoad = road;
 
             timeUpdate = time;
         }
