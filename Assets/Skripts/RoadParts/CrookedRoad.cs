@@ -51,8 +51,12 @@ public class CrookedRoad : AbstractRoad
     ** b - Вторая (следующая) точка принадлежащая кривой Безье
     ** offset - Смещение вершины дороги, относительно a
     */
-    private void addOuterVertexFirst(Vector3 a, Vector3 b, Vector3 offset)
+    private void addOuterVertexFirst(Vector3 a, Vector3 b, double alfa)
     {
+        float cos = (float)Math.Cos(alfa);
+        float sin = (float)Math.Sin(alfa);
+        // Скорее всего можно упростить
+        Vector3 offset = new Vector3(cos * width, 0f, sin * width);
         Vector3 v1 = a + offset;
         Vector3 v2 = a - offset;
 
@@ -60,11 +64,13 @@ public class CrookedRoad : AbstractRoad
         {
             _vertexRoad.Add(v1);
             _vertexRoad.Add(v2);
+            angles.Add(new Vector3(sin, 0.0f, -cos));
         }
         else
         {
             _vertexRoad.Add(v2);
             _vertexRoad.Add(v1);
+            angles.Add(new Vector3(-sin, 0.0f, cos));
         }
     }
 
@@ -72,13 +78,8 @@ public class CrookedRoad : AbstractRoad
     private void GetEndPoints(Vector3 a, Vector3 b)
     {
         Vector3 delta = b - a;
-        double arctgA = Math.Atan(delta.x / delta.z);
-        float cos = (float)Math.Cos(-arctgA);
-        float sin = (float)Math.Sin(-arctgA);
-        // Скорее всего можно упростить
-        Vector3 offset = new Vector3(cos * width, 0f, sin * width);
-        angles.Add(new Vector3(sin, 0.0f, cos));
-        addOuterVertexFirst(a, b, offset);
+        double arctgA = -Math.Atan(delta.x / delta.z);
+        addOuterVertexFirst(a, b, arctgA);
     }
 
     // Записывает координаты вершин на месте изгиба дороги в лист vertexRoad
@@ -93,12 +94,7 @@ public class CrookedRoad : AbstractRoad
         // Арккосинус угла p1p2p3 деленный на два
         double arccos = Math.Acos((AB.x * BC.x + AB.z * BC.z) / (lenAB * lenBC)) / 2;
         double alfa = arccos - arctgA + Math.PI / 2;
-        float cos = (float)Math.Cos(alfa);
-        float sin = (float)Math.Sin(alfa);
-        Vector3 offset = new Vector3(cos * width, 0f, sin * width);
-
-        angles.Add(new Vector3(sin, 0.0f, cos));
-        addOuterVertexFirst(b, c, offset);
+        addOuterVertexFirst(b, c, alfa);
     }
 
     private void CreateMesh()
