@@ -130,6 +130,13 @@ public class CrookedRoad : AbstractRoad
         mesh.triangles = triangles;
     }
 
+    protected override void RebuildGrid()
+    {
+        RebuildGridByPoint(ref _startPost);
+        RebuildGridByPoint(ref _formingPoint);
+        RebuildGridByPoint(ref _endPost);
+    }
+
     protected override void BuildRoad()
     {
         points = new List<Vector3>();
@@ -137,11 +144,13 @@ public class CrookedRoad : AbstractRoad
         angles = new List<Vector3>();
         prefixSumSegments = new List<float>();
 
-        _formingPoint = GameObject.Find("FormingPoint");
+        _formingPoint = transform.GetChild(2).gameObject;
+
+        RebuildGrid();
 
         // Создаем массив из формирующих точек кривой безье
-        DrawQuadraticBezierCurve(_startPostTransform.position, _formingPoint.transform.position,
-            _endPostTransform.position);
+        DrawQuadraticBezierCurve(_startPost.transform.position, _formingPoint.transform.position,
+            _endPost.transform.position);
 
         // По ним получаем координаты точек, которые являются изломами дороги
         getVertexPoints();
@@ -165,16 +174,9 @@ public class CrookedRoad : AbstractRoad
 
     protected override bool isNeedsRebuild()
     {
-        return points[0] != _startPostTransform.position
-               || points[^1] != _endPostTransform.position
+        return points[0] != _startPost.transform.position
+               || points[^1] != _endPost.transform.position
                || _formingPoint.transform.position != _curFormingPointPosition;
-    }
-
-    protected override void RebuildGrid()
-    {
-        RebuildGridByPoint(ref _startPost);
-        RebuildGridByPoint(ref _formingPoint);
-        RebuildGridByPoint(ref _endPost);
     }
 
     public void Awake()

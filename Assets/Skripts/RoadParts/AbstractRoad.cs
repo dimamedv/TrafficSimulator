@@ -10,6 +10,12 @@ public abstract class AbstractRoad : MonoBehaviour
     // Конечная точка
     public GameObject _endPost;
 
+    // Родитель
+    public GameObject _parentPost;
+
+    // Ребенок
+    public GameObject _childPost;
+
     // Ширина дороги
     public float width;
 
@@ -28,8 +34,6 @@ public abstract class AbstractRoad : MonoBehaviour
     // Шаг сетки привязки
     public float gridStep;
 
-    protected Transform _startPostTransform;
-    protected Transform _endPostTransform;
     protected Vector3 curStartPosition;
     protected Vector3 curEndPosition;
     
@@ -39,10 +43,10 @@ public abstract class AbstractRoad : MonoBehaviour
     
     public void Awake()
     {
-        _startPostTransform = transform.Find("StartPost").transform;
-        _endPostTransform = transform.Find("EndPost").transform;
-        curStartPosition = _startPostTransform.position;
-        curEndPosition = _endPostTransform.position;
+        _startPost = transform.GetChild(0).gameObject;
+        _endPost = transform.GetChild(1).gameObject;
+        curStartPosition = _startPost.transform.position;
+        curEndPosition = _endPost.transform.position;
 
         BuildRoad();
     }
@@ -51,24 +55,16 @@ public abstract class AbstractRoad : MonoBehaviour
     {
         if (isNeedsRebuild())
         {
-            RebuildGrid();
-            Debug.Log(_startPostTransform.position);
             BuildRoad();
-            Debug.Log(_startPostTransform.position);
         }
     }
 
 
-    protected void RebuildGridByPoint(ref GameObject t)
-    {
-        Vector3 a = new Vector3(
+    protected void RebuildGridByPoint(ref GameObject t) { 
+        t.transform.position = new Vector3(
             RebuildGridByAxis(t.transform.position.x),
             0.0f,
             RebuildGridByAxis(t.transform.position.z));
-
-        Debug.Log(a);
-
-        t.transform.position = a;
     }
 
     private float RebuildGridByAxis(float x)
