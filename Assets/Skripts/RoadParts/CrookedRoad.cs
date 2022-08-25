@@ -6,11 +6,12 @@ using Unity.VisualScripting;
 using UnityEngine.UIElements;
 using UnityEditor;
 using System.Runtime.ConstrainedExecution;
+using UnityEditor.IMGUI.Controls;
 
 public class CrookedRoad : AbstractRoad
 {
     // Образующая треться точка
-    public Transform formingPointTransform;
+    public GameObject _formingPoint;
 
     // Вершины дороги
     private List<Vector3> _vertexRoad;
@@ -134,9 +135,12 @@ public class CrookedRoad : AbstractRoad
         points = new List<Vector3>();
         _vertexRoad = new List<Vector3>();
         angles = new List<Vector3>();
+        prefixSumSegments = new List<float>();
+
+        _formingPoint = GameObject.Find("FormingPoint");
 
         // Создаем массив из формирующих точек кривой безье
-        DrawQuadraticBezierCurve(_startPostTransform.position, formingPointTransform.position,
+        DrawQuadraticBezierCurve(_startPostTransform.position, _formingPoint.transform.position,
             _endPostTransform.position);
 
         // По ним получаем координаты точек, которые являются изломами дороги
@@ -148,7 +152,7 @@ public class CrookedRoad : AbstractRoad
         // Рассчитывает длину каждой секции дороги
         getLengthOfRoadSections();
         
-        _curFormingPointPosition = formingPointTransform.position;
+        _curFormingPointPosition = _formingPoint.transform.position;
     }
 
     private void getLengthOfRoadSections()
@@ -156,23 +160,27 @@ public class CrookedRoad : AbstractRoad
         prefixSumSegments.Add(0.0f);
 
         for (int i = 0; i < points.Count - 1; i++)
-        {
-            lengthSegments.Add(getDistance(points[i], points[i + 1]));
-            prefixSumSegments.Add(prefixSumSegments[i] + lengthSegments[i]);
-        }
+            prefixSumSegments.Add(prefixSumSegments[i] + getDistance(points[i], points[i + 1]));
     }
 
     protected override bool isNeedsRebuild()
     {
         return points[0] != _startPostTransform.position
                || points[^1] != _endPostTransform.position
-               || formingPointTransform.position != _curFormingPointPosition;
+               || _formingPoint.transform.position != _curFormingPointPosition;
+    }
+
+    protected override void RebuildGrid()
+    {
+        RebuildGridByPoint(ref _startPost);
+        RebuildGridByPoint(ref _formingPoint);
+        RebuildGridByPoint(ref _endPost);
     }
 
     public void Awake()
     {
         base.Awake();
 
-        _curFormingPointPosition = formingPointTransform.position;
+        _curFormingPointPosition = _formingPoint.transform.position;
     }
 }

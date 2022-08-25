@@ -18,7 +18,7 @@ public class CarSpawner : MonoBehaviour
     // Start is called before the first frame update
     private void Awake()
     {
-        timeUpdate = 2;
+        timeUpdate = time;
     }
 
     private void FixedUpdate()

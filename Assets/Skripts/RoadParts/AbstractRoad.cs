@@ -22,11 +22,11 @@ public abstract class AbstractRoad : MonoBehaviour
     // Угол до следующей точки. (cosA, 0, sinA)
     public List<Vector3> angles;
 
-    // Длины сегментов дороги
-    public List<float> lengthSegments;
-
     // Префиксные суммы длин сегментов дороги
     public List<float> prefixSumSegments;
+
+    // Шаг сетки привязки
+    public float gridStep;
 
     protected Transform _startPostTransform;
     protected Transform _endPostTransform;
@@ -51,11 +51,36 @@ public abstract class AbstractRoad : MonoBehaviour
     {
         if (isNeedsRebuild())
         {
+            RebuildGrid();
+            Debug.Log(_startPostTransform.position);
             BuildRoad();
+            Debug.Log(_startPostTransform.position);
         }
     }
 
 
+    protected void RebuildGridByPoint(ref GameObject t)
+    {
+        Vector3 a = new Vector3(
+            RebuildGridByAxis(t.transform.position.x),
+            0.0f,
+            RebuildGridByAxis(t.transform.position.z));
+
+        Debug.Log(a);
+
+        t.transform.position = a;
+    }
+
+    private float RebuildGridByAxis(float x)
+    {
+        float remains = x % gridStep;
+        if (remains < gridStep / 2) 
+            return x - remains;
+        else 
+            return x - remains + gridStep;
+    }
+
     protected abstract void BuildRoad();
     protected abstract bool isNeedsRebuild();
+    protected abstract void RebuildGrid();
 }

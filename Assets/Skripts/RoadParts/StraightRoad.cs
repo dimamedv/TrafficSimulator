@@ -22,6 +22,11 @@ public class StraightRoad : AbstractRoad
         
         _roadSegment = createdRoadSegment;
     }
+    protected override void RebuildGrid()
+    {
+        RebuildGridByPoint(ref _startPost);
+        RebuildGridByPoint(ref _endPost);
+    }
 
     protected override bool isNeedsRebuild()
     {

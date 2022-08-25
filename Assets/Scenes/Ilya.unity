@@ -372,6 +372,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1184602965101029341, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
+      propertyPath: details
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 1184602965101029341, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
+      propertyPath: gridStep
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1184602965101029341, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
+      propertyPath: formingPoint
+      value: 
+      objectReference: {fileID: 2006886020}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
 --- !u!1 &1024425597 stripped
@@ -402,6 +414,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2090057e2dfeb948b4ad3ca11ab37e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  carPrefab: {fileID: 5390263098727702370, guid: 60406f1417eaa1040a66c7af507bd85d, type: 3}
+  carPrefab: {fileID: 1917574103578557583, guid: 0400e5f842870f24c80292515edc3094, type: 3}
   road: {fileID: 1024425598}
   time: 100
+--- !u!1 &2006886020 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1184602963795534024, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
+  m_PrefabInstance: {fileID: 1024425596}
+  m_PrefabAsset: {fileID: 0}
