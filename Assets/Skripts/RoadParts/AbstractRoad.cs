@@ -25,14 +25,14 @@ public abstract class AbstractRoad : MonoBehaviour
     // Точки, через которые проходит автомобиль
     public List<Vector3> points;
 
-    // Угол до следующей точки. (cosA, 0, sinA)
-    public List<Vector3> angles;
-
     // Префиксные суммы длин сегментов дороги
     public List<float> prefixSumSegments;
 
     // Шаг сетки привязки
     public float gridStep;
+    
+    // Угол до следующей точки. (cosA, 0, sinA)
+    public List<Vector3> angles;
 
     protected Vector3 curStartPosition;
     protected Vector3 curEndPosition;

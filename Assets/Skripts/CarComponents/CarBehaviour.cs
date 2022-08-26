@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Skripts;
 using System;
 
 public class CarBehaviour : MonoBehaviour
@@ -39,6 +38,7 @@ public class CarBehaviour : MonoBehaviour
 
         Vector3 rotation = new Vector3(0.0f, (float)(Math.Acos(parentRoad.angles[a].z) / Math.PI * 180) - 90, 0.0f);
         Quaternion rotationQuaternion = Quaternion.Euler(rotation);
+        
         transform.rotation = rotationQuaternion;
     }
 }

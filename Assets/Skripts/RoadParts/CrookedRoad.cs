@@ -7,6 +7,7 @@ using UnityEngine.UIElements;
 using UnityEditor;
 using System.Runtime.ConstrainedExecution;
 using UnityEditor.IMGUI.Controls;
+using static MyMath;
 
 public class CrookedRoad : AbstractRoad
 {
@@ -17,6 +18,8 @@ public class CrookedRoad : AbstractRoad
     private List<Vector3> _vertexRoad;
 
     private Vector3 _curFormingPointPosition;
+
+    public bool isStraight;
 
     // Составляет кривую Безье по трем координатам
     private void DrawQuadraticBezierCurve(Vector3 point0, Vector3 point1, Vector3 point2)
@@ -133,7 +136,6 @@ public class CrookedRoad : AbstractRoad
     protected override void RebuildGrid()
     {
         RebuildGridByPoint(ref _startPost);
-        RebuildGridByPoint(ref _formingPoint);
         RebuildGridByPoint(ref _endPost);
     }
 
@@ -143,6 +145,13 @@ public class CrookedRoad : AbstractRoad
         _vertexRoad = new List<Vector3>();
         angles = new List<Vector3>();
         prefixSumSegments = new List<float>();
+
+        if (isStraight)
+        {
+            details = 1;
+            _formingPoint.transform.position =
+                CalculateMidPoint(_startPost.transform.position, _endPost.transform.position);
+        }
 
         _formingPoint = transform.GetChild(2).gameObject;
 
@@ -160,7 +169,7 @@ public class CrookedRoad : AbstractRoad
 
         // Рассчитывает длину каждой секции дороги
         getLengthOfRoadSections();
-        
+
         _curFormingPointPosition = _formingPoint.transform.position;
     }
 
@@ -176,7 +185,9 @@ public class CrookedRoad : AbstractRoad
     {
         return points[0] != _startPost.transform.position
                || points[^1] != _endPost.transform.position
-               || _formingPoint.transform.position != _curFormingPointPosition;
+               || _formingPoint.transform.position != _curFormingPointPosition
+               || isStraight && CalculateMidPoint(_startPost.transform.position, _endPost.transform.position) !=
+               _formingPoint.transform.position;
     }
 
     public void Awake()
