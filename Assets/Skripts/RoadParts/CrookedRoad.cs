@@ -8,23 +8,27 @@ using UnityEditor;
 using System.Runtime.ConstrainedExecution;
 using UnityEditor.IMGUI.Controls;
 using static MyMath;
+using static UnityEditor.PlayerSettings;
 
 public class CrookedRoad : AbstractRoad
 {
-    public GameObject formingPoint; // Образующая треться точка
-    public int details; // Заданное количество фрагментов дороги
+    public GameObject formingPoint; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+    public int details; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
     public bool isStraight;
     
     
-    private List<Vector3> _vertexRoad; // Вершины дороги
+    private List<Vector3> _vertexRoad; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
     private Vector3 _curFormingPointPosition;
-    private int _curDetails; // Действительное количество фрагментов дороги
+    private int _curDetails; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 
+    public GameObject tmp1;
+    public GameObject tmp2;
 
     public new void Awake()
     {
         base.Awake();
 
+        formingPoint = GameObject.Find("FormingPoint");
         _curDetails = details;
         _curFormingPointPosition = formingPoint.transform.position;
     }
@@ -54,6 +58,15 @@ public class CrookedRoad : AbstractRoad
         DrawQuadraticBezierCurve(startPost.transform.position, formingPoint.transform.position,
             endPost.transform.position);
         CalculateMeshVertexPoints();
+
+        for (int i = 0; i < _vertexRoad.Count; i++)
+        {
+            if (i % 2 == 0)
+                Instantiate(tmp1, _vertexRoad[i], new Quaternion());
+            else
+                Instantiate(tmp2, _vertexRoad[i], new Quaternion());
+        }
+
         CreateMesh();
         CalculateLengthOfRoadSections();
 
@@ -61,7 +74,7 @@ public class CrookedRoad : AbstractRoad
     }
 
 
-    // Составляет кривую Безье по трем координатам
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     private void DrawQuadraticBezierCurve(Vector3 point0, Vector3 point1, Vector3 point2)
     {
         float t = 0f;
@@ -78,12 +91,12 @@ public class CrookedRoad : AbstractRoad
 
     private void CalculateMeshVertexPoints()
     {
-        GetEndPoints(points[0], points[1]);
+        GetEndPoints(points[0], points[1], -1);
 
         for (int i = 1; i < _curDetails; i++)
             GetBendOfRoad(points[i - 1], points[i], points[i + 1]);
 
-        GetEndPoints(points[^1], points[^2]);
+        GetEndPoints(points[^1], points[^2], 1);
     }
 
 
@@ -93,25 +106,25 @@ public class CrookedRoad : AbstractRoad
         Mesh mesh = new Mesh();
         mf.mesh = mesh;
 
-        // Скорее всего можно упростить
+        // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         Vector3[] V = new Vector3[_vertexRoad.Count];
         for (int i = 0; i < _vertexRoad.Count; i++) V[i] = _vertexRoad[i];
         mesh.vertices = V;
 
-         // Количество адресов будет равно количеству вершин в треугольнике на количество треугольников
-         // в квадрате. А так как полигоны нужно сделать с двух сторон, то домножаем еще на 2
+         // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+         // пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ. пїЅ пїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅ 2
         int[] triangles = new int[points.Count * 3 * 2 * 2];
 
         for (int i = 0; i < (points.Count - 1) * 2 * 2; i++)
         {
-            // Номер треугольника
+            // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             int j = i / 2;
 
-            // Отоброжение одной стороны треугольника
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             for (int k = 0; k < 3; k++) triangles[i * 3 + k] = j++;
             i++;
 
-            // Отображение другой стороны треугольника
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             for (int k = 0; k < 3; k++) triangles[i * 3 + k] = --j;
         }
 
@@ -119,45 +132,46 @@ public class CrookedRoad : AbstractRoad
     }
 
 
-    /* Добавляет сначала внешнюю точку в List vertexRoad, потом внутренюю
-    ** a - Первая точка принадлежащая кривой Безье
-    ** b - Вторая (следующая) точка принадлежащая кривой Безье
-    ** offset - Смещение вершины дороги, относительно a
+    /* пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ List vertexRoad, пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+    ** a - пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+    ** b - пїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ) пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+    ** offset - пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ a
     */
-    private void addOuterVertexFirst(Vector3 a, Vector3 b, double alfa)
+    private void addVertexes(Vector3 a, double alfa)
     {
         float cos = (float)Math.Cos(alfa);
         float sin = (float)Math.Sin(alfa);
-        // Скорее всего можно упростить
-        Vector3 offset = new Vector3(cos * width, 0f, sin * width);
+        Vector3 offset = new Vector3(cos * width, 0f, sin * width); 
         Vector3 v1 = a + offset;
         Vector3 v2 = a - offset;
+        float v1dist = getDistance(v1, formingPoint.transform.position);
+        float v2dist = getDistance(v2, formingPoint.transform.position);
+        Debug.Log("v1: " + v1 + "   пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ v1: " + v1dist +
+            "\nv2" + v2 + "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ v2: " + v2dist);
 
-        if (getDistance(v1, b) > getDistance(v2, b))
+        if (v1dist > v2dist)
         {
             _vertexRoad.Add(v1);
             _vertexRoad.Add(v2);
-            angles.Add(new Vector3(sin, 0.0f, -cos));
         }
         else
         {
             _vertexRoad.Add(v2);
             _vertexRoad.Add(v1);
-            angles.Add(new Vector3(-sin, 0.0f, cos));
         }
     }
 
 
-    // Записывает координаты вершин для конца дороги в лист vertexRoad
-    private void GetEndPoints(Vector3 a, Vector3 b)
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ vertexRoad
+    private void GetEndPoints(Vector3 a, Vector3 b, int isStartPoint)
     {
         Vector3 delta = b - a;
         double arctgA = -Math.Atan(delta.x / delta.z);
-        addOuterVertexFirst(a, b, arctgA);
+        addVertexes(a, arctgA);
     }
 
 
-    // Записывает координаты вершин на месте изгиба дороги в лист vertexRoad
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ vertexRoad
     private void GetBendOfRoad(Vector3 a, Vector3 b, Vector3 c)
     {
         Vector3 delta = b - a;
@@ -166,10 +180,10 @@ public class CrookedRoad : AbstractRoad
         Vector3 BC = b - c;
         double lenAB = Math.Sqrt(AB.x * AB.x + AB.z * AB.z);
         double lenBC = Math.Sqrt(BC.x * BC.x + BC.z * BC.z);
-        // Арккосинус угла p1p2p3 деленный на два
-        double arccos = Math.Acos((AB.x * BC.x + AB.z * BC.z) / (lenAB * lenBC)) / 2;
-        double alfa = arccos - arctgA + Math.PI / 2;
-        addOuterVertexFirst(b, c, alfa);
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ p1p2p3 пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅ
+        double arccos = Math.Acos((AB.x * BC.x + AB.z * BC.z) / (lenAB * lenBC));
+        double alfa = arccos - arctgA + Math.PI;
+        addVertexes(b, alfa);
     }
 
 
