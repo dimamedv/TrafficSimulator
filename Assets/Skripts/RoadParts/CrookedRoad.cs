@@ -14,8 +14,8 @@ public class CrookedRoad : AbstractRoad
     public GameObject formingPoint; // Образующая треться точка
     public int details; // Заданное количество фрагментов дороги
     public bool isStraight;
-
-
+    
+    
     private List<Vector3> _vertexRoad; // Вершины дороги
     private Vector3 _curFormingPointPosition;
     private int _curDetails; // Действительное количество фрагментов дороги
@@ -98,8 +98,8 @@ public class CrookedRoad : AbstractRoad
         for (int i = 0; i < _vertexRoad.Count; i++) V[i] = _vertexRoad[i];
         mesh.vertices = V;
 
-        // Количество адресов будет равно количеству вершин в треугольнике на количество треугольников
-        // в квадрате. А так как полигоны нужно сделать с двух сторон, то домножаем еще на 2
+         // Количество адресов будет равно количеству вершин в треугольнике на количество треугольников
+         // в квадрате. А так как полигоны нужно сделать с двух сторон, то домножаем еще на 2
         int[] triangles = new int[points.Count * 3 * 2 * 2];
 
         for (int i = 0; i < (points.Count - 1) * 2 * 2; i++)
