@@ -22,10 +22,8 @@ public class MyMath
     }
     
 
-    // Это не универсальное решение
     public static int binarySearch(ref List<float> a, int size, float x)
     {
-        // Из-за этой строчки
         int left = 1;
         int right = size - 1;
         while (left <= right)

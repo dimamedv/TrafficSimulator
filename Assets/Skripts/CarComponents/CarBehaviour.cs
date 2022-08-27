@@ -27,14 +27,10 @@ public class CarBehaviour : MonoBehaviour
     {
         if (speed + accelerationPerTick < maxSpeed) speed += accelerationPerTick;
         else speed = maxSpeed;
-        
         distance += speed * Time.deltaTime;
 
         int a = MyMath.binarySearch(ref parentRoad.prefixSumSegments, parentRoad.prefixSumSegments.Count, distance);
-
-        Debug.Log(a + "     " + distance);
-
-        transform.LookAt(parentRoad.points[a + 1]);
+        transform.LookAt(new Vector3(parentRoad.points[a + 1].x, parentRoad.points[a + 1].y + transform.position.y, parentRoad.points[a + 1].z));
         transform.Rotate(-Vector3.up * 90);
 
         transform.position += transform.right * speed * Time.deltaTime;
