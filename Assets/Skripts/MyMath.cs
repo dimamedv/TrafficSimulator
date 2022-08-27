@@ -28,10 +28,10 @@ public class MyMath
         // Из-за этой строчки
         int left = 1;
         int right = size - 1;
-        while (left < right)
+        while (left <= right)
         {
-            int mid = (left + right) / 2;
-            if (a[mid] - x <= eps) left = mid + 1;
+            int mid = (right + left) / 2;
+            if (a[mid] - x < eps) left = mid + 1;
             else right = mid - 1;
         }
 

@@ -32,10 +32,12 @@ public class CarBehaviour : MonoBehaviour
 
         int a = MyMath.binarySearch(ref parentRoad.prefixSumSegments, parentRoad.prefixSumSegments.Count, distance);
 
-        transform.LookAt(parentRoad.points[a]);
+        Debug.Log(a + "     " + distance);
+
+        transform.LookAt(parentRoad.points[a + 1]);
         transform.Rotate(-Vector3.up * 90);
 
-        transform.Translate(Vector3.right * speed * Time.deltaTime);
+        transform.position += transform.right * speed * Time.deltaTime;
     }
     
     

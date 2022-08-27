@@ -24,6 +24,7 @@ public class CrookedRoad : AbstractRoad
 
     public GameObject tmp1;
     public GameObject tmp2;
+    public GameObject tmp3;
 
     public new void Awake()
     {
@@ -69,6 +70,7 @@ public class CrookedRoad : AbstractRoad
                 else
                     Instantiate(tmp2, _vertexRoad[i], new Quaternion());
             }
+            for (int i = 0; i < points.Count; i++) Instantiate(tmp3, points[i], new Quaternion());
         }
 
         CreateMesh();

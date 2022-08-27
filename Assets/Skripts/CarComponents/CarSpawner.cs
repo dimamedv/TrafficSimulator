@@ -18,13 +18,12 @@ public class CarSpawner : MonoBehaviour
     // Start is called before the first frame update
     private void Awake()
     {
-        _timeUpdate = time;
+        _timeUpdate = 1;
     }
 
     private void FixedUpdate()
     {
         _timeUpdate -= Time.deltaTime;
-        Debug.Log(_timeUpdate);
         if (_timeUpdate <= 0)
         {
             GameObject createdCar = Instantiate(carPrefab, road.startPost.transform);
