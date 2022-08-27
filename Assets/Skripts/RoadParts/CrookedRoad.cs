@@ -8,6 +8,7 @@ using UnityEditor;
 using System.Runtime.ConstrainedExecution;
 using UnityEditor.IMGUI.Controls;
 using static MyMath;
+using static UnityEditor.PlayerSettings;
 
 public class CrookedRoad : AbstractRoad
 {
@@ -16,15 +17,18 @@ public class CrookedRoad : AbstractRoad
     public bool isStraight;
 
 
-    private List<Vector3> _vertexRoad; // Вершины дороги
+    public List<Vector3> _vertexRoad; // Вершины дороги
     private Vector3 _curFormingPointPosition;
     private int _curDetails; // Действительное количество фрагментов дороги
 
+    public GameObject tmp1;
+    public GameObject tmp2;
 
     public new void Awake()
     {
         base.Awake();
 
+        formingPoint = GameObject.Find("FormingPoint");
         _curDetails = details;
         _curFormingPointPosition = formingPoint.transform.position;
     }
@@ -54,6 +58,15 @@ public class CrookedRoad : AbstractRoad
         DrawQuadraticBezierCurve(startPost.transform.position, formingPoint.transform.position,
             endPost.transform.position);
         CalculateMeshVertexPoints();
+
+        for (int i = 0; i < _vertexRoad.Count; i++)
+        {
+            if (i % 2 == 0)
+                Instantiate(tmp1, _vertexRoad[i], new Quaternion());
+            else
+                Instantiate(tmp2, _vertexRoad[i], new Quaternion());
+        }
+
         CreateMesh();
         CalculateLengthOfRoadSections();
 
@@ -78,12 +91,12 @@ public class CrookedRoad : AbstractRoad
 
     private void CalculateMeshVertexPoints()
     {
-        GetEndPoints(points[0], points[1]);
+        GetEndPoints(points[0], points[1], -1);
 
         for (int i = 1; i < _curDetails; i++)
             GetBendOfRoad(points[i - 1], points[i], points[i + 1]);
 
-        GetEndPoints(points[^1], points[^2]);
+        GetEndPoints(points[^1], points[^2], 1);
     }
 
 
@@ -124,36 +137,37 @@ public class CrookedRoad : AbstractRoad
     ** b - Вторая (следующая) точка принадлежащая кривой Безье
     ** offset - Смещение вершины дороги, относительно a
     */
-    private void addOuterVertexFirst(Vector3 a, Vector3 b, double alfa)
+    private void addVertexes(Vector3 a, double alfa)
     {
         float cos = (float)Math.Cos(alfa);
         float sin = (float)Math.Sin(alfa);
-        // Скорее всего можно упростить
-        Vector3 offset = new Vector3(cos * width, 0f, sin * width);
+        Vector3 offset = new Vector3(cos * width, 0f, sin * width); 
         Vector3 v1 = a + offset;
         Vector3 v2 = a - offset;
+        float v1dist = getDistance(v1, formingPoint.transform.position);
+        float v2dist = getDistance(v2, formingPoint.transform.position);
+        Debug.Log("v1: " + v1 + "   Дистанция от v1: " + v1dist +
+            "\nv2" + v2 + "Дистанция от v2: " + v2dist);
 
-        if (getDistance(v1, b) > getDistance(v2, b))
+        if (v1dist > v2dist)
         {
             _vertexRoad.Add(v1);
             _vertexRoad.Add(v2);
-            angles.Add(new Vector3(sin, 0.0f, -cos));
         }
         else
         {
             _vertexRoad.Add(v2);
             _vertexRoad.Add(v1);
-            angles.Add(new Vector3(-sin, 0.0f, cos));
         }
     }
 
 
     // Записывает координаты вершин для конца дороги в лист vertexRoad
-    private void GetEndPoints(Vector3 a, Vector3 b)
+    private void GetEndPoints(Vector3 a, Vector3 b, int isStartPoint)
     {
         Vector3 delta = b - a;
         double arctgA = -Math.Atan(delta.x / delta.z);
-        addOuterVertexFirst(a, b, arctgA);
+        addVertexes(a, arctgA);
     }
 
 
@@ -167,9 +181,9 @@ public class CrookedRoad : AbstractRoad
         double lenAB = Math.Sqrt(AB.x * AB.x + AB.z * AB.z);
         double lenBC = Math.Sqrt(BC.x * BC.x + BC.z * BC.z);
         // Арккосинус угла p1p2p3 деленный на два
-        double arccos = Math.Acos((AB.x * BC.x + AB.z * BC.z) / (lenAB * lenBC)) / 2;
-        double alfa = arccos - arctgA + Math.PI / 2;
-        addOuterVertexFirst(b, c, alfa);
+        double arccos = Math.Acos((AB.x * BC.x + AB.z * BC.z) / (lenAB * lenBC));
+        double alfa = arccos - arctgA + Math.PI;
+        addVertexes(b, alfa);
     }
 
 
