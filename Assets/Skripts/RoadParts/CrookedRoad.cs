@@ -101,8 +101,19 @@ public class CrookedRoad : AbstractRoad
 
         for (int i = 0; i <= _curDetails - 1; i++)
             CalculateVertexPoints(points[i], points[i + 1]);
-
-        //CalculateVertexPoints(points[^3], (points[^2] - points[^1]));
+        
+        Vector3 lineDirection = (points[^1] - points[^2]).normalized;
+        AddVertexes(points[^1], lineDirection);
+    }
+    
+    
+    private void AddVertexes(Vector3 a, Vector3 lineDirection)
+    {
+        Vector3 v1 = a + Quaternion.Euler(0, -90, 0) * lineDirection * 2;
+        Vector3 v2 = a + Quaternion.Euler(0, +90, 0) * lineDirection * 2;
+        
+        _vertexRoad.Add(v1);
+        _vertexRoad.Add(v2);
     }
 
 
@@ -121,7 +132,7 @@ public class CrookedRoad : AbstractRoad
         // � ��������. � ��� ��� �������� ����� ������� � ���� ������, �� ��������� ��� �� 2
         int[] triangles = new int[points.Count * 3 * 2 * 2];
 
-        for (int i = 0; i < (points.Count - 1) * 2 * 2; i++)
+        for (int i = 0; i < points.Count * 2 * 2; i++)
         {
             // ����� ������������
             int j = i / 2;
@@ -137,24 +148,13 @@ public class CrookedRoad : AbstractRoad
         mesh.triangles = triangles;
     }
 
-    
-    private void addVertexes(Vector3 a, Vector3 lineDirection)
-    {
-        Vector3 v1 = a + Quaternion.Euler(0, -90, 0) * lineDirection * 2;
-        Vector3 v2 = a + Quaternion.Euler(0, +90, 0) * lineDirection * 2;
-
-
-        _vertexRoad.Add(v1);
-        _vertexRoad.Add(v2);
-    }
-
 
     // ���������� ���������� ������ ��� ����� ������ � ���� vertexRoad
     private void CalculateVertexPoints(Vector3 a, Vector3 b)
     {
         Vector3 lineDirection = (b - a).normalized;
 
-        addVertexes(a, lineDirection);
+        AddVertexes(a, lineDirection);
     }
 
     private void CalculateLengthOfRoadSections()
