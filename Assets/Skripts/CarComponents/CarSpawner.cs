@@ -24,10 +24,12 @@ public class CarSpawner : MonoBehaviour
     private void FixedUpdate()
     {
         _timeUpdate -= Time.deltaTime;
+        Debug.Log(_timeUpdate);
         if (_timeUpdate <= 0)
         {
             GameObject createdCar = Instantiate(carPrefab, road.startPost.transform);
             createdCar.GetComponent<CarBehaviour>().parentRoad = road;
+            createdCar.transform.Rotate(-Vector3.up * 90);
 
             _timeUpdate = time;
         }

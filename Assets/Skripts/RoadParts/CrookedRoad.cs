@@ -27,8 +27,6 @@ public class CrookedRoad : AbstractRoad
 
     public new void Awake()
     {
-        debugRoad = true;
-
         base.Awake();
 
         formingPoint = GameObject.Find("FormingPoint");
