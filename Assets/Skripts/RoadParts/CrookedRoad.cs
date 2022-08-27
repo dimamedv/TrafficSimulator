@@ -15,8 +15,9 @@ public class CrookedRoad : AbstractRoad
     public GameObject formingPoint; // ���������� ������� �����
     public int details; // �������� ���������� ���������� ������
     public bool isStraight;
-    
-    
+    public bool debugRoad;
+
+
     private List<Vector3> _vertexRoad; // ������� ������
     private Vector3 _curFormingPointPosition;
     private int _curDetails; // �������������� ���������� ���������� ������
@@ -26,6 +27,8 @@ public class CrookedRoad : AbstractRoad
 
     public new void Awake()
     {
+        debugRoad = true;
+
         base.Awake();
 
         formingPoint = GameObject.Find("FormingPoint");
@@ -59,12 +62,15 @@ public class CrookedRoad : AbstractRoad
             endPost.transform.position);
         CalculateMeshVertexPoints();
 
-        for (int i = 0; i < _vertexRoad.Count; i++)
+        if (debugRoad)
         {
-            if (i % 2 == 0)
-                Instantiate(tmp1, _vertexRoad[i], new Quaternion());
-            else
-                Instantiate(tmp2, _vertexRoad[i], new Quaternion());
+            for (int i = 0; i < _vertexRoad.Count; i++)
+            {
+                if (i % 2 == 0)
+                    Instantiate(tmp1, _vertexRoad[i], new Quaternion());
+                else
+                    Instantiate(tmp2, _vertexRoad[i], new Quaternion());
+            }
         }
 
         CreateMesh();
@@ -91,12 +97,12 @@ public class CrookedRoad : AbstractRoad
 
     private void CalculateMeshVertexPoints()
     {
-        GetEndPoints(points[0], points[1], -1);
+        CalculateVertexPoints(points[0], points[1]);
 
-        for (int i = 1; i < _curDetails; i++)
-            GetBendOfRoad(points[i - 1], points[i], points[i + 1]);
+        for (int i = 0; i <= _curDetails - 1; i++)
+            CalculateVertexPoints(points[i], points[i + 1]);
 
-        GetEndPoints(points[^1], points[^2], 1);
+        //CalculateVertexPoints(points[^3], (points[^2] - points[^1]));
     }
 
 
@@ -107,12 +113,12 @@ public class CrookedRoad : AbstractRoad
         mf.mesh = mesh;
 
         // ������ ����� ����� ���������
-        Vector3[] V = new Vector3[_vertexRoad.Count];
-        for (int i = 0; i < _vertexRoad.Count; i++) V[i] = _vertexRoad[i];
-        mesh.vertices = V;
+        Vector3[] v = new Vector3[_vertexRoad.Count];
+        for (int i = 0; i < _vertexRoad.Count; i++) v[i] = _vertexRoad[i];
+        mesh.vertices = v;
 
-         // ���������� ������� ����� ����� ���������� ������ � ������������ �� ���������� �������������
-         // � ��������. � ��� ��� �������� ����� ������� � ���� ������, �� ��������� ��� �� 2
+        // ���������� ������� ����� ����� ���������� ������ � ������������ �� ���������� �������������
+        // � ��������. � ��� ��� �������� ����� ������� � ���� ������, �� ��������� ��� �� 2
         int[] triangles = new int[points.Count * 3 * 2 * 2];
 
         for (int i = 0; i < (points.Count - 1) * 2 * 2; i++)
@@ -131,61 +137,25 @@ public class CrookedRoad : AbstractRoad
         mesh.triangles = triangles;
     }
 
-
-    /* ��������� ������� ������� ����� � List vertexRoad, ����� ���������
-    ** a - ������ ����� ������������� ������ �����
-    ** b - ������ (���������) ����� ������������� ������ �����
-    ** offset - �������� ������� ������, ������������ a
-    */
-    private void addVertexes(Vector3 a, double alfa)
+    
+    private void addVertexes(Vector3 a, Vector3 lineDirection)
     {
-        float cos = (float)Math.Cos(alfa);
-        float sin = (float)Math.Sin(alfa);
-        Vector3 offset = new Vector3(cos * width, 0f, sin * width); 
-        Vector3 v1 = a + offset;
-        Vector3 v2 = a - offset;
-        float v1dist = getDistance(v1, formingPoint.transform.position);
-        float v2dist = getDistance(v2, formingPoint.transform.position);
-        Debug.Log("v1: " + v1 + "   ��������� �� v1: " + v1dist +
-            "\nv2" + v2 + "��������� �� v2: " + v2dist);
+        Vector3 v1 = a + Quaternion.Euler(0, -90, 0) * lineDirection * 2;
+        Vector3 v2 = a + Quaternion.Euler(0, +90, 0) * lineDirection * 2;
 
-        if (v1dist > v2dist)
-        {
-            _vertexRoad.Add(v1);
-            _vertexRoad.Add(v2);
-        }
-        else
-        {
-            _vertexRoad.Add(v2);
-            _vertexRoad.Add(v1);
-        }
+
+        _vertexRoad.Add(v1);
+        _vertexRoad.Add(v2);
     }
 
 
     // ���������� ���������� ������ ��� ����� ������ � ���� vertexRoad
-    private void GetEndPoints(Vector3 a, Vector3 b, int isStartPoint)
+    private void CalculateVertexPoints(Vector3 a, Vector3 b)
     {
-        Vector3 delta = b - a;
-        double arctgA = -Math.Atan(delta.x / delta.z);
-        addVertexes(a, arctgA);
+        Vector3 lineDirection = (b - a).normalized;
+
+        addVertexes(a, lineDirection);
     }
-
-
-    // ���������� ���������� ������ �� ����� ������ ������ � ���� vertexRoad
-    private void GetBendOfRoad(Vector3 a, Vector3 b, Vector3 c)
-    {
-        Vector3 delta = b - a;
-        double arctgA = Math.Atan(delta.x / delta.z);
-        Vector3 AB = b - a;
-        Vector3 BC = b - c;
-        double lenAB = Math.Sqrt(AB.x * AB.x + AB.z * AB.z);
-        double lenBC = Math.Sqrt(BC.x * BC.x + BC.z * BC.z);
-        // ���������� ���� p1p2p3 �������� �� ���
-        double arccos = Math.Acos((AB.x * BC.x + AB.z * BC.z) / (lenAB * lenBC));
-        double alfa = arccos - arctgA + Math.PI;
-        addVertexes(b, alfa);
-    }
-
 
     private void CalculateLengthOfRoadSections()
     {
