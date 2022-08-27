@@ -4,79 +4,61 @@ using UnityEngine;
 
 public abstract class AbstractRoad : MonoBehaviour
 {
-    // Стартовая точка
-    public GameObject _startPost;
-
-    // Конечная точка
-    public GameObject _endPost;
-
-    // Родитель
-    public GameObject _parentPost;
-
-    // Ребенок
-    public GameObject _childPost;
-
-    // Ширина дороги
-    public float width;
-
-    // Количество фрагментов дороги (Детализация)
-    public int details;
-
-    // Точки, через которые проходит автомобиль
-    public List<Vector3> points;
-
-    // Префиксные суммы длин сегментов дороги
-    public List<float> prefixSumSegments;
-
-    // Шаг сетки привязки
-    public float gridStep;
-    
-    // Угол до следующей точки. (cosA, 0, sinA)
-    public List<Vector3> angles;
-
-    protected Vector3 curStartPosition;
-    protected Vector3 curEndPosition;
-    
-    
-
+    public GameObject startPost; // Стартовая точка
+    public GameObject endPost; // Конечная точка
+    public GameObject parentPost; // Родитель
+    public GameObject childPost; // Ребенок
+    public float width; // Ширина дороги
+    public List<Vector3> points; // Точки, через которые проходит автомобиль
+    public List<float> prefixSumSegments; // Префиксные суммы длин сегментов дороги
+    public float gridStep; // Шаг сетки привязки
+    public List<Vector3> angles; // Угол до следующей точки. (cosA, 0, sinA)
     public List<GameObject> carsOnThisRoad;
-    
+
+
     public void Awake()
     {
-        _startPost = transform.GetChild(0).gameObject;
-        _endPost = transform.GetChild(1).gameObject;
-        curStartPosition = _startPost.transform.position;
-        curEndPosition = _endPost.transform.position;
+        startPost = transform.GetChild(0).gameObject;
+        endPost = transform.GetChild(1).gameObject;
 
         BuildRoad();
     }
 
     void FixedUpdate()
     {
-        if (isNeedsRebuild())
+        if (NeedsRebuild())
         {
             BuildRoad();
         }
     }
 
 
-    protected void RebuildGridByPoint(ref GameObject t) { 
-        t.transform.position = new Vector3(
-            RebuildGridByAxis(t.transform.position.x),
+    protected void RebuildGridByPoint(ref GameObject t)
+    {
+        var position = t.transform.position;
+        position = new Vector3(
+            RebuildGridByAxis(position.x),
             0.0f,
-            RebuildGridByAxis(t.transform.position.z));
+            RebuildGridByAxis(position.z));
+        t.transform.position = position;
     }
 
     private float RebuildGridByAxis(float x)
     {
         float remains = x % gridStep;
-        if (remains < gridStep / 2) 
+        if (remains < gridStep / 2)
             return x - remains;
-        else 
+        else
             return x - remains + gridStep;
     }
+    
+    protected  void RebuildGrid()
+    {
+        RebuildGridByPoint(ref startPost);
+        RebuildGridByPoint(ref endPost);
+    }
 
+    
     protected abstract void BuildRoad();
-    protected abstract bool isNeedsRebuild();
-    protected abstract void RebuildGrid();
+    protected abstract bool NeedsRebuild();
 }

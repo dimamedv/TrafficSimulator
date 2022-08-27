@@ -11,47 +11,113 @@ using static MyMath;
 
 public class CrookedRoad : AbstractRoad
 {
-    // Образующая треться точка
-    public GameObject _formingPoint;
-
-    // Вершины дороги
-    private List<Vector3> _vertexRoad;
-
-    private Vector3 _curFormingPointPosition;
-
+    public GameObject formingPoint; // Образующая треться точка
+    public int details; // Заданное количество фрагментов дороги
     public bool isStraight;
+
+
+    private List<Vector3> _vertexRoad; // Вершины дороги
+    private Vector3 _curFormingPointPosition;
+    private int _curDetails; // Действительное количество фрагментов дороги
+
+
+    public new void Awake()
+    {
+        base.Awake();
+
+        _curDetails = details;
+        _curFormingPointPosition = formingPoint.transform.position;
+    }
+
+
+    protected override void BuildRoad()
+    {
+        points = new List<Vector3>();
+        _vertexRoad = new List<Vector3>();
+        angles = new List<Vector3>();
+        prefixSumSegments = new List<float>();
+
+        if (isStraight)
+        {
+            _curDetails = 1;
+            formingPoint.transform.position =
+                GetMidPoint(startPost.transform.position, endPost.transform.position);
+        }
+        else
+        {
+            _curDetails = details;
+        }
+
+        formingPoint = transform.GetChild(2).gameObject;
+        RebuildGrid();
+
+        DrawQuadraticBezierCurve(startPost.transform.position, formingPoint.transform.position,
+            endPost.transform.position);
+        CalculateMeshVertexPoints();
+        CreateMesh();
+        CalculateLengthOfRoadSections();
+
+        _curFormingPointPosition = formingPoint.transform.position;
+    }
+
 
     // Составляет кривую Безье по трем координатам
     private void DrawQuadraticBezierCurve(Vector3 point0, Vector3 point1, Vector3 point2)
     {
         float t = 0f;
         Vector3 B;
-        for (int i = 0; i < details; i++)
+        for (int i = 0; i < _curDetails; i++)
         {
             B = (1 - t) * (1 - t) * point0 + 2 * (1 - t) * t * point1 + t * t * point2;
             points.Add(B);
-            t += (1 / (float)details);
+            t += (1 / (float)_curDetails);
         }
 
         points.Add(point2);
     }
 
-    private void getVertexPoints()
+    private void CalculateMeshVertexPoints()
     {
         GetEndPoints(points[0], points[1]);
 
-        for (int i = 1; i < details; i++)
+        for (int i = 1; i < _curDetails; i++)
             GetBendOfRoad(points[i - 1], points[i], points[i + 1]);
 
-        GetEndPoints(points[points.Count - 1], points[points.Count - 2]);
+        GetEndPoints(points[^1], points[^2]);
     }
 
-    private float getDistance(Vector3 v1, Vector3 v2)
+
+    private void CreateMesh()
     {
-        double x = v1.x - v2.x;
-        double z = v1.z - v2.z;
-        return (float)Math.Sqrt(x * x + z * z);
+        MeshFilter mf = GetComponent<MeshFilter>();
+        Mesh mesh = new Mesh();
+        mf.mesh = mesh;
+
+        // Скорее всего можно упростить
+        Vector3[] V = new Vector3[_vertexRoad.Count];
+        for (int i = 0; i < _vertexRoad.Count; i++) V[i] = _vertexRoad[i];
+        mesh.vertices = V;
+
+        // Количество адресов будет равно количеству вершин в треугольнике на количество треугольников
+        // в квадрате. А так как полигоны нужно сделать с двух сторон, то домножаем еще на 2
+        int[] triangles = new int[points.Count * 3 * 2 * 2];
+
+        for (int i = 0; i < (points.Count - 1) * 2 * 2; i++)
+        {
+            // Номер треугольника
+            int j = i / 2;
+
+            // Отоброжение одной стороны треугольника
+            for (int k = 0; k < 3; k++) triangles[i * 3 + k] = j++;
+            i++;
+
+            // Отображение другой стороны треугольника
+            for (int k = 0; k < 3; k++) triangles[i * 3 + k] = --j;
+        }
+
+        mesh.triangles = triangles;
     }
+
 
     /* Добавляет сначала внешнюю точку в List vertexRoad, потом внутренюю
     ** a - Первая точка принадлежащая кривой Безье
@@ -81,6 +147,7 @@ public class CrookedRoad : AbstractRoad
         }
     }
 
+
     // Записывает координаты вершин для конца дороги в лист vertexRoad
     private void GetEndPoints(Vector3 a, Vector3 b)
     {
@@ -88,6 +155,7 @@ public class CrookedRoad : AbstractRoad
         double arctgA = -Math.Atan(delta.x / delta.z);
         addOuterVertexFirst(a, b, arctgA);
     }
+
 
     // Записывает координаты вершин на месте изгиба дороги в лист vertexRoad
     private void GetBendOfRoad(Vector3 a, Vector3 b, Vector3 c)
@@ -104,76 +172,8 @@ public class CrookedRoad : AbstractRoad
         addOuterVertexFirst(b, c, alfa);
     }
 
-    private void CreateMesh()
-    {
-        MeshFilter mf = GetComponent<MeshFilter>();
-        Mesh mesh = new Mesh();
-        mf.mesh = mesh;
 
-        // Скорее всего можно упростить
-        Vector3[] V = new Vector3[_vertexRoad.Count];
-        for (int i = 0; i < _vertexRoad.Count; i++) V[i] = _vertexRoad[i];
-        mesh.vertices = V;
-
-        // Количество адресов будет равно количеству вершин в треугольнике на количество треугольников
-        // в квадрате. А так как полигоны нужно сделать с двух сторон, то домножаем еще на 2
-        int[] triangles = new int[points.Count * 3 * 2 * 2];
-
-        for (int i = 0; i < (points.Count - 1) * 2 * 2; i++)
-        {
-            // Номер треугольника
-            int j = i / 2;
-            // Отоброжение одной стороны треугольника
-            for (int k = 0; k < 3; k++) triangles[i * 3 + k] = j++;
-            i++;
-            // Отображение другой стороны треугольника
-            for (int k = 0; k < 3; k++) triangles[i * 3 + k] = --j;
-        }
-
-        mesh.triangles = triangles;
-    }
-
-    protected override void RebuildGrid()
-    {
-        RebuildGridByPoint(ref _startPost);
-        RebuildGridByPoint(ref _endPost);
-    }
-
-    protected override void BuildRoad()
-    {
-        points = new List<Vector3>();
-        _vertexRoad = new List<Vector3>();
-        angles = new List<Vector3>();
-        prefixSumSegments = new List<float>();
-
-        if (isStraight)
-        {
-            details = 1;
-            _formingPoint.transform.position =
-                CalculateMidPoint(_startPost.transform.position, _endPost.transform.position);
-        }
-
-        _formingPoint = transform.GetChild(2).gameObject;
-
-        RebuildGrid();
-
-        // Создаем массив из формирующих точек кривой безье
-        DrawQuadraticBezierCurve(_startPost.transform.position, _formingPoint.transform.position,
-            _endPost.transform.position);
-
-        // По ним получаем координаты точек, которые являются изломами дороги
-        getVertexPoints();
-
-        // По этим координатам создаем меш дороги
-        CreateMesh();
-
-        // Рассчитывает длину каждой секции дороги
-        getLengthOfRoadSections();
-
-        _curFormingPointPosition = _formingPoint.transform.position;
-    }
-
-    private void getLengthOfRoadSections()
+    private void CalculateLengthOfRoadSections()
     {
         prefixSumSegments.Add(0.0f);
 
@@ -181,19 +181,15 @@ public class CrookedRoad : AbstractRoad
             prefixSumSegments.Add(prefixSumSegments[i] + getDistance(points[i], points[i + 1]));
     }
 
-    protected override bool isNeedsRebuild()
-    {
-        return points[0] != _startPost.transform.position
-               || points[^1] != _endPost.transform.position
-               || _formingPoint.transform.position != _curFormingPointPosition
-               || isStraight && CalculateMidPoint(_startPost.transform.position, _endPost.transform.position) !=
-               _formingPoint.transform.position;
-    }
 
-    public void Awake()
+    protected override bool NeedsRebuild()
     {
-        base.Awake();
-
-        _curFormingPointPosition = _formingPoint.transform.position;
+        var formingPosition = formingPoint.transform.position;
+        var startPosition = startPost.transform.position;
+        var endPosition = endPost.transform.position;
+        return points[0] != startPosition
+               || points[^1] != endPosition
+               || !isStraight && formingPosition != _curFormingPointPosition
+               || isStraight && GetMidPoint(startPosition, endPosition) != formingPosition;
     }
 }

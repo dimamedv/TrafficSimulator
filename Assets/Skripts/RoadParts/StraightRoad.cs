@@ -13,23 +13,18 @@ public class StraightRoad : AbstractRoad
 
     protected override void BuildRoad()
     {
-        points = new List<Vector3>() { _startPost.transform.position, _endPost.transform.position };
+        points = new List<Vector3>() { startPost.transform.position, endPost.transform.position };
         Destroy(_roadSegment);
 
         GameObject createdRoadSegment = Instantiate(baseRoadSegment, transform);
-        createdRoadSegment.GetComponent<RoadSegment>().startPoint = _startPost.transform.position;
-        createdRoadSegment.GetComponent<RoadSegment>().endPoint = _endPost.transform.position;
+        createdRoadSegment.GetComponent<RoadSegment>().startPoint = startPost.transform.position;
+        createdRoadSegment.GetComponent<RoadSegment>().endPoint = endPost.transform.position;
         
         _roadSegment = createdRoadSegment;
     }
-    protected override void RebuildGrid()
-    {
-        RebuildGridByPoint(ref _startPost);
-        RebuildGridByPoint(ref _endPost);
-    }
 
-    protected override bool isNeedsRebuild()
+    protected override bool NeedsRebuild()
     {
-        return points[0] != _startPost.transform.position || points[^1] != _endPost.transform.position;
+        return points[0] != startPost.transform.position || points[^1] != endPost.transform.position;
     }
 }

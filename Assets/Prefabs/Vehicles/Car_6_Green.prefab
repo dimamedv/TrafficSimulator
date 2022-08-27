@@ -271,7 +271,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxSpeed: 60
-  acceleration: 20
+  acceleration: 1
   speed: 0
   parentRoad: {fileID: 0}
   distance: 0
