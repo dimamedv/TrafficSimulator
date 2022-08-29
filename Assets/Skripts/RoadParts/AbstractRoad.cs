@@ -18,6 +18,7 @@ public abstract class AbstractRoad : MonoBehaviour
 
     public void Awake()
     {
+        transform.position = Vector3.zero;
         startPost = transform.GetChild(0).gameObject;
         endPost = transform.GetChild(1).gameObject;
 
@@ -26,6 +27,7 @@ public abstract class AbstractRoad : MonoBehaviour
 
     void FixedUpdate()
     {
+        transform.position = Vector3.zero;
         if (NeedsRebuild())
         {
             BuildRoad();
