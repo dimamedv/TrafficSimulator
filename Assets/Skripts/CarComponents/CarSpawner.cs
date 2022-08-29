@@ -11,6 +11,7 @@ public class CarSpawner : MonoBehaviour
     public AbstractRoad road;
     // Время, которое будет ждать спавнер
     public float time;
+
     // Отсчитывае
     private float _timeUpdate;
 
@@ -26,11 +27,15 @@ public class CarSpawner : MonoBehaviour
         _timeUpdate -= Time.deltaTime;
         if (_timeUpdate <= 0)
         {
-            GameObject createdCar = Instantiate(carPrefab, road.startPost.transform);
-            createdCar.GetComponent<CarBehaviour>().parentRoad = road;
-            createdCar.transform.Rotate(-Vector3.up * 90);
-
+            CarSpawn();
             _timeUpdate = time;
         }
+    }
+
+    public void CarSpawn()
+    {
+        GameObject createdCar = Instantiate(carPrefab, road.startPost.transform);
+        createdCar.GetComponent<CarBehaviour>().parentRoad = road;
+        createdCar.transform.Rotate(-Vector3.up * 90);
     }
 }
