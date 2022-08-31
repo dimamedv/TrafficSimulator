@@ -8,23 +8,19 @@ using UnityEditor;
 using System.Runtime.ConstrainedExecution;
 using UnityEditor.IMGUI.Controls;
 using static MyMath;
+using static GlobalSettings;
 using static UnityEditor.PlayerSettings;
 
 public class CrookedRoad : AbstractRoad
 {
-    public GameObject formingPoint; // ���������� ������� �����
     public int details; // �������� ���������� ���������� ������
     public bool isStraight;
     public bool debugRoad;
-
 
     private List<Vector3> _vertexRoad; // ������� ������
     private Vector3 _curFormingPointPosition;
     private int _curDetails; // �������������� ���������� ���������� ������
 
-    public GameObject tmp1;
-    public GameObject tmp2;
-    public GameObject tmp3;
 
     public new void Awake()
     {
@@ -40,7 +36,6 @@ public class CrookedRoad : AbstractRoad
     {
         points = new List<Vector3>();
         _vertexRoad = new List<Vector3>();
-        angles = new List<Vector3>();
         prefixSumSegments = new List<float>();
 
         if (isStraight)
@@ -66,11 +61,11 @@ public class CrookedRoad : AbstractRoad
             for (int i = 0; i < _vertexRoad.Count; i++)
             {
                 if (i % 2 == 0)
-                    Instantiate(tmp1, _vertexRoad[i], new Quaternion());
+                    Instantiate(_vertexCubeRed, _vertexRoad[i], new Quaternion());
                 else
-                    Instantiate(tmp2, _vertexRoad[i], new Quaternion());
+                    Instantiate(_vertexCubeBLue, _vertexRoad[i], new Quaternion());
             }
-            for (int i = 0; i < points.Count; i++) Instantiate(tmp3, points[i], new Quaternion());
+            for (int i = 0; i < points.Count; i++) Instantiate(_bezierCubeGreen, points[i], new Quaternion());
         }
 
         CreateMesh();
@@ -164,7 +159,6 @@ public class CrookedRoad : AbstractRoad
         for (int i = 0; i < points.Count - 1; i++)
             prefixSumSegments.Add(prefixSumSegments[i] + getDistance(points[i], points[i + 1]));
     }
-
 
     protected override bool NeedsRebuild()
     {

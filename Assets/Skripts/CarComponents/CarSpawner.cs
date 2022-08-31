@@ -16,10 +16,9 @@ public class CarSpawner : MonoBehaviour
     private float _timeUpdate;
 
 
-    // Start is called before the first frame update
     private void Awake()
     {
-        _timeUpdate = 1;
+        _timeUpdate = time;
     }
 
     private void FixedUpdate()
