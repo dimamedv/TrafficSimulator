@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 public abstract class AbstractRoad : MonoBehaviour
@@ -14,13 +16,21 @@ public abstract class AbstractRoad : MonoBehaviour
     public float gridStep; // Ўаг сетки прив€зки
     public List<Vector3> angles; // ”гол до следующей точки. (cosA, 0, sinA)
     public List<GameObject> carsOnThisRoad;
+    protected static List<GameObject> RoadList;
 
+
+    public void Start()
+    {
+    }
 
     public void Awake()
     {
         transform.position = Vector3.zero;
         startPost = transform.GetChild(0).gameObject;
         endPost = transform.GetChild(1).gameObject;
+
+        RoadList ??= new List<GameObject>();
+        RoadList.Add(gameObject);
 
         BuildRoad();
     }
@@ -33,9 +43,14 @@ public abstract class AbstractRoad : MonoBehaviour
             BuildRoad();
         }
     }
+    
+    public void OnDestroy()
+    {
+        RoadList.Remove(gameObject);
+    }
 
 
-    protected void RebuildGridByPoint(ref GameObject t)
+    private void RebuildGridByPoint(ref GameObject t)
     {
         var position = t.transform.position;
         position = new Vector3(
@@ -60,6 +75,43 @@ public abstract class AbstractRoad : MonoBehaviour
         RebuildGridByPoint(ref endPost);
     }
 
+    protected void CheckoutChildPost()
+    {
+        childPost = null;
+        foreach (var checkedRoad in RoadList)
+        {
+            if (checkedRoad.GetComponent<AbstractRoad>().startPost.transform.position == endPost.transform.position &&
+                checkedRoad.gameObject != gameObject)
+            {
+                ConnectFromParentToChild(checkedRoad.GetComponent<AbstractRoad>());
+            }
+        }
+    }
+    
+    protected void CheckoutParentPost()
+    {
+        parentPost = null;
+        foreach (var checkedRoad in RoadList)
+        {
+            if (checkedRoad.GetComponent<AbstractRoad>().endPost.transform.position == startPost.transform.position &&
+                checkedRoad.gameObject != gameObject)
+            {
+                ConnectFromChildToParent(checkedRoad.GetComponent<AbstractRoad>());
+            }
+        }
+    }
+
+    private void ConnectFromParentToChild(AbstractRoad newChildRoad)
+    {
+        childPost = newChildRoad.gameObject;
+        newChildRoad.parentPost = gameObject;
+    }
+
+    private void ConnectFromChildToParent(AbstractRoad newParentRoad)
+    {
+        parentPost = newParentRoad.gameObject;
+        newParentRoad.childPost = gameObject;
+    }
     
     protected abstract void BuildRoad();
     protected abstract bool NeedsRebuild();
