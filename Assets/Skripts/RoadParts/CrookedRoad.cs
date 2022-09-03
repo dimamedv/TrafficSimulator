@@ -72,6 +72,9 @@ public class CrookedRoad : AbstractRoad
         CalculateLengthOfRoadSections();
 
         _curFormingPointPosition = formingPoint.transform.position;
+
+        CheckoutChildPost();
+        CheckoutParentPost();
     }
 
 
@@ -104,8 +107,8 @@ public class CrookedRoad : AbstractRoad
     
     private void AddVertexes(Vector3 a, Vector3 lineDirection)
     {
-        Vector3 v1 = a + Quaternion.Euler(0, -90, 0) * lineDirection * 2;
-        Vector3 v2 = a + Quaternion.Euler(0, +90, 0) * lineDirection * 2;
+        Vector3 v1 = a + Quaternion.Euler(0, -90, 0) * lineDirection * width;
+        Vector3 v2 = a + Quaternion.Euler(0, +90, 0) * lineDirection * width;
         
         _vertexRoad.Add(v1);
         _vertexRoad.Add(v2);
