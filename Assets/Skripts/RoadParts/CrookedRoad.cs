@@ -17,7 +17,7 @@ public class CrookedRoad : AbstractRoad
     public bool isStraight;
     public bool debugRoad;
 
-    private List<Vector3> _vertexRoad; // ������� ������
+    private List<Vector3> _vertexRoad; // треугольнички
     private Vector3 _curFormingPointPosition;
     private int _curDetails; // �������������� ���������� ���������� ������
 

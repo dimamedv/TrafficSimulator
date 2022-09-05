@@ -7,14 +7,14 @@ using static GlobalSettings;
 
 public abstract class AbstractRoad : MonoBehaviour
 {
-    public GameObject startPost; // Стартовая точка
-    public GameObject endPost; // Конечная точка
+    public GameObject startPost; // Г‘ГІГ Г°ГІГ®ГўГ Гї ГІГ®Г·ГЄГ 
+    public GameObject endPost; // ГЉГ®Г­ГҐГ·Г­Г Гї ГІГ®Г·ГЄГ 
     public GameObject formingPoint; // ?????????? ??????? ?????
-    public GameObject parentPost; // Родитель
-    public GameObject childPost; // Ребенок
+    public GameObject parentPost; // ГђГ®Г¤ГЁГІГҐГ«Гј
+    public GameObject childPost; // ГђГҐГЎГҐГ­Г®ГЄ
 
-    public List<Vector3> points; // Точки, через которые проходит автомобиль
-    public List<float> prefixSumSegments; // Префиксные суммы длин сегментов дороги
+    public List<Vector3> points; // Г’Г®Г·ГЄГЁ, Г·ГҐГ°ГҐГ§ ГЄГ®ГІГ®Г°Г»ГҐ ГЇГ°Г®ГµГ®Г¤ГЁГІ Г ГўГІГ®Г¬Г®ГЎГЁГ«Гј
+    public List<float> prefixSumSegments; // ГЏГ°ГҐГґГЁГЄГ±Г­Г»ГҐ Г±ГіГ¬Г¬Г» Г¤Г«ГЁГ­ Г±ГҐГЈГ¬ГҐГ­ГІГ®Гў Г¤Г®Г°Г®ГЈГЁ
     public List<GameObject> carsOnThisRoad;
     protected static List<GameObject> RoadList;
 
