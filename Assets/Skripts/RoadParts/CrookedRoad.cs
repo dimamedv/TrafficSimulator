@@ -1,15 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
-using Unity.VisualScripting;
-using UnityEngine.UIElements;
-using UnityEditor;
-using System.Runtime.ConstrainedExecution;
-using UnityEditor.IMGUI.Controls;
 using static MyMath;
 using static GlobalSettings;
-using static UnityEditor.PlayerSettings;
 
 public class CrookedRoad : AbstractRoad
 {
@@ -19,7 +11,7 @@ public class CrookedRoad : AbstractRoad
 
     private List<Vector3> _vertexRoad; // треугольнички
     private Vector3 _curFormingPointPosition;
-    private int _curDetails; // �������������� ���������� ���������� ������
+    private int _curDetails; // Проверка комментариев
 
 
     public new void Awake()
