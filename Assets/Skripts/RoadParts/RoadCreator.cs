@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine;
 using static GlobalSettings;
 
-public class CreateRoad : MonoBehaviour
+public class RoadCreator : MonoBehaviour
 {
     bool _isEnable;
     int _step;
@@ -33,7 +33,7 @@ public class CreateRoad : MonoBehaviour
             _endPost.transform.SetParent(_road.transform, false);
             _startPost.name = "EndPost";
             _step++;
-        } 
+        }
         else
         {
             Destroy(_road);
@@ -41,7 +41,7 @@ public class CreateRoad : MonoBehaviour
             Destroy(_endPost);
             _step = 0;
         }
-            
+
     }
 
     void FixedUpdate()

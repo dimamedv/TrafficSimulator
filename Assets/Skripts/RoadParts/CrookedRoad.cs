@@ -13,7 +13,7 @@ using static UnityEditor.PlayerSettings;
 
 public class CrookedRoad : AbstractRoad
 {
-    public int details; // �������� ���������� ���������� ������
+    public int details; // Количество деталей дороги
     public bool isStraight;
     public bool debugRoad;
 
