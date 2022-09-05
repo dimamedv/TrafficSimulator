@@ -5,17 +5,17 @@ using System;
 
 public class CarBehaviour : MonoBehaviour
 {
-    // Максимальная скорость
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     public float maxSpeed;
-    // Ускорение в секунду
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     public float acceleration;
-    // Скорость в секунду
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     public float speed;
-    // Дорога, которой принадлежит авто
+    // пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
     public AbstractRoad parentRoad;
-    // Расстояние, которое прошла машина по дороге
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
     public float distance;
-    // Ускорение в тик
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅ
     private float accelerationPerTick;
 
     private void Awake()
@@ -36,7 +36,7 @@ public class CarBehaviour : MonoBehaviour
 
         transform.position += transform.right * (speed * Time.deltaTime);
         
-        if (distance >= parentRoad.prefixSumSegments[^2] && parentRoad.childPost == null) 
+        if (distance >= parentRoad.prefixSumSegments[^2] - 1) 
         {
             Destroy(gameObject);
         }

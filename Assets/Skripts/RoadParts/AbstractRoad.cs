@@ -10,8 +10,8 @@ public abstract class AbstractRoad : MonoBehaviour
     public GameObject startPost; // Ñòàðòîâàÿ òî÷êà
     public GameObject endPost; // Êîíå÷íàÿ òî÷êà
     public GameObject formingPoint; // ?????????? ??????? ?????
-    public GameObject parentPost; // Ðîäèòåëü
-    public GameObject childPost; // Ðåáåíîê
+    public GameObject parentConnection; // Ðîäèòåëü
+    public GameObject childConnection; // Ðåáåíîê
 
     public List<Vector3> points; // Òî÷êè, ÷åðåç êîòîðûå ïðîõîäèò àâòîìîáèëü
     public List<float> prefixSumSegments; // Ïðåôèêñíûå ñóììû äëèí ñåãìåíòîâ äîðîãè
@@ -90,7 +90,7 @@ public abstract class AbstractRoad : MonoBehaviour
 
     protected void CheckoutChildPost()
     {
-        childPost = null;
+        childConnection = null;
         foreach (var checkedRoad in RoadList)
         {
             if (checkedRoad.GetComponent<AbstractRoad>().startPost.transform.position == endPost.transform.position &&
@@ -103,7 +103,7 @@ public abstract class AbstractRoad : MonoBehaviour
     
     protected void CheckoutParentPost()
     {
-        parentPost = null;
+        parentConnection = null;
         foreach (var checkedRoad in RoadList)
         {
             if (checkedRoad.GetComponent<AbstractRoad>().endPost.transform.position == startPost.transform.position &&
@@ -116,14 +116,14 @@ public abstract class AbstractRoad : MonoBehaviour
 
     private void ConnectFromParentToChild(AbstractRoad newChildRoad)
     {
-        childPost = newChildRoad.gameObject;
-        newChildRoad.parentPost = gameObject;
+        childConnection = newChildRoad.gameObject;
+        newChildRoad.parentConnection = gameObject;
     }
 
     private void ConnectFromChildToParent(AbstractRoad newParentRoad)
     {
-        parentPost = newParentRoad.gameObject;
-        newParentRoad.childPost = gameObject;
+        parentConnection = newParentRoad.gameObject;
+        newParentRoad.childConnection = gameObject;
     }
     
     protected abstract void BuildRoad();

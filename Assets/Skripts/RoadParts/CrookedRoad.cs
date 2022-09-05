@@ -26,6 +26,9 @@ public class CrookedRoad : AbstractRoad
 
     protected override void BuildRoad()
     {
+        CheckoutChildPost();
+        CheckoutParentPost();
+        
         points = new List<Vector3>();
         _vertexRoad = new List<Vector3>();
         prefixSumSegments = new List<float>();
@@ -64,9 +67,11 @@ public class CrookedRoad : AbstractRoad
         CalculateLengthOfRoadSections();
 
         _curFormingPointPosition = formingPoint.transform.position;
-
-        CheckoutChildPost();
-        CheckoutParentPost();
+        
+        if (childConnection && childConnection.GetComponent<CrookedRoad>())
+        {
+            childConnection.GetComponent<CrookedRoad>().BuildRoad();
+        }
     }
 
 
@@ -87,9 +92,16 @@ public class CrookedRoad : AbstractRoad
 
     private void CalculateMeshVertexPoints()
     {
+        if (parentConnection && parentConnection.GetComponent<CrookedRoad>())
+        {
+            List<Vector3> parentPoints = parentConnection.GetComponent<CrookedRoad>().points;
+            Vector3 lineDirectionParent = (parentPoints[^1] - parentPoints[^2]).normalized;
+            AddVertexes(parentPoints[^1], lineDirectionParent);
+        }
+        
         CalculateVertexPoints(points[0], points[1]);
 
-        for (int i = 0; i <= _curDetails - 1; i++)
+        for (int i = 0; i < points.Count - 1; i++)
             CalculateVertexPoints(points[i], points[i + 1]);
         
         Vector3 lineDirection = (points[^1] - points[^2]).normalized;
@@ -115,7 +127,8 @@ public class CrookedRoad : AbstractRoad
 
         // ������ ����� ����� ���������
         Vector3[] v = new Vector3[_vertexRoad.Count];
-        for (int i = 0; i < _vertexRoad.Count; i++) v[i] = _vertexRoad[i];
+        for (int i = 0; i < _vertexRoad.Count; i++) 
+            v[i] = _vertexRoad[i];
         mesh.vertices = v;
 
         // ���������� ������� ����� ����� ���������� ������ � ������������ �� ���������� �������������
