@@ -23,7 +23,6 @@ public class CrookedRoad : AbstractRoad
         _curFormingPointPosition = formingPoint.transform.position;
     }
 
-
     protected override void BuildRoad()
     {
         CheckoutChildPost();

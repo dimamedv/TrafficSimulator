@@ -1,8 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine;
-using static GlobalSettings;
 using UnityEngine.EventSystems;
 
 public class RoadCreator : MonoBehaviour
@@ -16,7 +14,10 @@ public class RoadCreator : MonoBehaviour
     GameObject _endPost;
     GameObject _formingPoint;
 
-    public GameObject _vertexCubeRed;
+    public GameObject cubeRed;
+    public GameObject cubeGreen;
+    public GameObject cubeBlue;
+
 
     private void Awake()
     {
@@ -30,7 +31,7 @@ public class RoadCreator : MonoBehaviour
         if (_isEnable)
         {
             _road = new GameObject("CrookedRoad");
-            _startPost = Instantiate(_vertexCubeRed);
+            _startPost = Instantiate(cubeRed);
             _startPost.transform.SetParent(_road.transform, false);
             _startPost.name = "StartPost";
             _step++;
@@ -45,25 +46,6 @@ public class RoadCreator : MonoBehaviour
 
     }
 
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        if (eventData.button == PointerEventData.InputButton.Left)
-        {
-            Debug.Log("Left click");
-
-        }
-        else if (eventData.button == PointerEventData.InputButton.Middle)
-        {
-            Debug.Log("Middle click");
-            eventData.Reset();
-        }
-        else if (eventData.button == PointerEventData.InputButton.Right)
-        {
-            Debug.Log("Right click");
-            eventData.Reset();
-        }
-    }
-
     void Update()
     {
         if (!_isEnable) return;
@@ -72,19 +54,30 @@ public class RoadCreator : MonoBehaviour
         switch (_step)
         {
             case 1:
-                if (Physics.Raycast(RayFromCursor.ray, out hit, layerMask))
-                {
+                if (Physics.Raycast(RayFromCursor.ray, out hit, 1000, layerMask))
                     _startPost.transform.position = hit.point;
-                }
+                break;
+            case 2:
+                _endPost = Instantiate(cubeGreen);
+                _endPost.transform.SetParent(_road.transform, false);
+                _endPost.name = "EndPost";
+
+                _formingPoint = Instantiate(cubeBlue);
+                _formingPoint.transform.SetParent(_road.transform, false);
+                _formingPoint.name = "FormingPoint";
+
+                if (Physics.Raycast(RayFromCursor.ray, out hit, 1000, layerMask))
+                    _endPost.transform.position = hit.point;
+
                 break;
         }
 
         if (Input.GetMouseButtonDown(0))
-            Debug.Log("Pressed primary button.");
+            _step++;
 
         if (Input.GetMouseButtonDown(1))
             Debug.Log("Pressed secondary button.");
-
+        
         if (Input.GetMouseButtonDown(2))
             Debug.Log("Pressed middle click.");
     }
