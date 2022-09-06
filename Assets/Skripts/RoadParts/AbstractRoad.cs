@@ -23,7 +23,7 @@ public abstract class AbstractRoad : MonoBehaviour
     public GameObject _bezierCubeGreen;
 
 
-    public void Awake(int details = 50, bool isStraight = false, bool debugRoad = false)
+    public void Awake()
     {
         startPost = transform.GetChild(0).gameObject;
         endPost = transform.GetChild(1).gameObject;
