@@ -6,12 +6,11 @@ using static GlobalSettings;
 public class CrookedRoad : AbstractRoad
 {
     public int details; // Количество деталей дороги
-    public bool isStraight;
-    public bool debugRoad;
+    public bool isStraight; // Прямая ли дорога
+    public bool debugRoad; // Для дебага дороги
 
-    public List<Vector3> _vertexRoad; // треугольнички
-    private Vector3 _curFormingPointPosition;
-    private int _curDetails; // Проверка комментариев
+    public List<Vector3> _vertexRoad; // Вершины излома дороги
+    private int _curDetails; // Количество деталей для этой дороги
 
 
     public new void Awake()
@@ -27,11 +26,43 @@ public class CrookedRoad : AbstractRoad
     {
         CheckoutChildPost();
         CheckoutParentPost();
+
+        // Подготавливаем "почву" для построения дороги
+        ResetLists();
+        Straight();
+        RebuildGrid();
+
+        // Строим ВСЕ вершины, на основе которых будем строить меши
+        DrawQuadraticBezierCurve(startPost.transform.position, formingPoint.transform.position,
+            endPost.transform.position);
+        CalculateMeshVertexPoints();
+
+        // Визуализируем все, что только можно визуализировать
+        ShowDebugPoints();
+        CreateMesh();
+
+        // Остаточные действия
+        CalculateLengthOfRoadSections();
+
+        _curFormingPointPosition = formingPoint.transform.position;
         
+        if (childConnection && childConnection.GetComponent<CrookedRoad>())
+        {
+            childConnection.GetComponent<CrookedRoad>().BuildRoad();
+        }
+    }
+
+    // Обнуляет все списки
+    private void ResetLists()
+    {
         points = new List<Vector3>();
         _vertexRoad = new List<Vector3>();
         prefixSumSegments = new List<float>();
+    }
 
+    // Тут вроде все понятно
+    private void Straight()
+    {
         if (isStraight)
         {
             _curDetails = 1;
@@ -42,14 +73,11 @@ public class CrookedRoad : AbstractRoad
         {
             _curDetails = details;
         }
+    }
 
-        formingPoint = transform.GetChild(2).gameObject;
-        RebuildGrid();
-
-        DrawQuadraticBezierCurve(startPost.transform.position, formingPoint.transform.position,
-            endPost.transform.position);
-        CalculateMeshVertexPoints();
-
+    // Визуализация Дебаг точек
+    private void ShowDebugPoints()
+    {
         if (debugRoad)
         {
             for (int i = 0; i < _vertexRoad.Count; i++)
@@ -61,20 +89,9 @@ public class CrookedRoad : AbstractRoad
             }
             for (int i = 0; i < points.Count; i++) Instantiate(_bezierCubeGreen, points[i], new Quaternion());
         }
-
-        CreateMesh();
-        CalculateLengthOfRoadSections();
-
-        _curFormingPointPosition = formingPoint.transform.position;
-        
-        if (childConnection && childConnection.GetComponent<CrookedRoad>())
-        {
-            childConnection.GetComponent<CrookedRoad>().BuildRoad();
-        }
     }
 
-
-    // ���������� ������ ����� �� ���� �����������
+    // Построение точек Безье
     private void DrawQuadraticBezierCurve(Vector3 point0, Vector3 point1, Vector3 point2)
     {
         float t = 0f;
@@ -89,6 +106,7 @@ public class CrookedRoad : AbstractRoad
         points.Add(point2);
     }
 
+    // 
     private void CalculateMeshVertexPoints()
     {
         if (parentConnection && parentConnection.GetComponent<CrookedRoad>())
@@ -106,8 +124,16 @@ public class CrookedRoad : AbstractRoad
         Vector3 lineDirection = (points[^1] - points[^2]).normalized;
         AddVertexes(points[^1], lineDirection);
     }
-    
-    
+
+    // Рассчитывает направление для ширины дороги
+    private void CalculateVertexPoints(Vector3 a, Vector3 b)
+    {
+        Vector3 lineDirection = (b - a).normalized;
+
+        AddVertexes(a, lineDirection);
+    }
+
+    // Добавляет координаты точек "излома" дороги
     private void AddVertexes(Vector3 a, Vector3 lineDirection)
     {
         Vector3 v1 = a + Quaternion.Euler(0, -90, 0) * lineDirection * width;
@@ -117,48 +143,36 @@ public class CrookedRoad : AbstractRoad
         _vertexRoad.Add(v2);
     }
 
-
+    // Строит меши по точкам "излома" дороги
     private void CreateMesh()
     {
         MeshFilter mf = GetComponent<MeshFilter>();
         Mesh mesh = new Mesh();
         mf.mesh = mesh;
 
-        // ������ ����� ����� ���������
+        // Звбивает координаты вершин в меш
         Vector3[] v = new Vector3[_vertexRoad.Count];
         for (int i = 0; i < _vertexRoad.Count; i++) 
             v[i] = _vertexRoad[i];
         mesh.vertices = v;
 
-        // ���������� ������� ����� ����� ���������� ������ � ������������ �� ���������� �������������
-        // � ��������. � ��� ��� �������� ����� ������� � ���� ������, �� ��������� ��� �� 2
+        // Индексы вершин излома из mesh.vertices
         int[] triangles = new int[(_vertexRoad.Count - 2) * 3 * 2];
 
         for (int i = 0; i < (_vertexRoad.Count - 2) * 2; i++)
         {
-            // ����� ������������
             int j = i / 2;
 
-            // ����������� ����� ������� ������������
             for (int k = 0; k < 3; k++) triangles[i * 3 + k] = j++;
             i++;
 
-            // ����������� ������ ������� ������������
             for (int k = 0; k < 3; k++) triangles[i * 3 + k] = --j;
         }
 
         mesh.triangles = triangles;
     }
 
-
-    // ���������� ���������� ������ ��� ����� ������ � ���� vertexRoad
-    private void CalculateVertexPoints(Vector3 a, Vector3 b)
-    {
-        Vector3 lineDirection = (b - a).normalized;
-
-        AddVertexes(a, lineDirection);
-    }
-
+    // Рассчитывает длину дороги, заполняя массив префиксных сумм
     private void CalculateLengthOfRoadSections()
     {
         prefixSumSegments.Add(0.0f);
@@ -167,6 +181,7 @@ public class CrookedRoad : AbstractRoad
             prefixSumSegments.Add(prefixSumSegments[i] + getDistance(points[i], points[i + 1]));
     }
 
+    // Возвращает истину, если одна из точек сменила сове положение. Ложь в ином случае.
     protected override bool NeedsRebuild()
     {
         var formingPosition = formingPoint.transform.position;

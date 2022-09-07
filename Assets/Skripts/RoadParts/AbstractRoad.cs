@@ -7,25 +7,27 @@ using static GlobalSettings;
 
 public abstract class AbstractRoad : MonoBehaviour
 {
-    public GameObject parentConnection; // Ðîäèòåëü
-    public GameObject childConnection; // Ðåáåíîê
-    public GameObject _vertexCubeRed;
-    public GameObject _vertexCubeBLue;
-    public GameObject _bezierCubeGreen;
-    public List<Vector3> points; // Òî÷êè, ÷åðåç êîòîðûå ïðîõîäèò àâòîìîáèëü
-    public List<float> prefixSumSegments; // Ïðåôèêñíûå ñóììû äëèí ñåãìåíòîâ äîðîãè
-    public List<GameObject> carsOnThisRoad;
+    public GameObject parentConnection; // Соединение с родителем
+    public GameObject childConnection; // Соединение с ребенком
+    public GameObject _vertexCubeRed; // Куб для отоборажение одной стороны дороги в режиме дебага
+    public GameObject _vertexCubeBLue; // Куб для отоборажение одной стороны дороги в режиме дебага
+    public GameObject _bezierCubeGreen; // Куб для отображения точек центра дороги в режиме дебага
+    public List<Vector3> points; // Массив центральных точек (Безье), по которым едет машина
+    public List<float> prefixSumSegments; // Массив префиксных сумм. Последний элемент - длина всей дороги
+    public List<GameObject> carsOnThisRoad; // Массив машин, который в данный момент едут по этой дороге
 
-    protected static List<GameObject> RoadList;
-    public GameObject startPost; // Ñòàðòîâàÿ òî÷êà
-    public GameObject endPost; // Êîíå÷íàÿ òî÷êà
-    public GameObject formingPoint; // ?????????? ??????? ?????
+    protected static List<GameObject> RoadList; // Массив всех дорог
+    public GameObject startPost; // Стартовая точка
+    public GameObject endPost; // Конечная точка
+    public GameObject formingPoint; // Формирующая точка
+    public Vector3 _curFormingPointPosition; // "Указатель" на формирующую точку, чтобы отслеживать перемещение
 
-    
+
     public void Awake()
     {
         startPost = transform.GetChild(0).gameObject;
         endPost = transform.GetChild(1).gameObject;
+        formingPoint = transform.GetChild(2).gameObject;
 
         RoadList ??= new List<GameObject>();
         RoadList.Add(gameObject);
@@ -66,6 +68,7 @@ public abstract class AbstractRoad : MonoBehaviour
             return x - remains + gridStep;
     }
     
+    // Подстраивает точки под сетку
     protected  void RebuildGrid()
     {
         RebuildGridByPoint(ref startPost);
