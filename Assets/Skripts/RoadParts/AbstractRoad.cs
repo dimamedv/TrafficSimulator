@@ -7,22 +7,21 @@ using static GlobalSettings;
 
 public abstract class AbstractRoad : MonoBehaviour
 {
-    public GameObject startPost; // Ñòàðòîâàÿ òî÷êà
-    public GameObject endPost; // Êîíå÷íàÿ òî÷êà
-    public GameObject formingPoint; // ?????????? ??????? ?????
     public GameObject parentConnection; // Ðîäèòåëü
     public GameObject childConnection; // Ðåáåíîê
-
-    public List<Vector3> points; // Òî÷êè, ÷åðåç êîòîðûå ïðîõîäèò àâòîìîáèëü
-    public List<float> prefixSumSegments; // Ïðåôèêñíûå ñóììû äëèí ñåãìåíòîâ äîðîãè
-    public List<GameObject> carsOnThisRoad;
-    protected static List<GameObject> RoadList;
-
     public GameObject _vertexCubeRed;
     public GameObject _vertexCubeBLue;
     public GameObject _bezierCubeGreen;
+    public List<Vector3> points; // Òî÷êè, ÷åðåç êîòîðûå ïðîõîäèò àâòîìîáèëü
+    public List<float> prefixSumSegments; // Ïðåôèêñíûå ñóììû äëèí ñåãìåíòîâ äîðîãè
+    public List<GameObject> carsOnThisRoad;
 
+    protected static List<GameObject> RoadList;
+    public GameObject startPost; // Ñòàðòîâàÿ òî÷êà
+    public GameObject endPost; // Êîíå÷íàÿ òî÷êà
+    public GameObject formingPoint; // ?????????? ??????? ?????
 
+    
     public void Awake()
     {
         startPost = transform.GetChild(0).gameObject;
@@ -30,7 +29,7 @@ public abstract class AbstractRoad : MonoBehaviour
 
         RoadList ??= new List<GameObject>();
         RoadList.Add(gameObject);
-
+        
         BuildRoad();
     }
 
@@ -41,7 +40,7 @@ public abstract class AbstractRoad : MonoBehaviour
             BuildRoad();
         }
     }
-    
+
     public void OnDestroy()
     {
         RoadList.Remove(gameObject);

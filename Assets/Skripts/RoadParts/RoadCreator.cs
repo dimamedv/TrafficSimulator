@@ -5,18 +5,18 @@ using UnityEngine.EventSystems;
 
 public class RoadCreator : MonoBehaviour
 {
-    bool _isEnable;
-    int _step;
     public LayerMask layerMask;
+    public bool isStraight;
+    public GameObject cubeRed;
+    public GameObject cubeGreen;
+    public GameObject cubeBlue;
 
     GameObject _road;
     GameObject _startPost;
     GameObject _endPost;
     GameObject _formingPoint;
-
-    public GameObject cubeRed;
-    public GameObject cubeGreen;
-    public GameObject cubeBlue;
+    int _step;
+    bool _isEnable;
 
 
     private void Awake()
@@ -30,55 +30,76 @@ public class RoadCreator : MonoBehaviour
         _isEnable = !_isEnable;
         if (_isEnable)
         {
-            _road = new GameObject("CrookedRoad");
-            _startPost = Instantiate(cubeRed);
-            _startPost.transform.SetParent(_road.transform, false);
-            _startPost.name = "StartPost";
-            _step++;
+            CreateObjects();
         }
         else
         {
-            Destroy(_road);
-            Destroy(_startPost);
-            Destroy(_endPost);
-            _step = 0;
+            DeleteObjects();
         }
-
     }
 
     void Update()
     {
-        if (!_isEnable) return;
+        if (!_isEnable) return; 
 
         RaycastHit hit;
-        switch (_step)
+        if (Physics.Raycast(RayFromCursor.ray, out hit, 1000, layerMask))
         {
-            case 1:
-                if (Physics.Raycast(RayFromCursor.ray, out hit, 1000, layerMask))
+            switch (_step)
+            {
+                case 0:
                     _startPost.transform.position = hit.point;
-                break;
-            case 2:
-                _endPost = Instantiate(cubeGreen);
-                _endPost.transform.SetParent(_road.transform, false);
-                _endPost.name = "EndPost";
-
-                _formingPoint = Instantiate(cubeBlue);
-                _formingPoint.transform.SetParent(_road.transform, false);
-                _formingPoint.name = "FormingPoint";
-
-                if (Physics.Raycast(RayFromCursor.ray, out hit, 1000, layerMask))
+                    break;
+                case 1:
                     _endPost.transform.position = hit.point;
-
-                break;
+                    break;
+                case 2:
+                    _formingPoint.transform.position = hit.point;
+                    break;
+            }
         }
 
         if (Input.GetMouseButtonDown(0))
-            _step++;
+        {
+            if (_step < 2)
+            _road.transform.GetChild(++_step).GetComponent<MeshRenderer>().enabled = true;
+            else
+                CreateObjects();
+        }
+        else if (Input.GetMouseButtonDown(1))
+        {
+            _road.transform.GetChild(_step--).GetComponent<MeshRenderer>().enabled = false;
+        }
+        else if (Input.GetMouseButtonDown(2))
+        {
+            DeleteObjects();
+        }
+    }
 
-        if (Input.GetMouseButtonDown(1))
-            Debug.Log("Pressed secondary button.");
-        
-        if (Input.GetMouseButtonDown(2))
-            Debug.Log("Pressed middle click.");
+    private void CreateObjects()
+    {
+        _road = new GameObject("CrookedRoad");
+        _startPost = CreateObject(ref _startPost, cubeRed, "StartPost", true);
+        _endPost = CreateObject(ref _endPost, cubeGreen, "EndPost", false);
+        _formingPoint = CreateObject(ref _formingPoint, cubeBlue, "FormingPoint", false);
+        _step = 0;
+    }
+
+    private ref GameObject CreateObject(ref GameObject __gameObject, GameObject __prefab, string __name, bool __isVisible = false)
+    {
+        __gameObject = Instantiate(__prefab);
+        __gameObject.transform.SetParent(_road.transform, false);
+        __gameObject.name = __name;
+        __gameObject.GetComponent<MeshRenderer>().enabled = __isVisible;
+        return ref __gameObject;
+    }
+
+    private void DeleteObjects()
+    {
+        Destroy(_road);
+        Destroy(_startPost);
+        Destroy(_endPost);
+        _step = 0;
+        _isEnable = false;
     }
 }

@@ -9,7 +9,7 @@ public class CrookedRoad : AbstractRoad
     public bool isStraight;
     public bool debugRoad;
 
-    private List<Vector3> _vertexRoad; // треугольнички
+    public List<Vector3> _vertexRoad; // треугольнички
     private Vector3 _curFormingPointPosition;
     private int _curDetails; // Проверка комментариев
 
@@ -132,9 +132,9 @@ public class CrookedRoad : AbstractRoad
 
         // ���������� ������� ����� ����� ���������� ������ � ������������ �� ���������� �������������
         // � ��������. � ��� ��� �������� ����� ������� � ���� ������, �� ��������� ��� �� 2
-        int[] triangles = new int[points.Count * 3 * 2 * 2];
+        int[] triangles = new int[(_vertexRoad.Count - 2) * 3 * 2];
 
-        for (int i = 0; i < points.Count * 2 * 2; i++)
+        for (int i = 0; i < (_vertexRoad.Count - 2) * 2; i++)
         {
             // ����� ������������
             int j = i / 2;
