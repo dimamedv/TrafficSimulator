@@ -16,7 +16,7 @@ public abstract class AbstractRoad : MonoBehaviour
     public List<float> prefixSumSegments; // Массив префиксных сумм. Последний элемент - длина всей дороги
     public List<GameObject> carsOnThisRoad; // Массив машин, который в данный момент едут по этой дороге
 
-    protected static List<GameObject> RoadList; // Массив всех дорог
+    protected static List<GameObject> RoadList = new List<GameObject>(); // Массив всех дорог
     public GameObject startPost; // Стартовая точка
     public GameObject endPost; // Конечная точка
     public GameObject formingPoint; // Формирующая точка

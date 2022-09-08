@@ -38,7 +38,7 @@ public class RoadCreator : MonoBehaviour
         }
     }
 
-    void Update()
+    void LateUpdate()
     {
         if (!_isEnable) return; 
 

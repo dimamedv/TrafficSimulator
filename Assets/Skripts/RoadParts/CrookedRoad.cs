@@ -16,8 +16,6 @@ public class CrookedRoad : AbstractRoad
     public new void Start()
     {
         base.Start();
-
-        formingPoint = GameObject.Find("FormingPoint");
         _curDetails = details;
         _curFormingPointPosition = formingPoint.transform.position;
     }
@@ -28,8 +26,9 @@ public class CrookedRoad : AbstractRoad
         CheckoutParentPost();
 
         // Подготавливаем "почву" для построения дороги
-        ResetLists();
-        Straight();
+        ClearLists();
+        if (isStraight) MakeStraight();
+        else _curDetails = details;
         RebuildGrid();
 
         // Строим ВСЕ вершины, на основе которых будем строить меши
@@ -38,14 +37,12 @@ public class CrookedRoad : AbstractRoad
         CalculateMeshVertexPoints();
 
         // Визуализируем все, что только можно визуализировать
-        ShowDebugPoints();
+        if (debugRoad) ShowDebugPoints();
         CreateMesh();
 
         // Остаточные действия
         CalculateLengthOfRoadSections();
-
         _curFormingPointPosition = formingPoint.transform.position;
-        
         if (childConnection && childConnection.GetComponent<CrookedRoad>())
         {
             childConnection.GetComponent<CrookedRoad>().BuildRoad();
@@ -53,43 +50,32 @@ public class CrookedRoad : AbstractRoad
     }
 
     // Обнуляет все списки
-    private void ResetLists()
+    private void ClearLists()
     {
-        points = new List<Vector3>();
-        _vertexRoad = new List<Vector3>();
-        prefixSumSegments = new List<float>();
+        points.Clear();
+        _vertexRoad.Clear();
+        prefixSumSegments.Clear();
     }
 
     // Тут вроде все понятно
-    private void Straight()
+    private void MakeStraight()
     {
-        if (isStraight)
-        {
-            _curDetails = 1;
-            formingPoint.transform.position =
-                GetMidPoint(startPost.transform.position, endPost.transform.position);
-            Debug.Log("bababababab");
-        }
-        else
-        {
-            _curDetails = details;
-        }
+        _curDetails = 1;
+        formingPoint.transform.position =
+            GetMidPoint(startPost.transform.position, endPost.transform.position);
     }
 
     // Визуализация Дебаг точек
     private void ShowDebugPoints()
     {
-        if (debugRoad)
+        for (int i = 0; i < _vertexRoad.Count; i++)
         {
-            for (int i = 0; i < _vertexRoad.Count; i++)
-            {
-                if (i % 2 == 0)
-                    Instantiate(_vertexCubeRed, _vertexRoad[i], new Quaternion());
-                else
-                    Instantiate(_vertexCubeBLue, _vertexRoad[i], new Quaternion());
-            }
-            for (int i = 0; i < points.Count; i++) Instantiate(_bezierCubeGreen, points[i], new Quaternion());
+            if (i % 2 == 0)
+                Instantiate(_vertexCubeRed, _vertexRoad[i], new Quaternion());
+            else
+                Instantiate(_vertexCubeBLue, _vertexRoad[i], new Quaternion());
         }
+        for (int i = 0; i < points.Count; i++) Instantiate(_bezierCubeGreen, points[i], new Quaternion());
     }
 
     // Рассчет координат точек Безье
