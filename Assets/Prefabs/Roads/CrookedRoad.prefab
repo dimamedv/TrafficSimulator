@@ -111,7 +111,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3119439897122743010}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.04, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.001, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -183,23 +183,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17380eabdef969244ae1a2e9ece2f94f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startPost: {fileID: 3119439897018574663}
-  endPost: {fileID: 3119439897194690978}
-  parentPost: {fileID: 0}
-  childPost: {fileID: 0}
-  width: 2
+  parentConnection: {fileID: 0}
+  childConnection: {fileID: 0}
+  _vertexCubeRed: {fileID: 0}
+  _vertexCubeBLue: {fileID: 0}
+  _bezierCubeGreen: {fileID: 0}
   points: []
   prefixSumSegments: []
-  gridStep: 1
-  angles: []
   carsOnThisRoad: []
+  startPost: {fileID: 3119439897018574663}
+  endPost: {fileID: 3119439897194690978}
   formingPoint: {fileID: 3119439898306640411}
+  _curFormingPointPosition: {x: 0, y: 0, z: 0}
   details: 100
   isStraight: 0
   debugRoad: 0
-  tmp1: {fileID: 7828182755925728581, guid: f6a7ce4fcc38a864682c710a764a8d34, type: 3}
-  tmp2: {fileID: 6888316598349574272, guid: f4c5c3b4bd62ed04e842ddbd59b0831c, type: 3}
-  tmp3: {fileID: 7000123228065318839, guid: 902844eb2c4c4674ca2f88225217c022, type: 3}
+  _vertexRoad: []
+  _curDetails: 0
 --- !u!114 &3119439897122743008
 MonoBehaviour:
   m_ObjectHideFlags: 0

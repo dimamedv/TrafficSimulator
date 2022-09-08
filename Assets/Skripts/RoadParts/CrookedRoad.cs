@@ -16,8 +16,7 @@ public class CrookedRoad : AbstractRoad
     public new void Start()
     {
         base.Start();
-
-        formingPoint = GameObject.Find("FormingPoint");
+        
         _curDetails = details;
         _curFormingPointPosition = formingPoint.transform.position;
     }

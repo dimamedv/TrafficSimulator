@@ -23,15 +23,18 @@ public abstract class AbstractRoad : MonoBehaviour
     public Vector3 _curFormingPointPosition; // "Указатель" на формирующую точку, чтобы отслеживать перемещение
 
 
+    public void Awake()
+    {
+        RoadList ??= new List<GameObject>();
+        RoadList.Add(gameObject);
+    }
+
     public void Start()
     {
         startPost = transform.GetChild(0).gameObject;
         endPost = transform.GetChild(1).gameObject;
         formingPoint = transform.GetChild(2).gameObject;
 
-        RoadList ??= new List<GameObject>();
-        RoadList.Add(gameObject);
-        
         BuildRoad();
     }
 
