@@ -10,12 +10,12 @@ public class CrookedRoad : AbstractRoad
     public bool debugRoad; // Для дебага дороги
 
     public List<Vector3> _vertexRoad; // Вершины излома дороги
-    private int _curDetails; // Количество деталей для этой дороги
+    public int _curDetails; // Количество деталей для этой дороги
 
 
-    public new void Awake()
+    public new void Start()
     {
-        base.Awake();
+        base.Start();
 
         formingPoint = GameObject.Find("FormingPoint");
         _curDetails = details;
@@ -33,7 +33,7 @@ public class CrookedRoad : AbstractRoad
         RebuildGrid();
 
         // Строим ВСЕ вершины, на основе которых будем строить меши
-        DrawQuadraticBezierCurve(startPost.transform.position, formingPoint.transform.position,
+        CalculateQuadraticBezierCurve(startPost.transform.position, formingPoint.transform.position,
             endPost.transform.position);
         CalculateMeshVertexPoints();
 
@@ -68,6 +68,7 @@ public class CrookedRoad : AbstractRoad
             _curDetails = 1;
             formingPoint.transform.position =
                 GetMidPoint(startPost.transform.position, endPost.transform.position);
+            Debug.Log("bababababab");
         }
         else
         {
@@ -91,8 +92,8 @@ public class CrookedRoad : AbstractRoad
         }
     }
 
-    // Построение точек Безье
-    private void DrawQuadraticBezierCurve(Vector3 point0, Vector3 point1, Vector3 point2)
+    // Рассчет координат точек Безье
+    private void CalculateQuadraticBezierCurve(Vector3 point0, Vector3 point1, Vector3 point2)
     {
         float t = 0f;
         Vector3 B;

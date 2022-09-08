@@ -52,6 +52,10 @@ public class RoadCreator : MonoBehaviour
                     break;
                 case 1:
                     _endPost.transform.position = hit.point;
+                    _road.AddComponent<CrookedRoad>();
+                    CrookedRoad ce = _road.GetComponent<CrookedRoad>();
+                    ce.isStraight = true;
+                    ce.debugRoad = true;
                     break;
                 case 2:
                     _formingPoint.transform.position = hit.point;

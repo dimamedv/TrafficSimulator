@@ -23,7 +23,7 @@ public abstract class AbstractRoad : MonoBehaviour
     public Vector3 _curFormingPointPosition; // "Указатель" на формирующую точку, чтобы отслеживать перемещение
 
 
-    public void Awake()
+    public void Start()
     {
         startPost = transform.GetChild(0).gameObject;
         endPost = transform.GetChild(1).gameObject;
