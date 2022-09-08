@@ -21,15 +21,21 @@ public class CrookedRoad : AbstractRoad
         _curFormingPointPosition = formingPoint.transform.position;
     }
 
-    protected override void BuildRoad()
+    protected override void BuildRoad(bool endIteration = true)
     {
+        if (childConnection && childConnection.GetComponent<CrookedRoad>() && !endIteration)
+        {
+            childConnection.GetComponent<CrookedRoad>().BuildRoad();
+        }
+        
+        RebuildGrid();
+        
         CheckoutChildPost();
         CheckoutParentPost();
 
         // Подготавливаем "почву" для построения дороги
         ResetLists();
         Straight();
-        RebuildGrid();
 
         // Строим ВСЕ вершины, на основе которых будем строить меши
         CalculateQuadraticBezierCurve(startPost.transform.position, formingPoint.transform.position,
@@ -45,9 +51,13 @@ public class CrookedRoad : AbstractRoad
 
         _curFormingPointPosition = formingPoint.transform.position;
         
-        if (childConnection && childConnection.GetComponent<CrookedRoad>())
+        if (childConnection && childConnection.GetComponent<CrookedRoad>() && !endIteration)
         {
             childConnection.GetComponent<CrookedRoad>().BuildRoad();
+        }
+        if (parentConnection && parentConnection.GetComponent<CrookedRoad>() && !endIteration)
+        {
+            parentConnection.GetComponent<CrookedRoad>().BuildRoad();
         }
     }
 

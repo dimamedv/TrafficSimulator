@@ -42,7 +42,7 @@ public abstract class AbstractRoad : MonoBehaviour
     {
         if (NeedsRebuild())
         {
-            BuildRoad();
+            BuildRoad(false);
         }
     }
 
@@ -116,6 +116,6 @@ public abstract class AbstractRoad : MonoBehaviour
         newParentRoad.childConnection = gameObject;
     }
     
-    protected abstract void BuildRoad();
+    protected abstract void BuildRoad(bool endIteration = true);
     protected abstract bool NeedsRebuild();
 }
