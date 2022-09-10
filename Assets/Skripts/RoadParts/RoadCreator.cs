@@ -10,12 +10,16 @@ public class RoadCreator : MonoBehaviour
     public GameObject cubeRed;
     public GameObject cubeGreen;
     public GameObject cubeBlue;
+    public int details;
 
+    private CrookedRoad crooked;
+    Vector3 epsV = new Vector3(0f, 0.001f, 0f);
     GameObject _road;
     GameObject _startPost;
     GameObject _endPost;
     GameObject _formingPoint;
     int _step;
+    int _maxSteps;
     bool _isEnable;
 
 
@@ -25,20 +29,26 @@ public class RoadCreator : MonoBehaviour
         _step = 0;
     }
 
+    public void ButtonStraightIsPressed()
+    {
+        _maxSteps = 1;
+        ButtonIsPressed();
+    }
+
+    public void ButtonCrookedIsPressed()
+    {
+        _maxSteps = 2;
+        ButtonIsPressed();
+    }
+
     public void ButtonIsPressed()
     {
         _isEnable = !_isEnable;
-        if (_isEnable)
-        {
-            CreateObjects();
-        }
-        else
-        {
-            DeleteObjects();
-        }
+        if (_isEnable) CreateObjects();
+        else DeleteObjects();
     }
 
-    void LateUpdate()
+        void Update()
     {
         if (!_isEnable) return; 
 
@@ -49,15 +59,16 @@ public class RoadCreator : MonoBehaviour
             {
                 case 0:
                     _startPost.transform.position = hit.point;
+                    AbstractRoad.RebuildGridByPoint(ref _startPost);
                     break;
                 case 1:
+                    crooked.enabled = true;
+                    crooked.isStraight = true;
                     _endPost.transform.position = hit.point;
-                    _road.AddComponent<CrookedRoad>();
-                    CrookedRoad ce = _road.GetComponent<CrookedRoad>();
-                    ce.isStraight = true;
-                    ce.debugRoad = true;
                     break;
                 case 2:
+                    crooked.isStraight = false;
+                    crooked.details = details;
                     _formingPoint.transform.position = hit.point;
                     break;
             }
@@ -65,7 +76,7 @@ public class RoadCreator : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
-            if (_step < 2)
+            if (_step < _maxSteps)
             _road.transform.GetChild(++_step).GetComponent<MeshRenderer>().enabled = true;
             else
                 CreateObjects();
@@ -83,9 +94,14 @@ public class RoadCreator : MonoBehaviour
     private void CreateObjects()
     {
         _road = new GameObject("CrookedRoad");
+        _road.transform.position += epsV;
         _startPost = CreateObject(ref _startPost, cubeRed, "StartPost", true);
         _endPost = CreateObject(ref _endPost, cubeGreen, "EndPost", false);
         _formingPoint = CreateObject(ref _formingPoint, cubeBlue, "FormingPoint", false);
+        crooked = _road.AddComponent<CrookedRoad>();
+        crooked.enabled = false;
+        _road.AddComponent<MeshFilter>();
+        _road.AddComponent<MeshRenderer>();
         _step = 0;
     }
 

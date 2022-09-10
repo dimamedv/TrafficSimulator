@@ -12,11 +12,11 @@ public abstract class AbstractRoad : MonoBehaviour
     public GameObject _vertexCubeRed; // Куб для отоборажение одной стороны дороги в режиме дебага
     public GameObject _vertexCubeBLue; // Куб для отоборажение одной стороны дороги в режиме дебага
     public GameObject _bezierCubeGreen; // Куб для отображения точек центра дороги в режиме дебага
-    public List<Vector3> points; // Массив центральных точек (Безье), по которым едет машина
-    public List<float> prefixSumSegments; // Массив префиксных сумм. Последний элемент - длина всей дороги
+    public List<Vector3> points = new List<Vector3>(); // Массив центральных точек (Безье), по которым едет машина
+    public List<float> prefixSumSegments = new List<float>(); // Массив префиксных сумм. Последний элемент - длина всей дороги
     public List<GameObject> carsOnThisRoad; // Массив машин, который в данный момент едут по этой дороге
 
-    protected static List<GameObject> RoadList = new List<GameObject>(); // Массив всех дорог
+    public static List<GameObject> RoadList = new List<GameObject>(); // Массив всех дорог
     public GameObject startPost; // Стартовая точка
     public GameObject endPost; // Конечная точка
     public GameObject formingPoint; // Формирующая точка
@@ -38,7 +38,7 @@ public abstract class AbstractRoad : MonoBehaviour
         BuildRoad();
     }
 
-    void FixedUpdate()
+    void LateUpdate()
     {
         if (NeedsRebuild())
         {
@@ -52,7 +52,7 @@ public abstract class AbstractRoad : MonoBehaviour
     }
 
 
-    private void RebuildGridByPoint(ref GameObject t)
+    public static void RebuildGridByPoint(ref GameObject t)
     {
         var position = t.transform.position;
         position = new Vector3(
@@ -62,7 +62,7 @@ public abstract class AbstractRoad : MonoBehaviour
         t.transform.position = position;
     }
 
-    private float RebuildGridByAxis(float x)
+    private static float RebuildGridByAxis(float x)
     {
         float remains = x % GlobalSettings.gridStep;
         if (remains < gridStep / 2)
