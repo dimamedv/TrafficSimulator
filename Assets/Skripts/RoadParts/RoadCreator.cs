@@ -6,7 +6,6 @@ using UnityEngine.EventSystems;
 public class RoadCreator : MonoBehaviour
 {
     public LayerMask layerMask;
-    public bool isStraight;
     public GameObject _startPostPrefab;
     public GameObject _endPostPrefab;
     public GameObject _formingPointPrefab;

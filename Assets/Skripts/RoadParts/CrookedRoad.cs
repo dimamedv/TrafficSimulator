@@ -32,8 +32,8 @@ public class CrookedRoad : AbstractRoad
 
         // Подготавливаем "почву" для построения дороги
         ClearLists();
-        else _curDetails = details;
         if (isStraight) MakeStraight();
+        else _curDetails = details;
 
         // Строим ВСЕ вершины, на основе которых будем строить меши
         CalculateQuadraticBezierCurve(startPost.transform.position, formingPoint.transform.position,
