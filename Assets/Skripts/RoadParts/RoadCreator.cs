@@ -7,27 +7,22 @@ public class RoadCreator : MonoBehaviour
 {
     public LayerMask layerMask;
     public bool isStraight;
-    public GameObject cubeRed;
-    public GameObject cubeGreen;
-    public GameObject cubeBlue;
+    public GameObject _startPostPrefab;
+    public GameObject _endPostPrefab;
+    public GameObject _formingPointPrefab;
     public int details;
+    public Material material;
 
     private CrookedRoad crooked;
-    Vector3 epsV = new Vector3(0f, 0.001f, 0f);
-    GameObject _road;
-    GameObject _startPost;
-    GameObject _endPost;
-    GameObject _formingPoint;
-    int _step;
-    int _maxSteps;
-    bool _isEnable;
+    private static Vector3 epsV = new Vector3(0f, 0.001f, 0f);
+    private GameObject _road;
+    private GameObject _startPost;
+    private GameObject _endPost;
+    private GameObject _formingPoint;
+    private int _step = 0;
+    private bool _isEnable = false;
+    private int _maxSteps;
 
-
-    private void Awake()
-    {
-        _isEnable = false;
-        _step = 0;
-    }
 
     public void ButtonStraightIsPressed()
     {
@@ -48,10 +43,17 @@ public class RoadCreator : MonoBehaviour
         else DeleteObjects();
     }
 
-        void Update()
+    private void Update()
     {
-        if (!_isEnable) return; 
+        if (!_isEnable) return;
 
+        UpdatObjectPosToCursorPos();
+        CheckMouseButton();
+    }
+
+    // Обновляет информацию о положении курсора и перемещает активный объект в эту позицию
+    private void UpdatObjectPosToCursorPos()
+    {
         RaycastHit hit;
         if (Physics.Raycast(RayFromCursor.ray, out hit, 1000, layerMask))
         {
@@ -73,11 +75,14 @@ public class RoadCreator : MonoBehaviour
                     break;
             }
         }
+    }
 
+    private void CheckMouseButton()
+    {
         if (Input.GetMouseButtonDown(0))
         {
             if (_step < _maxSteps)
-            _road.transform.GetChild(++_step).GetComponent<MeshRenderer>().enabled = true;
+                _road.transform.GetChild(++_step).GetComponent<MeshRenderer>().enabled = true;
             else
                 CreateObjects();
         }
@@ -95,13 +100,14 @@ public class RoadCreator : MonoBehaviour
     {
         _road = new GameObject("CrookedRoad");
         _road.transform.position += epsV;
-        _startPost = CreateObject(ref _startPost, cubeRed, "StartPost", true);
-        _endPost = CreateObject(ref _endPost, cubeGreen, "EndPost", false);
-        _formingPoint = CreateObject(ref _formingPoint, cubeBlue, "FormingPoint", false);
+        _startPost = CreateObject(ref _startPost, _startPostPrefab, "StartPost", true);
+        _endPost = CreateObject(ref _endPost, _endPostPrefab, "EndPost", false);
+        _formingPoint = CreateObject(ref _formingPoint, _formingPointPrefab, "FormingPoint", false);
         crooked = _road.AddComponent<CrookedRoad>();
         crooked.enabled = false;
         _road.AddComponent<MeshFilter>();
-        _road.AddComponent<MeshRenderer>();
+        MeshRenderer renderer = _road.AddComponent<MeshRenderer>();
+        renderer.material = material;
         _step = 0;
     }
 
