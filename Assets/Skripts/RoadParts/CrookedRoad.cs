@@ -6,18 +6,15 @@ using static GlobalSettings;
 public class CrookedRoad : AbstractRoad
 {
     public int details; // Количество деталей дороги
+    private int _curDetails;
     public bool isStraight; // Прямая ли дорога
     public bool debugRoad; // Для дебага дороги
-
-    public List<Vector3> _vertexRoad; // Вершины излома дороги
-    public int _curDetails; // Количество деталей для этой дороги
+    public List<Vector3> _vertexRoad = new List<Vector3>(); // Вершины излома дороги
 
 
     public new void Start()
     {
         base.Start();
-        
-        _curDetails = details;
         _curFormingPointPosition = formingPoint.transform.position;
     }
 
@@ -34,8 +31,9 @@ public class CrookedRoad : AbstractRoad
         CheckoutParentPost();
 
         // Подготавливаем "почву" для построения дороги
-        ResetLists();
-        Straight();
+        ClearLists();
+        else _curDetails = details;
+        if (isStraight) MakeStraight();
 
         // Строим ВСЕ вершины, на основе которых будем строить меши
         CalculateQuadraticBezierCurve(startPost.transform.position, formingPoint.transform.position,
@@ -43,12 +41,11 @@ public class CrookedRoad : AbstractRoad
         CalculateMeshVertexPoints();
 
         // Визуализируем все, что только можно визуализировать
-        ShowDebugPoints();
+        if (debugRoad) ShowDebugPoints();
         CreateMesh();
 
         // Остаточные действия
         CalculateLengthOfRoadSections();
-
         _curFormingPointPosition = formingPoint.transform.position;
         
         if (childConnection && childConnection.GetComponent<CrookedRoad>() && !endIteration)
@@ -62,43 +59,31 @@ public class CrookedRoad : AbstractRoad
     }
 
     // Обнуляет все списки
-    private void ResetLists()
+    private void ClearLists()
     {
-        points = new List<Vector3>();
-        _vertexRoad = new List<Vector3>();
-        prefixSumSegments = new List<float>();
+        points.Clear();
+        _vertexRoad.Clear();
+        prefixSumSegments.Clear();
     }
 
-    // Тут вроде все понятно
-    private void Straight()
+    private void MakeStraight()
     {
-        if (isStraight)
-        {
-            _curDetails = 1;
-            formingPoint.transform.position =
-                GetMidPoint(startPost.transform.position, endPost.transform.position);
-            Debug.Log("bababababab");
-        }
-        else
-        {
-            _curDetails = details;
-        }
+        _curDetails = 1;
+        formingPoint.transform.position =
+            GetMidPoint(startPost.transform.position, endPost.transform.position);
     }
 
     // Визуализация Дебаг точек
     private void ShowDebugPoints()
     {
-        if (debugRoad)
+        for (int i = 0; i < _vertexRoad.Count; i++)
         {
-            for (int i = 0; i < _vertexRoad.Count; i++)
-            {
-                if (i % 2 == 0)
-                    Instantiate(_vertexCubeRed, _vertexRoad[i], new Quaternion());
-                else
-                    Instantiate(_vertexCubeBLue, _vertexRoad[i], new Quaternion());
-            }
-            for (int i = 0; i < points.Count; i++) Instantiate(_bezierCubeGreen, points[i], new Quaternion());
+            if (i % 2 == 0)
+                Instantiate(_vertexCubeRed, _vertexRoad[i], new Quaternion());
+            else
+                Instantiate(_vertexCubeBLue, _vertexRoad[i], new Quaternion());
         }
+        for (int i = 0; i < points.Count; i++) Instantiate(_bezierCubeGreen, points[i], new Quaternion());
     }
 
     // Рассчет координат точек Безье
@@ -125,11 +110,11 @@ public class CrookedRoad : AbstractRoad
             Vector3 lineDirectionParent = (parentPoints[^1] - parentPoints[^2]).normalized;
             AddVertexes(parentPoints[^1], lineDirectionParent);
         }
-        
         CalculateVertexPoints(points[0], points[1]);
 
-        for (int i = 0; i < points.Count - 1; i++)
-            CalculateVertexPoints(points[i], points[i + 1]);
+        if (!isStraight)
+            for (int i = 0; i < points.Count - 1; i++)
+                CalculateVertexPoints(points[i], points[i + 1]);
         
         Vector3 lineDirection = (points[^1] - points[^2]).normalized;
         AddVertexes(points[^1], lineDirection);
@@ -197,7 +182,8 @@ public class CrookedRoad : AbstractRoad
         var formingPosition = formingPoint.transform.position;
         var startPosition = startPost.transform.position;
         var endPosition = endPost.transform.position;
-        return points[0] != startPosition
+        return points.Count == 0
+               || points[0] != startPosition
                || points[^1] != endPosition
                || !isStraight && formingPosition != _curFormingPointPosition
                || isStraight && GetMidPoint(startPosition, endPosition) != formingPosition;

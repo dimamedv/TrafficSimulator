@@ -7,41 +7,53 @@ public class RoadCreator : MonoBehaviour
 {
     public LayerMask layerMask;
     public bool isStraight;
-    public GameObject cubeRed;
-    public GameObject cubeGreen;
-    public GameObject cubeBlue;
+    public GameObject _startPostPrefab;
+    public GameObject _endPostPrefab;
+    public GameObject _formingPointPrefab;
+    public int details;
+    public Material material;
 
-    GameObject _road;
-    GameObject _startPost;
-    GameObject _endPost;
-    GameObject _formingPoint;
-    int _step;
-    bool _isEnable;
+    private CrookedRoad crooked;
+    private static Vector3 epsV = new Vector3(0f, 0.001f, 0f);
+    private GameObject _road;
+    private GameObject _startPost;
+    private GameObject _endPost;
+    private GameObject _formingPoint;
+    private int _step = 0;
+    private bool _isEnable = false;
+    private int _maxSteps;
 
 
-    private void Awake()
+    public void ButtonStraightIsPressed()
     {
-        _isEnable = false;
-        _step = 0;
+        _maxSteps = 1;
+        ButtonIsPressed();
+    }
+
+    public void ButtonCrookedIsPressed()
+    {
+        _maxSteps = 2;
+        ButtonIsPressed();
     }
 
     public void ButtonIsPressed()
     {
         _isEnable = !_isEnable;
-        if (_isEnable)
-        {
-            CreateObjects();
-        }
-        else
-        {
-            DeleteObjects();
-        }
+        if (_isEnable) CreateObjects();
+        else DeleteObjects();
     }
 
-    void Update()
+    private void Update()
     {
-        if (!_isEnable) return; 
+        if (!_isEnable) return;
 
+        UpdatObjectPosToCursorPos();
+        CheckMouseButton();
+    }
+
+    // Обновляет информацию о положении курсора и перемещает активный объект в эту позицию
+    private void UpdatObjectPosToCursorPos()
+    {
         RaycastHit hit;
         if (Physics.Raycast(RayFromCursor.ray, out hit, 1000, layerMask))
         {
@@ -49,43 +61,47 @@ public class RoadCreator : MonoBehaviour
             {
                 case 0:
                     _startPost.transform.position = hit.point;
+                    AbstractRoad.RebuildGridByPoint(ref _startPost);
                     break;
                 case 1:
+                    crooked.enabled = true;
+                    crooked.isStraight = true;
                     _endPost.transform.position = hit.point;
-                    _road.AddComponent<CrookedRoad>();
-                    CrookedRoad ce = _road.GetComponent<CrookedRoad>();
-                    ce.isStraight = true;
-                    ce.debugRoad = true;
                     break;
                 case 2:
+                    crooked.isStraight = false;
+                    crooked.details = details;
                     _formingPoint.transform.position = hit.point;
                     break;
             }
         }
+    }
 
+    private void CheckMouseButton()
+    {
         if (Input.GetMouseButtonDown(0))
-        {
-            if (_step < 2)
-            _road.transform.GetChild(++_step).GetComponent<MeshRenderer>().enabled = true;
+            if (_step < _maxSteps)
+                _road.transform.GetChild(++_step).GetComponent<MeshRenderer>().enabled = true;
             else
                 CreateObjects();
-        }
         else if (Input.GetMouseButtonDown(1))
-        {
             _road.transform.GetChild(_step--).GetComponent<MeshRenderer>().enabled = false;
-        }
         else if (Input.GetMouseButtonDown(2))
-        {
             DeleteObjects();
-        }
     }
 
     private void CreateObjects()
     {
         _road = new GameObject("CrookedRoad");
-        _startPost = CreateObject(ref _startPost, cubeRed, "StartPost", true);
-        _endPost = CreateObject(ref _endPost, cubeGreen, "EndPost", false);
-        _formingPoint = CreateObject(ref _formingPoint, cubeBlue, "FormingPoint", false);
+        _road.transform.position += epsV;
+        _startPost = CreateObject(ref _startPost, _startPostPrefab, "StartPost", true);
+        _endPost = CreateObject(ref _endPost, _endPostPrefab, "EndPost", false);
+        _formingPoint = CreateObject(ref _formingPoint, _formingPointPrefab, "FormingPoint", false);
+        crooked = _road.AddComponent<CrookedRoad>();
+        crooked.enabled = false;
+        _road.AddComponent<MeshFilter>();
+        MeshRenderer renderer = _road.AddComponent<MeshRenderer>();
+        renderer.material = material;
         _step = 0;
     }
 

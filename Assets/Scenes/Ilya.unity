@@ -1179,6 +1179,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 1
+      - m_Target: {fileID: 1270009637}
+        m_TargetAssemblyTypeName: RoadCreator, Assembly-CSharp
+        m_MethodName: ButtonCrookedIsPressed
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1128022266
 GameObject:
   m_ObjectHideFlags: 0
@@ -1313,7 +1325,7 @@ MonoBehaviour:
         m_CallState: 1
       - m_Target: {fileID: 1270009637}
         m_TargetAssemblyTypeName: RoadCreator, Assembly-CSharp
-        m_MethodName: ButtonIsPressed
+        m_MethodName: ButtonStraightIsPressed
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1451,9 +1463,11 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   isStraight: 0
-  cubeRed: {fileID: 7828182755925728581, guid: f6a7ce4fcc38a864682c710a764a8d34, type: 3}
-  cubeGreen: {fileID: 7000123228065318839, guid: 902844eb2c4c4674ca2f88225217c022, type: 3}
-  cubeBlue: {fileID: 6888316598349574272, guid: f4c5c3b4bd62ed04e842ddbd59b0831c, type: 3}
+  _startPostPrefab: {fileID: 0}
+  _endPostPrefab: {fileID: 0}
+  _formingPointPrefab: {fileID: 0}
+  details: 50
+  material: {fileID: 2100000, guid: f86df5e9984c2ad4199cf4ac5e9d3bde, type: 2}
 --- !u!1 &1669034402
 GameObject:
   m_ObjectHideFlags: 0
@@ -1600,6 +1614,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 94937391793343189, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 190968384688764466, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 190968384688764466, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -18
+      objectReference: {fileID: 0}
+    - target: {fileID: 1586033231271151307, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 1586033231271151307, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -15
+      objectReference: {fileID: 0}
     - target: {fileID: 3119439897018574659, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
       propertyPath: m_LocalPosition.x
       value: 50
@@ -1651,6 +1685,10 @@ PrefabInstance:
     - target: {fileID: 3119439897122742812, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3119439897122743009, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
+      propertyPath: isStraight
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3119439897122743010, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
       propertyPath: m_Name
@@ -1818,6 +1856,30 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 94937391793343189, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 94937391793343189, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -15
+      objectReference: {fileID: 0}
+    - target: {fileID: 190968384688764466, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 55
+      objectReference: {fileID: 0}
+    - target: {fileID: 190968384688764466, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1586033231271151307, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 1586033231271151307, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 3119439897018574659, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
       propertyPath: m_LocalPosition.x
       value: -8.58
