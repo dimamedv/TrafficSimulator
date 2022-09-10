@@ -80,20 +80,14 @@ public class RoadCreator : MonoBehaviour
     private void CheckMouseButton()
     {
         if (Input.GetMouseButtonDown(0))
-        {
             if (_step < _maxSteps)
                 _road.transform.GetChild(++_step).GetComponent<MeshRenderer>().enabled = true;
             else
                 CreateObjects();
-        }
         else if (Input.GetMouseButtonDown(1))
-        {
             _road.transform.GetChild(_step--).GetComponent<MeshRenderer>().enabled = false;
-        }
         else if (Input.GetMouseButtonDown(2))
-        {
             DeleteObjects();
-        }
     }
 
     private void CreateObjects()
