@@ -186,7 +186,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: EndPost
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8156086905709849393, guid: 4f0948268a382a44a9a36c884c7809ff, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 4f0948268a382a44a9a36c884c7809ff, type: 3}
 --- !u!4 &1586033231271151307 stripped
 Transform:
@@ -248,7 +249,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: FormingPoint
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 6576831103699013062, guid: 1b23e89c62025d04ba0c21dfc3d018b5, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 1b23e89c62025d04ba0c21dfc3d018b5, type: 3}
 --- !u!4 &190968384688764466 stripped
 Transform:
@@ -310,7 +312,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: StartPost
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5292191817275804914, guid: 997115982c6ea45488d7f78854c9d493, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 997115982c6ea45488d7f78854c9d493, type: 3}
 --- !u!4 &94937391793343189 stripped
 Transform:
