@@ -26,9 +26,6 @@ public class CrookedRoad : AbstractRoad
         }
         
         RebuildGrid();
-        
-        CheckoutChildPost();
-        CheckoutParentPost();
 
         // Подготавливаем "почву" для построения дороги
         ClearLists();
@@ -39,6 +36,8 @@ public class CrookedRoad : AbstractRoad
         CalculateQuadraticBezierCurve(startPost.transform.position, formingPoint.transform.position,
             endPost.transform.position);
         CalculateMeshVertexPoints();
+        CheckoutChildPost();
+        CheckoutParentPost();
 
         // Визуализируем все, что только можно визуализировать
         if (debugRoad) ShowDebugPoints();
@@ -49,13 +48,12 @@ public class CrookedRoad : AbstractRoad
         _curFormingPointPosition = formingPoint.transform.position;
         
         if (childConnection && childConnection.GetComponent<CrookedRoad>() && !endIteration)
-        {
             childConnection.GetComponent<CrookedRoad>().BuildRoad();
-        }
         if (parentConnection && parentConnection.GetComponent<CrookedRoad>() && !endIteration)
-        {
             parentConnection.GetComponent<CrookedRoad>().BuildRoad();
-        }
+
+        //if (parentConnection == null)
+            //gameObject.AddComponent<CarSpawner>();
     }
 
     // Обнуляет все списки

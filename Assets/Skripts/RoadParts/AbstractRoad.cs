@@ -25,16 +25,14 @@ public abstract class AbstractRoad : MonoBehaviour
 
     public void Awake()
     {
-        RoadList ??= new List<GameObject>();
+        startPost = transform.GetChild(0).gameObject;
+        endPost = transform.GetChild(1).gameObject;
+        formingPoint = transform.GetChild(2).gameObject;
         RoadList.Add(gameObject);
     }
 
     public void Start()
     {
-        startPost = transform.GetChild(0).gameObject;
-        endPost = transform.GetChild(1).gameObject;
-        formingPoint = transform.GetChild(2).gameObject;
-
         BuildRoad();
     }
 
@@ -83,10 +81,10 @@ public abstract class AbstractRoad : MonoBehaviour
         childConnection = null;
         foreach (var checkedRoad in RoadList)
         {
-            if (checkedRoad.GetComponent<AbstractRoad>().startPost.transform.position == endPost.transform.position &&
+            if (checkedRoad.GetComponent<CrookedRoad>().startPost.transform.position == endPost.transform.position &&
                 checkedRoad.gameObject != gameObject)
             {
-                ConnectFromParentToChild(checkedRoad.GetComponent<AbstractRoad>());
+                ConnectFromParentToChild(checkedRoad.GetComponent<CrookedRoad>());
             }
         }
     }
@@ -96,21 +94,21 @@ public abstract class AbstractRoad : MonoBehaviour
         parentConnection = null;
         foreach (var checkedRoad in RoadList)
         {
-            if (checkedRoad.GetComponent<AbstractRoad>().endPost.transform.position == startPost.transform.position &&
+            if (checkedRoad.GetComponent<CrookedRoad>().endPost.transform.position == startPost.transform.position &&
                 checkedRoad.gameObject != gameObject)
             {
-                ConnectFromChildToParent(checkedRoad.GetComponent<AbstractRoad>());
+                ConnectFromChildToParent(checkedRoad.GetComponent<CrookedRoad>());
             }
         }
     }
 
-    private void ConnectFromParentToChild(AbstractRoad newChildRoad)
+    private void ConnectFromParentToChild(CrookedRoad newChildRoad)
     {
         childConnection = newChildRoad.gameObject;
         newChildRoad.parentConnection = gameObject;
     }
 
-    private void ConnectFromChildToParent(AbstractRoad newParentRoad)
+    private void ConnectFromChildToParent(CrookedRoad newParentRoad)
     {
         parentConnection = newParentRoad.gameObject;
         newParentRoad.childConnection = gameObject;
