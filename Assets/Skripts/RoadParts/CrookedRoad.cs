@@ -20,27 +20,32 @@ public class CrookedRoad : AbstractRoad
 
     protected override void BuildRoad(bool endIteration = true)
     {
+        RebuildGrid();
+        
         if (childConnection && childConnection.GetComponent<CrookedRoad>() && !endIteration)
         {
             childConnection.GetComponent<CrookedRoad>().BuildRoad();
         }
-        
-        RebuildGrid();
 
         // Подготавливаем "почву" для построения дороги
         ClearLists();
-        if (isStraight) MakeStraight();
-        else _curDetails = details;
+        if (isStraight) 
+            MakeStraight();
+        else 
+            _curDetails = details;
 
+        CheckoutChildPost();
+        CheckoutParentPost();
+        
         // Строим ВСЕ вершины, на основе которых будем строить меши
         CalculateQuadraticBezierCurve(startPost.transform.position, formingPoint.transform.position,
             endPost.transform.position);
         CalculateMeshVertexPoints();
-        CheckoutChildPost();
-        CheckoutParentPost();
 
         // Визуализируем все, что только можно визуализировать
-        if (debugRoad) ShowDebugPoints();
+        if (debugRoad) 
+            ShowDebugPoints();
+        
         CreateMesh();
 
         // Остаточные действия

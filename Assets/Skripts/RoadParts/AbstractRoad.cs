@@ -33,7 +33,7 @@ public abstract class AbstractRoad : MonoBehaviour
 
     public void Start()
     {
-        BuildRoad();
+        BuildRoad(false);
     }
 
     void LateUpdate()

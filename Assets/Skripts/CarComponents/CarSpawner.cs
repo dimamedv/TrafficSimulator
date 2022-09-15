@@ -33,7 +33,7 @@ public class CarSpawner : MonoBehaviour
 
     public void CarSpawn()
     {
-        GameObject createdCar = Instantiate(carPrefab, road.startPost.transform);
+        GameObject createdCar = Instantiate(carPrefab);
         createdCar.GetComponent<CarBehaviour>().parentRoad = road;
         createdCar.transform.Rotate(-Vector3.up * 90);
     }
