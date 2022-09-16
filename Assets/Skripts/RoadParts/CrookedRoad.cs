@@ -162,7 +162,8 @@ public class CrookedRoad : AbstractRoad
         MeshFilter mf = GetComponent<MeshFilter>();
         Mesh mesh = new Mesh();
         mf.mesh = mesh;
-
+        
+        GetComponent<MeshCollider>().sharedMesh = null;
         MeshCollider mc = GetComponent<MeshCollider>();
         mc.sharedMesh = mesh;
 
