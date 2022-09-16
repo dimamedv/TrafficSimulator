@@ -100,6 +100,7 @@ public class RoadCreator : MonoBehaviour
         crooked.enabled = false;
         _road.AddComponent<MeshFilter>();
         MeshRenderer renderer = _road.AddComponent<MeshRenderer>();
+        MeshCollider collider = _road.AddComponent<MeshCollider>();
         renderer.material = material;
         _step = 0;
     }
