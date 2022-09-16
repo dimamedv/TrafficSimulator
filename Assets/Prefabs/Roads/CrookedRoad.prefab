@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 3119439897122742814}
   - component: {fileID: 3119439897122743009}
   - component: {fileID: 3119439897122743008}
+  - component: {fileID: 4903021686374321333}
   m_Layer: 0
   m_Name: CrookedRoad
   m_TagString: Untagged
@@ -131,6 +132,20 @@ MonoBehaviour:
   carPrefab: {fileID: 8343854920648327717, guid: 0400e5f842870f24c80292515edc3094, type: 3}
   road: {fileID: 3119439897122743009}
   time: 5
+--- !u!64 &4903021686374321333
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3119439897122743010}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 0}
 --- !u!1001 &1419341301434595402
 PrefabInstance:
   m_ObjectHideFlags: 0

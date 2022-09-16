@@ -25,8 +25,11 @@ public class CarBehaviour : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (speed + accelerationPerTick < maxSpeed) speed += accelerationPerTick;
-        else speed = maxSpeed;
+        if (speed + accelerationPerTick < maxSpeed) 
+            speed += accelerationPerTick;
+        else 
+            speed = maxSpeed;
+        
         distance += speed * Time.deltaTime;
 
         int nextPointIndex = MyMath.binarySearch(ref parentRoad.prefixSumSegments, parentRoad.prefixSumSegments.Count, distance);

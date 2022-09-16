@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using static MyMath;
@@ -110,9 +111,23 @@ public class CrookedRoad : AbstractRoad
         if (parentConnection && parentConnection.GetComponent<CrookedRoad>())
         {
             List<Vector3> parentPoints = parentConnection.GetComponent<CrookedRoad>().points;
-            Vector3 lineDirectionParent = (parentPoints[^1] - parentPoints[^2]).normalized;
+            Vector3 lineDirectionParent;
+            
+            //Обработка ошибки выхода за пределы массива точек дороги-родителя при зацикливании дорог
+            try
+            {
+                lineDirectionParent = (parentPoints[^1] - parentPoints[^2]).normalized;
+            }
+            catch (ArgumentOutOfRangeException e)
+            {
+                parentConnection.GetComponent<CrookedRoad>().BuildRoad(true);
+                parentPoints = parentConnection.GetComponent<CrookedRoad>().points;
+                lineDirectionParent = (parentPoints[^1] - parentPoints[^2]).normalized;
+            }
+            
             AddVertexes(parentPoints[^1], lineDirectionParent);
         }
+        
         CalculateVertexPoints(points[0], points[1]);
 
         if (!isStraight)
@@ -147,6 +162,9 @@ public class CrookedRoad : AbstractRoad
         MeshFilter mf = GetComponent<MeshFilter>();
         Mesh mesh = new Mesh();
         mf.mesh = mesh;
+
+        MeshCollider mc = GetComponent<MeshCollider>();
+        mc.sharedMesh = mesh;
 
         // Звбивает координаты вершин в меш
         Vector3[] v = new Vector3[_vertexRoad.Count];
