@@ -9,10 +9,15 @@ public class RoadEditor : MonoBehaviour
 
     private void Update()
     {
-        RaycastHit hit;
-        if (Physics.Raycast(RayFromCursor.ray, out hit, 1000, layerMask))
+        if (Input.GetMouseButtonDown(0))
         {
-            Debug.Log(hit.transform.name);
+            RaycastHit hit;
+            if (Physics.Raycast(RayFromCursor.ray, out hit, 1000, layerMask))
+            {
+                Transform objectHit = hit.transform;
+
+                //objectHit.childCount;
+            }
         }
     }
 }

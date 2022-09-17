@@ -162,10 +162,6 @@ public class CrookedRoad : AbstractRoad
         MeshFilter mf = GetComponent<MeshFilter>();
         Mesh mesh = new Mesh();
         mf.mesh = mesh;
-        
-        GetComponent<MeshCollider>().sharedMesh = null;
-        MeshCollider mc = GetComponent<MeshCollider>();
-        mc.sharedMesh = mesh;
 
         // Звбивает координаты вершин в меш
         Vector3[] v = new Vector3[_vertexRoad.Count];
@@ -187,13 +183,23 @@ public class CrookedRoad : AbstractRoad
         }
 
         mesh.triangles = triangles;
+
+        try
+        {
+            GetComponent<MeshCollider>().sharedMesh = null;
+            MeshCollider mc = GetComponent<MeshCollider>();
+            mc.sharedMesh = mesh;
+        } 
+        catch(Exception err)
+        {
+            Debug.Log(err);
+        }
     }
 
     // Рассчитывает длину дороги, заполняя массив префиксных сумм
     private void CalculateLengthOfRoadSections()
     {
         prefixSumSegments.Add(0.0f);
-
         for (int i = 0; i < points.Count - 1; i++)
             prefixSumSegments.Add(prefixSumSegments[i] + getDistance(points[i], points[i + 1]));
     }

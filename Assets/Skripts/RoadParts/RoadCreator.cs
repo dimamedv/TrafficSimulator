@@ -38,8 +38,9 @@ public class RoadCreator : MonoBehaviour
     public void ButtonIsPressed()
     {
         _isEnable = !_isEnable;
-        if (_isEnable) CreateObjects();
-        else DeleteObjects();
+
+        if (_isEnable)  CreateObjects();
+        else            DeleteObjects();
     }
 
     private void Update()
@@ -50,7 +51,7 @@ public class RoadCreator : MonoBehaviour
         CheckMouseButton();
     }
 
-    // ��������� ���������� � ��������� ������� � ���������� �������� ������ � ��� �������
+    // 
     private void UpdatObjectPosToCursorPos()
     {
         RaycastHit hit;
@@ -82,7 +83,11 @@ public class RoadCreator : MonoBehaviour
             if (_step < _maxSteps)
                 _road.transform.GetChild(++_step).GetComponent<MeshRenderer>().enabled = true;
             else
+            {
+                for (int i = 0; i < _road.transform.childCount; i++)
+                    _road.transform.GetChild(i).GetComponent<MeshRenderer>().enabled = false;
                 CreateObjects();
+            }
         else if (Input.GetMouseButtonDown(1))
             _road.transform.GetChild(_step--).GetComponent<MeshRenderer>().enabled = false;
         else if (Input.GetMouseButtonDown(2))
@@ -91,6 +96,7 @@ public class RoadCreator : MonoBehaviour
 
     private void CreateObjects()
     {
+        gameObject.GetComponent<RoadEditor>().enabled = false;
         _road = new GameObject("CrookedRoad");
         _road.transform.position += epsV;
         _startPost = CreateObject(ref _startPost, _startPostPrefab, "StartPost", true);
@@ -116,6 +122,7 @@ public class RoadCreator : MonoBehaviour
 
     private void DeleteObjects()
     {
+        gameObject.GetComponent<RoadEditor>().enabled = true;
         Destroy(_road);
         Destroy(_startPost);
         Destroy(_endPost);
