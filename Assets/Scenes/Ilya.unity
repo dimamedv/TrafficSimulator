@@ -386,6 +386,7 @@ GameObject:
   - component: {fileID: 325839112}
   - component: {fileID: 325839110}
   - component: {fileID: 325839113}
+  - component: {fileID: 325839114}
   m_Layer: 0
   m_Name: Camera
   m_TagString: MainCamera
@@ -479,6 +480,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9171bc76fb200d4fa4ccd79692a2ed3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &325839114
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 325839108}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 009797ceb4ef48bc9fa583816f9d0ec7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  camera: {fileID: 325839112}
 --- !u!1 &335089600
 GameObject:
   m_ObjectHideFlags: 0
@@ -798,7 +812,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
 --- !u!1 &634653143
 GameObject:
@@ -866,7 +880,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &675841924
 GameObject:
@@ -1426,8 +1440,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1270009636}
   - component: {fileID: 1270009637}
-  m_Layer: 6
-  m_Name: CreateRoad
+  - component: {fileID: 1270009638}
+  m_Layer: 0
+  m_Name: RoadFather
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1446,7 +1461,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1270009637
 MonoBehaviour:
@@ -1468,6 +1483,21 @@ MonoBehaviour:
   _formingPointPrefab: {fileID: 6545930907395441979, guid: 1b23e89c62025d04ba0c21dfc3d018b5, type: 3}
   details: 50
   material: {fileID: 2100000, guid: f86df5e9984c2ad4199cf4ac5e9d3bde, type: 2}
+--- !u!114 &1270009638
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1270009634}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f52c8dde126a86248bf06cc9c5a379f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!1 &1669034402
 GameObject:
   m_ObjectHideFlags: 0
@@ -1645,7 +1675,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3119439897122742812, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3119439897122742812, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1695,6 +1725,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: CrookedRoad (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 3119439897122743010, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 3119439897194691038, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
       propertyPath: m_LocalPosition.x
       value: 173.3
@@ -1710,6 +1744,26 @@ PrefabInstance:
     - target: {fileID: 3119439898306640407, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
       propertyPath: m_LocalPosition.z
       value: 16.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4903021686374321333, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
+      propertyPath: m_Convex
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4903021686374321333, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7138476741176482694, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8377547541254313880, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8625583712305916799, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
@@ -1791,6 +1845,26 @@ PrefabInstance:
     - target: {fileID: 3119439897122743010, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
       propertyPath: m_Name
       value: CrookedRoad (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 3119439897122743010, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4903021686374321333, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7138476741176482694, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8377547541254313880, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8625583712305916799, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
@@ -1929,7 +2003,7 @@ Transform:
   - {fileID: 325839109}
   - {fileID: 1949421463}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &3119439897474227359
 PrefabInstance:
@@ -1972,7 +2046,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3119439897122742812, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 3119439897122742812, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2074,6 +2148,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: CrookedRoad
       objectReference: {fileID: 0}
+    - target: {fileID: 3119439897122743010, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 3119439897194691038, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
       propertyPath: m_LocalPosition.x
       value: 50
@@ -2093,6 +2171,26 @@ PrefabInstance:
     - target: {fileID: 3119439898306640407, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
       propertyPath: m_LocalPosition.z
       value: 7.34
+      objectReference: {fileID: 0}
+    - target: {fileID: 4903021686374321333, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
+      propertyPath: m_Convex
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4903021686374321333, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7138476741176482694, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8377547541254313880, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8625583712305916799, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
