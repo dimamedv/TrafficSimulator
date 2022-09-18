@@ -6,18 +6,15 @@ using UnityEngine.EventSystems;
 public class RoadCreator : MonoBehaviour
 {
     public LayerMask layerMask;
-    public GameObject _startPostPrefab;
-    public GameObject _endPostPrefab;
-    public GameObject _formingPointPrefab;
+    public GameObject _roadPrefab;
     public int details;
     public Material material;
 
     private CrookedRoad crooked;
-    private static Vector3 epsV = new Vector3(0f, 0.001f, 0f);
     private GameObject _road;
-    private GameObject _startPost;
-    private GameObject _endPost;
-    private GameObject _formingPoint;
+    private Transform _startPost;
+    private Transform _endPost;
+    private Transform _formingPoint;
     private int _step = 0;
     private bool _isEnable = false;
     private int _maxSteps;
@@ -64,12 +61,13 @@ public class RoadCreator : MonoBehaviour
             {
                 case 0:
                     _startPost.transform.position = hit.point;
-                    AbstractRoad.RebuildGridByPoint(ref _startPost);
+                    AbstractRoad.RebuildGridByPoint(_startPost);
                     break;
                 case 1:
                     crooked.enabled = true;
                     crooked.isStraight = true;
                     _endPost.transform.position = hit.point;
+                    AbstractRoad.RebuildGridByPoint(_endPost);
                     break;
                 case 2:
                     crooked.isStraight = false;
@@ -100,27 +98,16 @@ public class RoadCreator : MonoBehaviour
     private void CreateRoadSkeleton()
     {
         gameObject.GetComponent<RoadEditor>().enabled = false;
-        _road = new GameObject("CrookedRoad");
-        _road.transform.position += epsV;
-        _startPost = CreateGameObjectFromPrefab(ref _startPost, _startPostPrefab, "StartPost", true);
-        _endPost = CreateGameObjectFromPrefab(ref _endPost, _endPostPrefab, "EndPost", false);
-        _formingPoint = CreateGameObjectFromPrefab(ref _formingPoint, _formingPointPrefab, "FormingPoint", false);
-        crooked = _road.AddComponent<CrookedRoad>();
+        _road = Instantiate(_roadPrefab);
+        _startPost = _road.transform.GetChild(0);
+        _endPost = _road.transform.GetChild(1);
+        _formingPoint = _road.transform.GetChild(2);
+        for (int i = 0; i < _road.transform.childCount; i++)
+            _road.transform.GetChild(i).GetComponent<MeshRenderer>().enabled = false;
+        crooked = _road.transform.GetComponent<CrookedRoad>();
         crooked.enabled = false;
-        _road.AddComponent<MeshFilter>();
-        MeshRenderer renderer = _road.AddComponent<MeshRenderer>();
-        renderer.material = material;
+        _startPost.GetComponent<MeshRenderer>().enabled = true;
         _step = 0;
-    }
-
-    private ref GameObject CreateGameObjectFromPrefab(ref GameObject __gameObject, GameObject __prefab, string __name,
-        bool __isVisible = false)
-    {
-        __gameObject = Instantiate(__prefab);
-        __gameObject.transform.SetParent(_road.transform, false);
-        __gameObject.name = __name;
-        __gameObject.GetComponent<MeshRenderer>().enabled = __isVisible;
-        return ref __gameObject;
     }
 
     private void DeleteObjects()

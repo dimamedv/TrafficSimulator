@@ -15,6 +15,7 @@ public class RoadEditor : MonoBehaviour
             if (Physics.Raycast(RayFromCursor.ray, out hit, 1000, layerMask))
             {
                 Transform objectHit = hit.transform;
+                Debug.Log(objectHit.name);
 
                 //objectHit.childCount;
             }
