@@ -50,14 +50,12 @@ public abstract class AbstractRoad : MonoBehaviour
     }
 
 
-    public static void RebuildGridByPoint(ref GameObject t)
+    public static void RebuildGridByPoint(Transform t)
     {
-        var position = t.transform.position;
-        position = new Vector3(
-            RebuildGridByAxis(position.x),
+        t.transform.position = new Vector3(
+            RebuildGridByAxis(t.transform.position.x),
             0.0f,
-            RebuildGridByAxis(position.z));
-        t.transform.position = position;
+            RebuildGridByAxis(t.transform.position.z));
     }
 
     private static float RebuildGridByAxis(float x)
@@ -72,8 +70,8 @@ public abstract class AbstractRoad : MonoBehaviour
     // Подстраивает точки под сетку
     protected  void RebuildGrid()
     {
-        RebuildGridByPoint(ref startPost);
-        RebuildGridByPoint(ref endPost);
+        RebuildGridByPoint(startPost.transform);
+        RebuildGridByPoint(endPost.transform);
     }
 
     protected void CheckoutChildPost()

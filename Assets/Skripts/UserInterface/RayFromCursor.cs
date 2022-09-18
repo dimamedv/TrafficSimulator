@@ -10,7 +10,5 @@ public class RayFromCursor : MonoBehaviour
     {
         ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         Debug.DrawRay(Camera.main.transform.position, ray.direction);
-        
-        
     }
 }

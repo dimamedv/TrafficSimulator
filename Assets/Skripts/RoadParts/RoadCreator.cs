@@ -6,18 +6,15 @@ using UnityEngine.EventSystems;
 public class RoadCreator : MonoBehaviour
 {
     public LayerMask layerMask;
-    public GameObject _startPostPrefab;
-    public GameObject _endPostPrefab;
-    public GameObject _formingPointPrefab;
+    public GameObject _roadPrefab;
     public int details;
     public Material material;
 
     private CrookedRoad crooked;
-    private static Vector3 epsV = new Vector3(0f, 0.001f, 0f);
     private GameObject _road;
-    private GameObject _startPost;
-    private GameObject _endPost;
-    private GameObject _formingPoint;
+    private Transform _startPost;
+    private Transform _endPost;
+    private Transform _formingPoint;
     private int _step = 0;
     private bool _isEnable = false;
     private int _maxSteps;
@@ -39,8 +36,10 @@ public class RoadCreator : MonoBehaviour
     {
         _isEnable = !_isEnable;
 
-        if (_isEnable)  CreateObjects();
-        else            DeleteObjects();
+        if (_isEnable)  
+            CreateObjects();
+        else            
+            DeleteObjects();
     }
 
     private void Update()
@@ -61,12 +60,13 @@ public class RoadCreator : MonoBehaviour
             {
                 case 0:
                     _startPost.transform.position = hit.point;
-                    AbstractRoad.RebuildGridByPoint(ref _startPost);
+                    AbstractRoad.RebuildGridByPoint(_startPost);
                     break;
                 case 1:
                     crooked.enabled = true;
                     crooked.isStraight = true;
                     _endPost.transform.position = hit.point;
+                    AbstractRoad.RebuildGridByPoint(_endPost);
                     break;
                 case 2:
                     crooked.isStraight = false;
@@ -83,11 +83,7 @@ public class RoadCreator : MonoBehaviour
             if (_step < _maxSteps)
                 _road.transform.GetChild(++_step).GetComponent<MeshRenderer>().enabled = true;
             else
-            {
-                for (int i = 0; i < _road.transform.childCount; i++)
-                    _road.transform.GetChild(i).GetComponent<MeshRenderer>().enabled = false;
                 CreateObjects();
-            }
         else if (Input.GetMouseButtonDown(1))
             _road.transform.GetChild(_step--).GetComponent<MeshRenderer>().enabled = false;
         else if (Input.GetMouseButtonDown(2))
@@ -97,27 +93,16 @@ public class RoadCreator : MonoBehaviour
     private void CreateObjects()
     {
         gameObject.GetComponent<RoadEditor>().enabled = false;
-        _road = new GameObject("CrookedRoad");
-        _road.transform.position += epsV;
-        _startPost = CreateObject(ref _startPost, _startPostPrefab, "StartPost", true);
-        _endPost = CreateObject(ref _endPost, _endPostPrefab, "EndPost", false);
-        _formingPoint = CreateObject(ref _formingPoint, _formingPointPrefab, "FormingPoint", false);
-        crooked = _road.AddComponent<CrookedRoad>();
+        _road = Instantiate(_roadPrefab);
+        _startPost = _road.transform.GetChild(0);
+        _endPost = _road.transform.GetChild(1);
+        _formingPoint = _road.transform.GetChild(2);
+        for (int i = 0; i < _road.transform.childCount; i++)
+            _road.transform.GetChild(i).GetComponent<MeshRenderer>().enabled = false;
+        crooked = _road.transform.GetComponent<CrookedRoad>();
         crooked.enabled = false;
-        _road.AddComponent<MeshFilter>();
-        MeshRenderer renderer = _road.AddComponent<MeshRenderer>();
-        MeshCollider collider = _road.AddComponent<MeshCollider>();
-        renderer.material = material;
+        _startPost.GetComponent<MeshRenderer>().enabled = true;
         _step = 0;
-    }
-
-    private ref GameObject CreateObject(ref GameObject __gameObject, GameObject __prefab, string __name, bool __isVisible = false)
-    {
-        __gameObject = Instantiate(__prefab);
-        __gameObject.transform.SetParent(_road.transform, false);
-        __gameObject.name = __name;
-        __gameObject.GetComponent<MeshRenderer>().enabled = __isVisible;
-        return ref __gameObject;
     }
 
     private void DeleteObjects()
