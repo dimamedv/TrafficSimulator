@@ -39,20 +39,23 @@ public class RoadCreator : MonoBehaviour
     {
         _isEnable = !_isEnable;
 
-        if (_isEnable)  CreateObjects();
-        else            DeleteObjects();
+        if (_isEnable)  
+            CreateRoadSkeleton();
+        else            
+            DeleteObjects();
     }
 
     private void Update()
     {
-        if (!_isEnable) return;
-
-        UpdatObjectPosToCursorPos();
-        CheckMouseButton();
+        if (_isEnable)
+        {
+            UpdateObjectPosToCursorPos();
+            CheckMouseButton();
+        }
     }
-
-    // 
-    private void UpdatObjectPosToCursorPos()
+    
+    
+    private void UpdateObjectPosToCursorPos()
     {
         RaycastHit hit;
         if (Physics.Raycast(RayFromCursor.ray, out hit, 1000, layerMask))
@@ -86,7 +89,7 @@ public class RoadCreator : MonoBehaviour
             {
                 for (int i = 0; i < _road.transform.childCount; i++)
                     _road.transform.GetChild(i).GetComponent<MeshRenderer>().enabled = false;
-                CreateObjects();
+                CreateRoadSkeleton();
             }
         else if (Input.GetMouseButtonDown(1))
             _road.transform.GetChild(_step--).GetComponent<MeshRenderer>().enabled = false;
@@ -94,24 +97,24 @@ public class RoadCreator : MonoBehaviour
             DeleteObjects();
     }
 
-    private void CreateObjects()
+    private void CreateRoadSkeleton()
     {
         gameObject.GetComponent<RoadEditor>().enabled = false;
         _road = new GameObject("CrookedRoad");
         _road.transform.position += epsV;
-        _startPost = CreateObject(ref _startPost, _startPostPrefab, "StartPost", true);
-        _endPost = CreateObject(ref _endPost, _endPostPrefab, "EndPost", false);
-        _formingPoint = CreateObject(ref _formingPoint, _formingPointPrefab, "FormingPoint", false);
+        _startPost = CreateGameObjectFromPrefab(ref _startPost, _startPostPrefab, "StartPost", true);
+        _endPost = CreateGameObjectFromPrefab(ref _endPost, _endPostPrefab, "EndPost", false);
+        _formingPoint = CreateGameObjectFromPrefab(ref _formingPoint, _formingPointPrefab, "FormingPoint", false);
         crooked = _road.AddComponent<CrookedRoad>();
         crooked.enabled = false;
         _road.AddComponent<MeshFilter>();
         MeshRenderer renderer = _road.AddComponent<MeshRenderer>();
-        MeshCollider collider = _road.AddComponent<MeshCollider>();
         renderer.material = material;
         _step = 0;
     }
 
-    private ref GameObject CreateObject(ref GameObject __gameObject, GameObject __prefab, string __name, bool __isVisible = false)
+    private ref GameObject CreateGameObjectFromPrefab(ref GameObject __gameObject, GameObject __prefab, string __name,
+        bool __isVisible = false)
     {
         __gameObject = Instantiate(__prefab);
         __gameObject.transform.SetParent(_road.transform, false);

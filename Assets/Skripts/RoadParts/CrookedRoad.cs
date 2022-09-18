@@ -184,17 +184,13 @@ public class CrookedRoad : AbstractRoad
 
         mesh.triangles = triangles;
 
-        try
+        if (mesh.vertices.Length > 3)
         {
-            GetComponent<MeshCollider>().sharedMesh = null;
+            MeshCollider collider = gameObject.AddComponent<MeshCollider>();
             MeshCollider mc = GetComponent<MeshCollider>();
             mc.sharedMesh = mesh;
         } 
-        catch(Exception err)
-        {
-            Debug.Log(err);
         }
-    }
 
     // Рассчитывает длину дороги, заполняя массив префиксных сумм
     private void CalculateLengthOfRoadSections()
