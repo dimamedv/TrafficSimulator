@@ -386,7 +386,6 @@ GameObject:
   - component: {fileID: 325839112}
   - component: {fileID: 325839110}
   - component: {fileID: 325839113}
-  - component: {fileID: 325839114}
   m_Layer: 0
   m_Name: Camera
   m_TagString: MainCamera
@@ -480,19 +479,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9171bc76fb200d4fa4ccd79692a2ed3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &325839114
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 325839108}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 009797ceb4ef48bc9fa583816f9d0ec7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  camera: {fileID: 325839112}
 --- !u!1 &335089600
 GameObject:
   m_ObjectHideFlags: 0
@@ -1478,9 +1464,7 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 64
-  _startPostPrefab: {fileID: 5252301188195550223, guid: 997115982c6ea45488d7f78854c9d493, type: 3}
-  _endPostPrefab: {fileID: 8116178819741311948, guid: 4f0948268a382a44a9a36c884c7809ff, type: 3}
-  _formingPointPrefab: {fileID: 6545930907395441979, guid: 1b23e89c62025d04ba0c21dfc3d018b5, type: 3}
+  _roadPrefab: {fileID: 3119439897122743010, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
   details: 50
   material: {fileID: 2100000, guid: f86df5e9984c2ad4199cf4ac5e9d3bde, type: 2}
 --- !u!114 &1270009638
