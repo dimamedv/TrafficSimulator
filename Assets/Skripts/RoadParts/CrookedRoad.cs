@@ -186,7 +186,6 @@ public class CrookedRoad : AbstractRoad
 
         if (mesh.vertices.Length > 3)
         {
-            MeshCollider collider = gameObject.AddComponent<MeshCollider>();
             MeshCollider mc = GetComponent<MeshCollider>();
             mc.sharedMesh = mesh;
         } 

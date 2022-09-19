@@ -50,15 +50,34 @@ public abstract class AbstractRoad : MonoBehaviour
     }
 
 
-    public static void RebuildGridByPoint(Transform t)
+    public static void RebuildPointByGrid(Transform t)
     {
         t.transform.position = new Vector3(
-            RebuildGridByAxis(t.transform.position.x),
+            RebuildAxisByGrid(t.transform.position.x),
             0.0f,
-            RebuildGridByAxis(t.transform.position.z));
+            RebuildAxisByGrid(t.transform.position.z));
     }
 
-    private static float RebuildGridByAxis(float x)
+
+    public static void TurnOnKids(GameObject _gameObject)
+    {
+        for (int i = 0; i < _gameObject.transform.childCount; i++)
+        {
+            _gameObject.transform.GetChild(i).GetComponent<MeshRenderer>().enabled = true;
+            _gameObject.transform.GetChild(i).GetComponent<BoxCollider>().enabled = true;
+        }
+    }
+
+    public static void TurnOffKids(GameObject _gameObject)
+    {
+        for (int i = 0; i < _gameObject.transform.childCount; i++)
+        {
+            _gameObject.transform.GetChild(i).GetComponent<MeshRenderer>().enabled = false;
+            _gameObject.transform.GetChild(i).GetComponent<BoxCollider>().enabled = false;
+        }
+    }
+
+    private static float RebuildAxisByGrid(float x)
     {
         float remains = x % GlobalSettings.gridStep;
         if (remains < gridStep / 2)
@@ -70,8 +89,8 @@ public abstract class AbstractRoad : MonoBehaviour
     // Подстраивает точки под сетку
     protected  void RebuildGrid()
     {
-        RebuildGridByPoint(startPost.transform);
-        RebuildGridByPoint(endPost.transform);
+        RebuildPointByGrid(startPost.transform);
+        RebuildPointByGrid(endPost.transform);
     }
 
     protected void CheckoutChildPost()
@@ -111,6 +130,7 @@ public abstract class AbstractRoad : MonoBehaviour
         parentConnection = newParentRoad.gameObject;
         newParentRoad.childConnection = gameObject;
     }
+
     
     protected abstract void BuildRoad(bool endIteration = true);
     protected abstract bool NeedsRebuild();

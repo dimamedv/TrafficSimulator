@@ -54,27 +54,33 @@ public class RoadCreator : MonoBehaviour
     
     private void UpdateObjectPosToCursorPos()
     {
-        RaycastHit hit;
-        if (Physics.Raycast(RayFromCursor.ray, out hit, 1000, layerMask))
-        {
-            switch (_step)
+        switch (_step)
             {
                 case 0:
-                    _startPost.transform.position = hit.point;
-                    AbstractRoad.RebuildGridByPoint(_startPost);
+                    MovePoint(_startPost, layerMask, true);
                     break;
                 case 1:
                     crooked.enabled = true;
                     crooked.isStraight = true;
-                    _endPost.transform.position = hit.point;
-                    AbstractRoad.RebuildGridByPoint(_endPost);
+                    MovePoint(_endPost, layerMask, true);
                     break;
                 case 2:
                     crooked.isStraight = false;
                     crooked.details = details;
-                    _formingPoint.transform.position = hit.point;
+                    MovePoint(_formingPoint, layerMask, false);
                     break;
             }
+        
+    }
+
+    public static void MovePoint(Transform _transform, LayerMask _layerMask, bool _rebuildPointByGrid)
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(RayFromCursor.ray, out hit, 1000, _layerMask))
+        {
+            _transform.position = hit.point;
+            if (_rebuildPointByGrid)
+                AbstractRoad.RebuildPointByGrid(_transform);
         }
     }
 
@@ -99,6 +105,7 @@ public class RoadCreator : MonoBehaviour
     {
         gameObject.GetComponent<RoadEditor>().enabled = false;
         _road = Instantiate(_roadPrefab);
+        _road.name = "Road";
         _startPost = _road.transform.GetChild(0);
         _endPost = _road.transform.GetChild(1);
         _formingPoint = _road.transform.GetChild(2);
