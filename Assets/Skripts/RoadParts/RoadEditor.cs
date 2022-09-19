@@ -7,10 +7,10 @@ public class RoadEditor : MonoBehaviour
     public LayerMask layerMaskRoad;
     public LayerMask layerMaskGround;
 
-    public GameObject lastObject = null;
-    public GameObject objectHit;
-    public Transform activePointTransform = null;
-    public RaycastHit hit;
+    private GameObject lastObject = null;
+    private GameObject objectHit;
+    private Transform activePointTransform = null;
+    private RaycastHit hit;
 
     private void Update()
     {
