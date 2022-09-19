@@ -16,7 +16,7 @@ public class RoadEditor : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            if (Physics.Raycast(RayFromCursor.ray, out hit, 1000, layerMaskRoad))
+            if (activePointTransform == null && Physics.Raycast(RayFromCursor.ray, out hit, 1000, layerMaskRoad))
             {
                 objectHit = hit.transform.gameObject;
                 AbstractRoad.TurnOnKids(objectHit);
@@ -25,7 +25,10 @@ public class RoadEditor : MonoBehaviour
                 {
                     objectHit.GetComponent<MeshCollider>().enabled = false;
                     if (lastObject != null)
+                    {
                         lastObject.GetComponent<MeshCollider>().enabled = true;
+                        AbstractRoad.TurnOffKids(lastObject);
+                    }
                     lastObject = objectHit;
                 }
                 else
