@@ -1,66 +1,137 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
+using static GlobalSettings;
 
 public abstract class AbstractRoad : MonoBehaviour
 {
-    public GameObject startPost; // ��������� �����
-    public GameObject endPost; // �������� �����
-    public GameObject parentPost; // ��������
-    public GameObject childPost; // �������
-    public float width; // ������ ������
-    public List<Vector3> points; // �����, ����� ������� �������� ����������
-    public List<float> prefixSumSegments; // ���������� ����� ���� ��������� ������
-    public float gridStep; // ��� ����� ��������
-    public List<Vector3> angles; // ���� �� ��������� �����. (cosA, 0, sinA)
-    public List<GameObject> carsOnThisRoad;
+    public GameObject parentConnection; // Соединение с родителем
+    public GameObject childConnection; // Соединение с ребенком
+    public GameObject _vertexCubeRed; // Куб для отоборажение одной стороны дороги в режиме дебага
+    public GameObject _vertexCubeBLue; // Куб для отоборажение одной стороны дороги в режиме дебага
+    public GameObject _bezierCubeGreen; // Куб для отображения точек центра дороги в режиме дебага
+    public List<Vector3> points = new List<Vector3>(); // Массив центральных точек (Безье), по которым едет машина
+    public List<float> prefixSumSegments = new List<float>(); // Массив префиксных сумм. Последний элемент - длина всей дороги
+    public List<GameObject> carsOnThisRoad; // Массив машин, который в данный момент едут по этой дороге
+
+    public static List<GameObject> RoadList = new List<GameObject>(); // Массив всех дорог
+    public GameObject startPost; // Стартовая точка
+    public GameObject endPost; // Конечная точка
+    public GameObject formingPoint; // Формирующая точка
+    public Vector3 _curFormingPointPosition; // "Указатель" на формирующую точку, чтобы отслеживать перемещение
 
 
     public void Awake()
     {
-        transform.position = Vector3.zero;
         startPost = transform.GetChild(0).gameObject;
         endPost = transform.GetChild(1).gameObject;
-
-        BuildRoad();
+        formingPoint = transform.GetChild(2).gameObject;
+        RoadList.Add(gameObject);
     }
 
-    void FixedUpdate()
+    public void Start()
     {
-        transform.position = Vector3.zero;
+        BuildRoad(false);
+    }
+
+    void LateUpdate()
+    {
         if (NeedsRebuild())
         {
-            BuildRoad();
+            BuildRoad(false);
         }
     }
 
-
-    protected void RebuildGridByPoint(ref GameObject t)
+    public void OnDestroy()
     {
-        var position = t.transform.position;
-        position = new Vector3(
-            RebuildGridByAxis(position.x),
-            0.0f,
-            RebuildGridByAxis(position.z));
-        t.transform.position = position;
+        RoadList.Remove(gameObject);
     }
 
-    private float RebuildGridByAxis(float x)
+    public static void TurnOnKids(GameObject _gameObject)
     {
-        float remains = x % gridStep;
-        if (remains < gridStep / 2)
+        for (int i = 0; i < _gameObject.transform.childCount; i++)
+        {
+            _gameObject.transform.GetChild(i).GetComponent<MeshRenderer>().enabled = true;
+            _gameObject.transform.GetChild(i).GetComponent<BoxCollider>().enabled = true;
+        }
+    }
+
+    public static void TurnOffKids(GameObject _gameObject)
+    {
+        for (int i = 0; i < _gameObject.transform.childCount; i++)
+        {
+            _gameObject.transform.GetChild(i).GetComponent<MeshRenderer>().enabled = false;
+            _gameObject.transform.GetChild(i).GetComponent<BoxCollider>().enabled = false;
+        }
+    }
+
+    // Подстраивает точки под сетку
+    protected void RebuildGrid()
+    {
+        RebuildPointByGrid(startPost.transform);
+        RebuildPointByGrid(endPost.transform);
+    }
+
+    public static void RebuildPointByGrid(Transform t)
+    {
+        t.transform.position = new Vector3(
+            RebuildAxisByGrid(t.transform.position.x),
+            0.0f,
+            RebuildAxisByGrid(t.transform.position.z));
+    }
+
+    private static float RebuildAxisByGrid(float x)
+    {
+        float remains = x % GlobalSettings.gridStep;
+        float isNegative = (x < 0 ? -1 : 1);
+
+        if (isNegative * remains < gridStep / 2)
             return x - remains;
         else
-            return x - remains + gridStep;
+            return x - remains + isNegative * gridStep;
+    }
+
+    protected void CheckoutChildPost()
+    {
+        childConnection = null;
+        foreach (var checkedRoad in RoadList)
+        {
+            if (checkedRoad.GetComponent<CrookedRoad>().startPost.transform.position == endPost.transform.position &&
+                checkedRoad.gameObject != gameObject)
+            {
+                ConnectFromParentToChild(checkedRoad.GetComponent<CrookedRoad>());
+            }
+        }
     }
     
-    protected  void RebuildGrid()
+    protected void CheckoutParentPost()
     {
-        RebuildGridByPoint(ref startPost);
-        RebuildGridByPoint(ref endPost);
+        parentConnection = null;
+        foreach (var checkedRoad in RoadList)
+        {
+            if (checkedRoad.GetComponent<CrookedRoad>().endPost.transform.position == startPost.transform.position &&
+                checkedRoad.gameObject != gameObject)
+            {
+                ConnectFromChildToParent(checkedRoad.GetComponent<CrookedRoad>());
+            }
+        }
+    }
+
+    private void ConnectFromParentToChild(CrookedRoad newChildRoad)
+    {
+        childConnection = newChildRoad.gameObject;
+        newChildRoad.parentConnection = gameObject;
+    }
+
+    private void ConnectFromChildToParent(CrookedRoad newParentRoad)
+    {
+        parentConnection = newParentRoad.gameObject;
+        newParentRoad.childConnection = gameObject;
     }
 
     
-    protected abstract void BuildRoad();
+    protected abstract void BuildRoad(bool endIteration = true);
     protected abstract bool NeedsRebuild();
 }

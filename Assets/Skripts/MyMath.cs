@@ -24,15 +24,18 @@ public class MyMath
 
     public static int binarySearch(ref List<float> a, int size, float x)
     {
-        int left = 1;
+        int left = -1;
         int right = size - 1;
-        while (left <= right)
+        while (right - left > 1)
         {
-            int mid = (right + left) / 2;
-            if (a[mid] - x < eps) left = mid + 1;
-            else right = mid - 1;
+            int mid = left + (right - left) / 2;
+            
+            if (a[mid] < x) 
+                left = mid;
+            else 
+                right = mid;
         }
 
-        return left - 1;
+        return right;
     }
 }

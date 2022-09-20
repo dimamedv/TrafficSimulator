@@ -5,17 +5,17 @@ using System;
 
 public class CarBehaviour : MonoBehaviour
 {
-    // Максимальная скорость
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     public float maxSpeed;
-    // Ускорение в секунду
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     public float acceleration;
-    // Скорость в секунду
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     public float speed;
-    // Дорога, которой принадлежит авто
+    // пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
     public AbstractRoad parentRoad;
-    // Расстояние, которое прошла машина по дороге
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
     public float distance;
-    // Ускорение в тик
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅ
     private float accelerationPerTick;
 
     private void Awake()
@@ -25,15 +25,28 @@ public class CarBehaviour : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (speed + accelerationPerTick < maxSpeed) speed += accelerationPerTick;
-        else speed = maxSpeed;
+        if (speed + accelerationPerTick < maxSpeed) 
+            speed += accelerationPerTick;
+        else 
+            speed = maxSpeed;
+        
         distance += speed * Time.deltaTime;
 
-        int a = MyMath.binarySearch(ref parentRoad.prefixSumSegments, parentRoad.prefixSumSegments.Count, distance);
-        transform.LookAt(new Vector3(parentRoad.points[a + 1].x, parentRoad.points[a + 1].y + transform.position.y, parentRoad.points[a + 1].z));
+        int nextPointIndex = MyMath.binarySearch(ref parentRoad.prefixSumSegments, parentRoad.prefixSumSegments.Count, distance);
+        transform.LookAt(new Vector3(parentRoad.points[nextPointIndex].x, parentRoad.points[nextPointIndex].y + transform.position.y,
+            parentRoad.points[nextPointIndex].z));
         transform.Rotate(-Vector3.up * 90);
 
         transform.position += transform.right * (speed * Time.deltaTime);
+        
+        if (distance >= parentRoad.prefixSumSegments[^1])
+        {
+            distance = 0;
+            if (parentRoad.childConnection != null)
+                parentRoad = parentRoad.childConnection.GetComponent<AbstractRoad>();
+            else 
+                Destroy(gameObject);
+        }
     }
     
     

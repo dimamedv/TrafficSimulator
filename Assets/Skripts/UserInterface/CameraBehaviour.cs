@@ -6,19 +6,13 @@ using UnityEngine;
 public class CameraBehaviour : MonoBehaviour
 {
     public float _runSpeed = 10;
+    public float _scaleMultiplier = 1.2f;
     public Camera _camera;
     public Vector2 ScaleDistance;
 
-    private float _distance;
     private Vector3 _previousPosition;
     private float cameraDistance;
 
-
-    private void Start()
-    {
-        // Расстояние пройденное телом за 1 тик
-        _distance = _runSpeed * Time.deltaTime;
-    }
 
     // Update is called once per frame
     private void Update()
@@ -33,14 +27,14 @@ public class CameraBehaviour : MonoBehaviour
         float x = 0;
         float z = 0;
 
-        if (Input.GetKey("w"))
-            z += _distance;
-        if (Input.GetKey("s"))
-            z -= _distance;
         if (Input.GetKey("d"))
-            x += _distance;
+            x += _runSpeed * Time.deltaTime;
         if (Input.GetKey("a"))
-            x -= _distance;
+            x -= _runSpeed * Time.deltaTime;
+        if (Input.GetKey("w"))
+            z += _runSpeed * Time.deltaTime;
+        if (Input.GetKey("s"))
+            z -= _runSpeed * Time.deltaTime;
 
         transform.parent.Translate(
             new Vector3(x, 0, z)
@@ -88,11 +82,13 @@ public class CameraBehaviour : MonoBehaviour
 
         if (mw > 0f && cameraDistance > (float)ScaleDistance.x)
         {
-            _camera.transform.localPosition = CameraPosition / 1.2f;
+            _camera.transform.localPosition = CameraPosition / _scaleMultiplier;
+            _runSpeed /= _scaleMultiplier;
         }
         else if (mw < 0f && cameraDistance < (float)ScaleDistance.y)
         {
-            _camera.transform.localPosition = CameraPosition * 1.2f;
+            _camera.transform.localPosition = CameraPosition * _scaleMultiplier;
+            _runSpeed *= _scaleMultiplier;
         }
     }
 }
