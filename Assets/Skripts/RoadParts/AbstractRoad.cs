@@ -49,16 +49,6 @@ public abstract class AbstractRoad : MonoBehaviour
         RoadList.Remove(gameObject);
     }
 
-
-    public static void RebuildPointByGrid(Transform t)
-    {
-        t.transform.position = new Vector3(
-            RebuildAxisByGrid(t.transform.position.x),
-            0.0f,
-            RebuildAxisByGrid(t.transform.position.z));
-    }
-
-
     public static void TurnOnKids(GameObject _gameObject)
     {
         for (int i = 0; i < _gameObject.transform.childCount; i++)
@@ -77,20 +67,30 @@ public abstract class AbstractRoad : MonoBehaviour
         }
     }
 
-    private static float RebuildAxisByGrid(float x)
-    {
-        float remains = x % GlobalSettings.gridStep;
-        if (remains < gridStep / 2)
-            return x - remains;
-        else
-            return x - remains + gridStep;
-    }
-    
     // Подстраивает точки под сетку
-    protected  void RebuildGrid()
+    protected void RebuildGrid()
     {
         RebuildPointByGrid(startPost.transform);
         RebuildPointByGrid(endPost.transform);
+    }
+
+    public static void RebuildPointByGrid(Transform t)
+    {
+        t.transform.position = new Vector3(
+            RebuildAxisByGrid(t.transform.position.x),
+            0.0f,
+            RebuildAxisByGrid(t.transform.position.z));
+    }
+
+    private static float RebuildAxisByGrid(float x)
+    {
+        float remains = x % GlobalSettings.gridStep;
+        float isNegative = (x < 0 ? -1 : 1);
+
+        if (isNegative * remains < gridStep / 2)
+            return x - remains;
+        else
+            return x - remains + isNegative * gridStep;
     }
 
     protected void CheckoutChildPost()
