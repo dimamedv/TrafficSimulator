@@ -348,6 +348,7 @@ GameObject:
   - component: {fileID: 1156650580804449565}
   - component: {fileID: 6849644535136260887}
   - component: {fileID: 1402405558815307458}
+  - component: {fileID: -7209560634839661780}
   m_Layer: 0
   m_Name: Car_6_Green
   m_TagString: Untagged
@@ -443,3 +444,16 @@ MonoBehaviour:
   speed: 0
   parentRoad: {fileID: 0}
   distance: 0
+--- !u!65 &-7209560634839661780
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8343854920648327717}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.045798216, y: 0.013064211, z: 0.021283576}
+  m_Center: {x: 8.526796e-32, y: -6.9849193e-10, z: -9.057421e-25}

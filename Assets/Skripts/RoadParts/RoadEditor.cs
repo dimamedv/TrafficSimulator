@@ -43,7 +43,7 @@ public class RoadEditor : MonoBehaviour
             {
                 if (activePointTransform == null)
                 {
-                    lastObject.GetComponent<MeshCollider>().enabled = true;
+                    lastObject.GetComponent<MeshCollider>().enabled = false;
                     AbstractRoad.TurnOffKids(lastObject);
                     lastObject = null;
                 }
