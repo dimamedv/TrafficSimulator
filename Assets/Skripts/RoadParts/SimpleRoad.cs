@@ -215,4 +215,61 @@ public class SimpleRoad : AbstractRoad
                || !isStraight && formingPosition != _curFormingPointPosition
                || isStraight && GetMidPoint(startPosition, endPosition) != formingPosition;
     }
+
+    public static void TurnOnKids(GameObject _gameObject)
+    {
+        for (int i = 0; i < _gameObject.transform.childCount; i++)
+        {
+            _gameObject.transform.GetChild(i).GetComponent<MeshRenderer>().enabled = true;
+            _gameObject.transform.GetChild(i).GetComponent<BoxCollider>().enabled = true;
+        }
+    }
+
+    public static void TurnOffKids(GameObject _gameObject)
+    {
+        for (int i = 0; i < _gameObject.transform.childCount; i++)
+        {
+            _gameObject.transform.GetChild(i).GetComponent<MeshRenderer>().enabled = false;
+            _gameObject.transform.GetChild(i).GetComponent<BoxCollider>().enabled = false;
+        }
+    }
+    protected void CheckoutChildPost()
+    {
+        childConnection = null;
+        foreach (var checkedRoad in RoadList)
+        {
+            if (checkedRoad.GetComponent<SimpleRoad>().startPost.transform.position == endPost.transform.position &&
+                checkedRoad.gameObject != gameObject)
+            {
+                ConnectFromParentToChild(checkedRoad.GetComponent<SimpleRoad>());
+            }
+        }
+    }
+
+    protected void CheckoutParentPost()
+    {
+        parentConnection = null;
+        foreach (var checkedRoad in RoadList)
+        {
+            if (checkedRoad.GetComponent<SimpleRoad>().endPost.transform.position == startPost.transform.position &&
+                checkedRoad.gameObject != gameObject)
+            {
+                ConnectFromChildToParent(checkedRoad.GetComponent<SimpleRoad>());
+            }
+        }
+    }
+
+    private void ConnectFromParentToChild(SimpleRoad newChildRoad)
+    {
+        childConnection = newChildRoad.gameObject;
+        newChildRoad.parentConnection = gameObject;
+    }
+
+    private void ConnectFromChildToParent(SimpleRoad newParentRoad)
+    {
+        parentConnection = newParentRoad.gameObject;
+        newParentRoad.childConnection = gameObject;
+    }
+
+
 }

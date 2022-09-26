@@ -19,7 +19,7 @@ public class RoadEditor : MonoBehaviour
             if (activePointTransform == null && Physics.Raycast(RayFromCursor.ray, out hit, 1000, layerMaskRoad))
             {
                 objectHit = hit.transform.gameObject;
-                AbstractRoad.TurnOnKids(objectHit);
+                SimpleRoad.TurnOnKids(objectHit);
 
                 if (objectHit.name == "Road")
                 {
@@ -27,7 +27,7 @@ public class RoadEditor : MonoBehaviour
                     if (lastObject != null)
                     {
                         lastObject.GetComponent<MeshCollider>().enabled = true;
-                        AbstractRoad.TurnOffKids(lastObject);
+                        SimpleRoad.TurnOffKids(lastObject);
                     }
                     lastObject = objectHit;
                 }
@@ -44,7 +44,7 @@ public class RoadEditor : MonoBehaviour
                 if (activePointTransform == null)
                 {
                     lastObject.GetComponent<MeshCollider>().enabled = true;
-                    AbstractRoad.TurnOffKids(lastObject);
+                    SimpleRoad.TurnOffKids(lastObject);
                     lastObject = null;
                 }
                 else
