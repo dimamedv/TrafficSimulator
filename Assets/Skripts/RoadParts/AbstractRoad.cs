@@ -98,10 +98,10 @@ public abstract class AbstractRoad : MonoBehaviour
         childConnection = null;
         foreach (var checkedRoad in RoadList)
         {
-            if (checkedRoad.GetComponent<CrookedRoad>().startPost.transform.position == endPost.transform.position &&
+            if (checkedRoad.GetComponent<SimpleRoad>().startPost.transform.position == endPost.transform.position &&
                 checkedRoad.gameObject != gameObject)
             {
-                ConnectFromParentToChild(checkedRoad.GetComponent<CrookedRoad>());
+                ConnectFromParentToChild(checkedRoad.GetComponent<SimpleRoad>());
             }
         }
     }
@@ -111,21 +111,21 @@ public abstract class AbstractRoad : MonoBehaviour
         parentConnection = null;
         foreach (var checkedRoad in RoadList)
         {
-            if (checkedRoad.GetComponent<CrookedRoad>().endPost.transform.position == startPost.transform.position &&
+            if (checkedRoad.GetComponent<SimpleRoad>().endPost.transform.position == startPost.transform.position &&
                 checkedRoad.gameObject != gameObject)
             {
-                ConnectFromChildToParent(checkedRoad.GetComponent<CrookedRoad>());
+                ConnectFromChildToParent(checkedRoad.GetComponent<SimpleRoad>());
             }
         }
     }
 
-    private void ConnectFromParentToChild(CrookedRoad newChildRoad)
+    private void ConnectFromParentToChild(SimpleRoad newChildRoad)
     {
         childConnection = newChildRoad.gameObject;
         newChildRoad.parentConnection = gameObject;
     }
 
-    private void ConnectFromChildToParent(CrookedRoad newParentRoad)
+    private void ConnectFromChildToParent(SimpleRoad newParentRoad)
     {
         parentConnection = newParentRoad.gameObject;
         newParentRoad.childConnection = gameObject;

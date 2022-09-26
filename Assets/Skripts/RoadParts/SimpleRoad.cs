@@ -4,7 +4,7 @@ using UnityEngine;
 using static MyMath;
 using static GlobalSettings;
 
-public class CrookedRoad : AbstractRoad
+public class SimpleRoad : AbstractRoad
 {
     public int details; // Количество деталей дороги
     private int _curDetails;
@@ -23,9 +23,9 @@ public class CrookedRoad : AbstractRoad
     {
         RebuildGrid();
         
-        if (childConnection && childConnection.GetComponent<CrookedRoad>() && !endIteration)
+        if (childConnection && childConnection.GetComponent<SimpleRoad>() && !endIteration)
         {
-            childConnection.GetComponent<CrookedRoad>().BuildRoad();
+            childConnection.GetComponent<SimpleRoad>().BuildRoad();
         }
 
         // Подготавливаем "почву" для построения дороги
@@ -53,10 +53,10 @@ public class CrookedRoad : AbstractRoad
         CalculateLengthOfRoadSections();
         _curFormingPointPosition = formingPoint.transform.position;
         
-        if (childConnection && childConnection.GetComponent<CrookedRoad>() && !endIteration)
-            childConnection.GetComponent<CrookedRoad>().BuildRoad();
-        if (parentConnection && parentConnection.GetComponent<CrookedRoad>() && !endIteration)
-            parentConnection.GetComponent<CrookedRoad>().BuildRoad();
+        if (childConnection && childConnection.GetComponent<SimpleRoad>() && !endIteration)
+            childConnection.GetComponent<SimpleRoad>().BuildRoad();
+        if (parentConnection && parentConnection.GetComponent<SimpleRoad>() && !endIteration)
+            parentConnection.GetComponent<SimpleRoad>().BuildRoad();
 
         //if (parentConnection == null)
             //gameObject.AddComponent<CarSpawner>();
@@ -108,9 +108,9 @@ public class CrookedRoad : AbstractRoad
     // 
     private void CalculateMeshVertexPoints()
     {
-        if (parentConnection && parentConnection.GetComponent<CrookedRoad>())
+        if (parentConnection && parentConnection.GetComponent<SimpleRoad>())
         {
-            List<Vector3> parentPoints = parentConnection.GetComponent<CrookedRoad>().points;
+            List<Vector3> parentPoints = parentConnection.GetComponent<SimpleRoad>().points;
             Vector3 lineDirectionParent;
             
             //Обработка ошибки выхода за пределы массива точек дороги-родителя при зацикливании дорог
@@ -120,8 +120,8 @@ public class CrookedRoad : AbstractRoad
             }
             catch (ArgumentOutOfRangeException e)
             {
-                parentConnection.GetComponent<CrookedRoad>().BuildRoad(true);
-                parentPoints = parentConnection.GetComponent<CrookedRoad>().points;
+                parentConnection.GetComponent<SimpleRoad>().BuildRoad(true);
+                parentPoints = parentConnection.GetComponent<SimpleRoad>().points;
                 lineDirectionParent = (parentPoints[^1] - parentPoints[^2]).normalized;
             }
             

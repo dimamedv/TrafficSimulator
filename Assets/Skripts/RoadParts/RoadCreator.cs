@@ -10,7 +10,7 @@ public class RoadCreator : MonoBehaviour
     public int details;
     public Material material;
 
-    private CrookedRoad crooked;
+    private SimpleRoad crooked;
     private GameObject _road;
     private Transform _startPost;
     private Transform _endPost;
@@ -111,7 +111,7 @@ public class RoadCreator : MonoBehaviour
         _formingPoint = _road.transform.GetChild(2);
         for (int i = 0; i < _road.transform.childCount; i++)
             _road.transform.GetChild(i).GetComponent<MeshRenderer>().enabled = false;
-        crooked = _road.transform.GetComponent<CrookedRoad>();
+        crooked = _road.transform.GetComponent<SimpleRoad>();
         crooked.enabled = false;
         _startPost.GetComponent<MeshRenderer>().enabled = true;
         _step = 0;

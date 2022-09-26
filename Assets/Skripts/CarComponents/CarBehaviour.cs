@@ -18,9 +18,10 @@ public class CarBehaviour : MonoBehaviour
     // ��������� � ���
     private float accelerationPerTick;
 
-    private void OnTriggerStay(Collider collider)
+    private void OnTriggerEnter(Collider collider)
     {
-        Debug.Log("Машины столкнулись!!!");
+        if (collider.gameObject.name == "Car")
+            Debug.Log("Машины столкнулись!!!");
     }
 
     private void Awake()
