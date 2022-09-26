@@ -18,6 +18,11 @@ public class CarBehaviour : MonoBehaviour
     // ��������� � ���
     private float accelerationPerTick;
 
+    private void OnTriggerStay(Collider collider)
+    {
+        Debug.Log("Машины столкнулись!!!");
+    }
+
     private void Awake()
     {
         accelerationPerTick = acceleration * Time.deltaTime;
@@ -48,6 +53,4 @@ public class CarBehaviour : MonoBehaviour
                 Destroy(gameObject);
         }
     }
-    
-    
-}
+ }
