@@ -6,11 +6,11 @@ using static GlobalSettings;
 
 public class SimpleRoad : AbstractRoad
 {
-    public int details; // Количество деталей дороги
-    private int _curDetails;
-    public bool isStraight; // Прямая ли дорога
     public bool debugRoad; // Для дебага дороги
-    public List<Vector3> _vertexRoad = new List<Vector3>(); // Вершины излома дороги
+    public GameObject _vertexCubeRed; // Куб для отоборажение одной стороны дороги в режиме дебага
+    public GameObject _vertexCubeBLue; // Куб для отоборажение одной стороны дороги в режиме дебага
+    public GameObject _bezierCubeGreen; // Куб для отображения точек центра дороги в режиме дебага
+    public List<float> prefixSumSegments = new List<float>(); // Массив префиксных сумм. Последний элемент - длина всей дороги
 
 
     public new void Start()
@@ -18,7 +18,7 @@ public class SimpleRoad : AbstractRoad
         base.Start();
         _curFormingPointPosition = formingPoint.transform.position;
     }
-
+    
     protected override void BuildRoad(bool endIteration = true)
     {
         RebuildGrid();
@@ -27,20 +27,26 @@ public class SimpleRoad : AbstractRoad
         {
             childConnection.GetComponent<SimpleRoad>().BuildRoad();
         }
+        CheckoutChildPost();
+        CheckoutParentPost();
 
         // Подготавливаем "почву" для построения дороги
         ClearLists();
-        if (isStraight) 
-            MakeStraight();
-        else 
-            _curDetails = details;
+        if (isStraight)
+        {
+            formingPoint.transform.position =
+             GetMidPoint(startPost.transform.position, endPost.transform.position);
+            CalculateQuadraticBezierCurve(startPost.transform.position, formingPoint.transform.position,
+                endPost.transform.position, 1);
+        }
+        else
+        {
+            CalculateQuadraticBezierCurve(startPost.transform.position, formingPoint.transform.position,
+            endPost.transform.position, details);
+        }
 
-        CheckoutChildPost();
-        CheckoutParentPost();
-        
         // Строим ВСЕ вершины, на основе которых будем строить меши
-        CalculateQuadraticBezierCurve(startPost.transform.position, formingPoint.transform.position,
-            endPost.transform.position);
+
         CalculateMeshVertexPoints();
 
         // Визуализируем все, что только можно визуализировать
@@ -70,13 +76,6 @@ public class SimpleRoad : AbstractRoad
         prefixSumSegments.Clear();
     }
 
-    private void MakeStraight()
-    {
-        _curDetails = 1;
-        formingPoint.transform.position =
-            GetMidPoint(startPost.transform.position, endPost.transform.position);
-    }
-
     // Визуализация Дебаг точек
     private void ShowDebugPoints()
     {
@@ -88,21 +87,6 @@ public class SimpleRoad : AbstractRoad
                 Instantiate(_vertexCubeBLue, _vertexRoad[i], new Quaternion());
         }
         for (int i = 0; i < points.Count; i++) Instantiate(_bezierCubeGreen, points[i], new Quaternion());
-    }
-
-    // Рассчет координат точек Безье
-    private void CalculateQuadraticBezierCurve(Vector3 point0, Vector3 point1, Vector3 point2)
-    {
-        float t = 0f;
-        Vector3 B;
-        for (int i = 0; i < _curDetails; i++)
-        {
-            B = (1 - t) * (1 - t) * point0 + 2 * (1 - t) * t * point1 + t * t * point2;
-            points.Add(B);
-            t += (1 / (float)_curDetails);
-        }
-
-        points.Add(point2);
     }
 
     // 

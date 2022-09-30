@@ -12,7 +12,7 @@ public class CarBehaviour : MonoBehaviour
     // �������� � �������
     public float speed;
     // ������, ������� ����������� ����
-    public AbstractRoad parentRoad;
+    public SimpleRoad parentRoad;
     // ����������, ������� ������ ������ �� ������
     public float distance;
     // ��������� � ���
@@ -49,7 +49,7 @@ public class CarBehaviour : MonoBehaviour
         {
             distance = 0;
             if (parentRoad.childConnection != null)
-                parentRoad = parentRoad.childConnection.GetComponent<AbstractRoad>();
+                parentRoad = parentRoad.childConnection.GetComponent<SimpleRoad>();
             else 
                 Destroy(gameObject);
         }

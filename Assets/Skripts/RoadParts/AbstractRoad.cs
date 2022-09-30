@@ -7,13 +7,12 @@ using static GlobalSettings;
 
 public abstract class AbstractRoad : MonoBehaviour
 {
+    public int details; // Количество деталей дороги
+    public bool isStraight; // Прямая ли дорога
     public GameObject parentConnection; // Соединение с родителем
     public GameObject childConnection; // Соединение с ребенком
-    public GameObject _vertexCubeRed; // Куб для отоборажение одной стороны дороги в режиме дебага
-    public GameObject _vertexCubeBLue; // Куб для отоборажение одной стороны дороги в режиме дебага
-    public GameObject _bezierCubeGreen; // Куб для отображения точек центра дороги в режиме дебага
+    public List<Vector3> _vertexRoad = new List<Vector3>(); // Вершины излома дороги
     public List<Vector3> points = new List<Vector3>(); // Массив центральных точек (Безье), по которым едет машина
-    public List<float> prefixSumSegments = new List<float>(); // Массив префиксных сумм. Последний элемент - длина всей дороги
     public List<GameObject> carsOnThisRoad; // Массив машин, который в данный момент едут по этой дороге
 
     public static List<GameObject> RoadList = new List<GameObject>(); // Массив всех дорог
@@ -47,6 +46,21 @@ public abstract class AbstractRoad : MonoBehaviour
     public void OnDestroy()
     {
         RoadList.Remove(gameObject);
+    }
+
+    // Рассчет координат точек Безье
+    protected void CalculateQuadraticBezierCurve(Vector3 point0, Vector3 point1, Vector3 point2, int details)
+    {
+        float t = 0f;
+        Vector3 B;
+        for (int i = 0; i < details; i++)
+        {
+            B = (1 - t) * (1 - t) * point0 + 2 * (1 - t) * t * point1 + t * t * point2;
+            points.Add(B);
+            t += (1 / (float)details);
+        }
+
+        points.Add(point2);
     }
 
     // Подстраивает точки под сетку
