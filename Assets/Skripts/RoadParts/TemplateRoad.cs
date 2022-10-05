@@ -9,7 +9,6 @@ public class TemplateRoad : AbstractRoad
     public GameObject _vertexCubeRed; // Куб для отоборажение одной стороны дороги в режиме дебага
     public GameObject _vertexCubeBLue; // Куб для отоборажение одной стороны дороги в режиме дебага
     public GameObject _bezierCubeGreen; // Куб для отображения точек центра дороги в режиме дебага
-    public List<float> prefixSumSegments = new List<float>(); // Массив префиксных сумм. Последний элемент - длина всей дороги
 
 
     public new void Start()
@@ -53,7 +52,7 @@ public class TemplateRoad : AbstractRoad
         CreateMesh();
 
         // Остаточные действия
-        CalculateLengthOfRoadSections();
+        //CalculateLengthOfRoadSections();
         _curFormingPointPosition = formingPoint.transform.position;
         
         if (childConnection && childConnection.GetComponent<TemplateRoad>() && !endIteration)
@@ -70,7 +69,7 @@ public class TemplateRoad : AbstractRoad
     {
         points.Clear();
         _vertexRoad.Clear();
-        prefixSumSegments.Clear();
+        //prefixSumSegments.Clear();
     }
 
     // Визуализация Дебаг точек
@@ -176,6 +175,7 @@ public class TemplateRoad : AbstractRoad
         }
     }
 
+    /*
     // Рассчитывает длину дороги, заполняя массив префиксных сумм
     private void CalculateLengthOfRoadSections()
     {
@@ -183,6 +183,7 @@ public class TemplateRoad : AbstractRoad
         for (int i = 0; i < points.Count - 1; i++)
             prefixSumSegments.Add(prefixSumSegments[i] + MyMath.getDistance(points[i], points[i + 1]));
     }
+    */
 
     // Включает видимость всех детей объекта _gameObject
     public static void TurnOnKids(GameObject _gameObject)

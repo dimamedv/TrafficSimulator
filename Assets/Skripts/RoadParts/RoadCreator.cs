@@ -20,18 +20,22 @@ public class RoadCreator : MonoBehaviour
     private int _maxSteps;
 
 
+    // Событие, которое активирует перестройку прямой дороги
     public void ButtonStraightIsPressed()
     {
         _maxSteps = 1;
         ButtonIsPressed();
     }
 
+    // Событие, которое активирует перестройку кривой дороги
     public void ButtonCrookedIsPressed()
     {
         _maxSteps = 2;
         ButtonIsPressed();
     }
 
+
+    // Событие, которое активирует перестройку дороги
     public void ButtonIsPressed()
     {
         _isEnable = !_isEnable;
@@ -51,7 +55,7 @@ public class RoadCreator : MonoBehaviour
         }
     }
     
-    
+    // Обновляет положение активного объекта, на позицую, куда указывает курсор
     private void UpdateObjectPosToCursorPos()
     {
         switch (_step)
@@ -73,6 +77,8 @@ public class RoadCreator : MonoBehaviour
         
     }
 
+    // Передвигает объект _transform на ту позицию, куда падает луч из курсора в слое _layerMask.
+    // Если _rebuildPointByGrid - правда, то округляет позицию объекта до числа, кратного шагу сетки.
     public static void MovePoint(Transform _transform, LayerMask _layerMask, bool _rebuildPointByGrid)
     {
         RaycastHit hit;
@@ -84,6 +90,7 @@ public class RoadCreator : MonoBehaviour
         }
     }
 
+    // Проверяет какая кнопка была нажата
     private void CheckMouseButton()
     {
         if (Input.GetMouseButtonDown(0))
