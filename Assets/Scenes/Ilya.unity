@@ -2183,6 +2183,10 @@ PrefabInstance:
       propertyPath: isStraight
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3119439897122743009, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
+      propertyPath: _countLanes
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3119439897122743010, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
       propertyPath: m_Name
       value: Road
@@ -2364,6 +2368,10 @@ PrefabInstance:
     - target: {fileID: 3119439897122742812, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3119439897122743009, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
+      propertyPath: _countLanes
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3119439897122743010, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
       propertyPath: m_Name
@@ -2726,6 +2734,10 @@ PrefabInstance:
     - target: {fileID: 3119439897122743009, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
       propertyPath: isStraight
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3119439897122743009, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
+      propertyPath: _countLanes
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3119439897122743009, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
       propertyPath: _vertexCubeRed

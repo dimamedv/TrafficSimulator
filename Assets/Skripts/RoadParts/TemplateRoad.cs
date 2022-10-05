@@ -126,8 +126,8 @@ public class TemplateRoad : AbstractRoad
     // Добавляет координаты точек "излома" дороги
     private void AddVertexes(Vector3 a, Vector3 lineDirection)
     {
-        Vector3 v1 = a + Quaternion.Euler(0, -90, 0) * lineDirection * width;
-        Vector3 v2 = a + Quaternion.Euler(0, +90, 0) * lineDirection * width;
+        Vector3 v1 = a + Quaternion.Euler(0, -90, 0) * lineDirection * width * _countLanes;
+        Vector3 v2 = a + Quaternion.Euler(0, +90, 0) * lineDirection * width * _countLanes;
         
         _vertexRoad.Add(v1);
         _vertexRoad.Add(v2);

@@ -17,7 +17,7 @@ public class RoadCreator : MonoBehaviour
     private Transform _formingPoint;
     private int _step = 0;
     private bool _isEnable = false;
-    private int _maxSteps;
+    private int _maxSteps = 1;
 
 
     // Событие, которое активирует перестройку прямой дороги
