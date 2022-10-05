@@ -8,7 +8,7 @@ public class CarSpawner : MonoBehaviour
     // Префаб создаваемой машины.
     public GameObject carPrefab;
     // Дорога, с которой начинает движение авто
-    public SimpleRoad road;
+    public TemplateRoad road;
     // Время, которое будет ждать спавнер
     public float time;
 
