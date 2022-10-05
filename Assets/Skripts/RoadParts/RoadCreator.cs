@@ -10,7 +10,7 @@ public class RoadCreator : MonoBehaviour
     public int details;
     public Material material;
 
-    private TemplateRoad crooked;
+    private TemplateRoad _template;
     private GameObject _road;
     private Transform _startPost;
     private Transform _endPost;
@@ -24,24 +24,22 @@ public class RoadCreator : MonoBehaviour
     public void ButtonStraightIsPressed()
     {
         _maxSteps = 1;
-        ButtonIsPressed();
     }
 
     // Событие, которое активирует перестройку кривой дороги
     public void ButtonCrookedIsPressed()
     {
         _maxSteps = 2;
-        ButtonIsPressed();
     }
 
 
     // Событие, которое активирует перестройку дороги
-    public void ButtonIsPressed()
+    public void ButtonCreateRoadIsPressed(int countLanes)
     {
         _isEnable = !_isEnable;
 
         if (_isEnable)  
-            CreateRoadSkeleton();
+            CreateRoadSkeleton(countLanes);
         else            
             DeleteObjects();
     }
@@ -64,13 +62,13 @@ public class RoadCreator : MonoBehaviour
                     MovePoint(_startPost, layerMask, true);
                     break;
                 case 1:
-                    crooked.enabled = true;
-                    crooked.isStraight = true;
+                    _template.enabled = true;
+                    _template.isStraight = true;
                     MovePoint(_endPost, layerMask, true);
                     break;
                 case 2:
-                    crooked.isStraight = false;
-                    crooked.details = details;
+                    _template.isStraight = false;
+                    _template.details = details;
                     MovePoint(_formingPoint, layerMask, false);
                     break;
             }
@@ -100,7 +98,7 @@ public class RoadCreator : MonoBehaviour
             {
                 for (int i = 0; i < _road.transform.childCount; i++)
                     _road.transform.GetChild(i).GetComponent<MeshRenderer>().enabled = false;
-                CreateRoadSkeleton();
+                CreateRoadSkeleton(_template._countLanes);
             }
         else if (Input.GetMouseButtonDown(1))
             _road.transform.GetChild(_step--).GetComponent<MeshRenderer>().enabled = false;
@@ -108,7 +106,7 @@ public class RoadCreator : MonoBehaviour
             DeleteObjects();
     }
 
-    private void CreateRoadSkeleton()
+    private void CreateRoadSkeleton(int countLanes)
     {
         gameObject.GetComponent<RoadEditor>().enabled = false;
         _road = Instantiate(_roadPrefab);
@@ -118,8 +116,9 @@ public class RoadCreator : MonoBehaviour
         _formingPoint = _road.transform.GetChild(2);
         for (int i = 0; i < _road.transform.childCount; i++)
             _road.transform.GetChild(i).GetComponent<MeshRenderer>().enabled = false;
-        crooked = _road.transform.GetComponent<TemplateRoad>();
-        crooked.enabled = false;
+        _template = _road.transform.GetComponent<TemplateRoad>();
+        _template.enabled = false;
+        _template._countLanes = countLanes;
         _startPost.GetComponent<MeshRenderer>().enabled = true;
         _step = 0;
     }

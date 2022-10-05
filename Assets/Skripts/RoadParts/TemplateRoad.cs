@@ -9,6 +9,7 @@ public class TemplateRoad : AbstractRoad
     public GameObject _vertexCubeRed; // Куб для отоборажение одной стороны дороги в режиме дебага
     public GameObject _vertexCubeBLue; // Куб для отоборажение одной стороны дороги в режиме дебага
     public GameObject _bezierCubeGreen; // Куб для отображения точек центра дороги в режиме дебага
+    public int _countLanes;
 
 
     public new void Start()
@@ -31,7 +32,7 @@ public class TemplateRoad : AbstractRoad
         if (isStraight)
         {
             formingPoint.transform.position =
-             MyMath.GetMidPoint(startPost.transform.position, endPost.transform.position);
+                MyMath.GetMidPoint(startPost.transform.position, endPost.transform.position);
             CalculateQuadraticBezierCurve(startPost.transform.position, formingPoint.transform.position,
                 endPost.transform.position, 1);
         }
@@ -42,7 +43,6 @@ public class TemplateRoad : AbstractRoad
         }
 
         // Строим ВСЕ вершины, на основе которых будем строить меши
-
         CalculateMeshVertexPoints();
 
         // Визуализируем все, что только можно визуализировать
@@ -108,11 +108,8 @@ public class TemplateRoad : AbstractRoad
             AddVertexes(parentPoints[^1], lineDirectionParent);
         }
         
-        CalculateVertexPoints(points[0], points[1]);
-
-        if (!isStraight)
-            for (int i = 0; i < points.Count - 1; i++)
-                CalculateVertexPoints(points[i], points[i + 1]);
+        for (int i = 0; i < points.Count - 1; i++)
+            CalculateVertexPoints(points[i], points[i + 1]);
         
         Vector3 lineDirection = (points[^1] - points[^2]).normalized;
         AddVertexes(points[^1], lineDirection);
