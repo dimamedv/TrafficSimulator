@@ -49,7 +49,7 @@ public class RoadEditor : MonoBehaviour
                 }
                 else
                 {
-                    activePointTransform.GetComponent<BoxCollider>().enabled = true;
+                    activePointTransform.GetComponent<BoxCollider>().enabled = false;
                     activePointTransform = null;
                 }
             }

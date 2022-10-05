@@ -168,6 +168,7 @@ public class SimpleRoad : AbstractRoad
         MeshCollider mc = GetComponent<MeshCollider>();
         if (startPost.transform.position != endPost.transform.position)
         {
+            mc.enabled = true;
             mc.sharedMesh = mesh;
         }
         else
