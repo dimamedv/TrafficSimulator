@@ -10,7 +10,8 @@ public class SimpleRoad : AbstractRoad
     public GameObject _vertexCubeBLue; // Куб для отоборажение одной стороны дороги в режиме дебага
     public GameObject _bezierCubeGreen; // Куб для отображения точек центра дороги в режиме дебага
     public List<float> prefixSumSegments = new List<float>(); // Массив префиксных сумм. Последний элемент - длина всей дороги
-
+    public bool createCrossRoadEntrance;
+    public GameObject crossRoadEntrancePrefab;
 
     public new void Start()
     {
@@ -60,9 +61,16 @@ public class SimpleRoad : AbstractRoad
             childConnection.GetComponent<SimpleRoad>().BuildRoad();
         if (parentConnection && parentConnection.GetComponent<SimpleRoad>() && !endIteration)
             parentConnection.GetComponent<SimpleRoad>().BuildRoad();
+        
 
-        //if (parentConnection == null)
-            //gameObject.AddComponent<CarSpawner>();
+        if (createCrossRoadEntrance)
+        {
+            GameObject crossRoadEntrance = Instantiate(crossRoadEntrancePrefab, endPost.transform.position,
+                endPost.transform.rotation);
+            crossRoadEntrance.transform.SetParent(gameObject.transform);
+            crossRoadEntrance.transform.name = "CrossRoadEntrance";
+        }
+
     }
 
     // Обнуляет все списки
@@ -242,6 +250,21 @@ public class SimpleRoad : AbstractRoad
         parentConnection = newParentRoad.gameObject;
         newParentRoad.childConnection = gameObject;
     }
+    
+    // Возвращает истину, если одна из точек сменила сове положение. Ложь в ином случае.
+    protected override bool NeedsRebuild()
+    {
+        var formingPosition = formingPoint.transform.position;
+        var startPosition = startPost.transform.position;
+        var endPosition = endPost.transform.position;
+        return points.Count == 0
+               || points[0] != startPosition
+               || points[^1] != endPosition
+               || !isStraight && formingPosition != _curFormingPointPosition
+               || isStraight && MyMath.GetMidPoint(startPosition, endPosition) != formingPosition
+               || createCrossRoadEntrance && transform.Find("CrossRoadEntrance") == null
+               || !createCrossRoadEntrance && transform.Find("CrossRoadEntrance");
+    }           
 
 
 }

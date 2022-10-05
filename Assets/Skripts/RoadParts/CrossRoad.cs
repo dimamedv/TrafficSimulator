@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class CrossRoad : MonoBehaviour
 {
-    public List<CrossRoadEntrance> crossRoadEntrances;
+    public List<GameObject> crossRoadEntrances;
     public List<bool> entranceStates;
     
     

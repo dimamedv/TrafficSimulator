@@ -9,11 +9,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4543253725892519834}
-  - component: {fileID: 2071878546329727587}
   - component: {fileID: 2823776697010570373}
   - component: {fileID: 3058234787243153870}
+  - component: {fileID: 2728130997181620188}
   m_Layer: 0
-  m_Name: CrossRoadEntrence
+  m_Name: CrossRoadEntrance
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -34,20 +34,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2071878546329727587
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5064607121679084870}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e94427f49b1a4cb4ac33eeca6b7c2c19, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  parentRoad: {fileID: 0}
-  crossRoad: {fileID: 0}
 --- !u!33 &2823776697010570373
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -98,3 +84,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &2728130997181620188
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5064607121679084870}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9cece7ca32afb47c39ad30be3586b144, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parentRoad: {fileID: 0}
+  childRoads: []
+  crossRoad: {fileID: 0}
+  state: 0

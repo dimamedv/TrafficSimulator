@@ -101,22 +101,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17380eabdef969244ae1a2e9ece2f94f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  details: 100
+  isStraight: 0
   parentConnection: {fileID: 0}
   childConnection: {fileID: 0}
-  _vertexCubeRed: {fileID: 0}
-  _vertexCubeBLue: {fileID: 0}
-  _bezierCubeGreen: {fileID: 0}
+  _vertexRoad: []
   points: []
-  prefixSumSegments: []
   carsOnThisRoad: []
   startPost: {fileID: 0}
   endPost: {fileID: 0}
   formingPoint: {fileID: 0}
   _curFormingPointPosition: {x: 0, y: 0, z: 0}
-  details: 100
-  isStraight: 0
   debugRoad: 0
-  _vertexRoad: []
+  _vertexCubeRed: {fileID: 0}
+  _vertexCubeBLue: {fileID: 0}
+  _bezierCubeGreen: {fileID: 0}
+  prefixSumSegments: []
+  createCrossRoadEntrance: 0
+  crossRoadEntrancePrefab: {fileID: 5064607121679084870, guid: d3eed4fe31c294fbc907d3eec0011ca5, type: 3}
 --- !u!114 &3119439897122743008
 MonoBehaviour:
   m_ObjectHideFlags: 0

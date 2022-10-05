@@ -47,6 +47,8 @@ public abstract class AbstractRoad : MonoBehaviour
         RoadList.Remove(gameObject);
     }
 
+    abstract protected bool NeedsRebuild();
+
     // Рассчет координат точек Безье
     protected void CalculateQuadraticBezierCurve(Vector3 point0, Vector3 point1, Vector3 point2, int details)
     {
@@ -86,19 +88,6 @@ public abstract class AbstractRoad : MonoBehaviour
             return x - remains;
         else
             return x - remains + isNegative * GlobalSettings.gridStep;
-    }
-
-    // Возвращает истину, если одна из точек сменила сове положение. Ложь в ином случае.
-    protected bool NeedsRebuild()
-    {
-        var formingPosition = formingPoint.transform.position;
-        var startPosition = startPost.transform.position;
-        var endPosition = endPost.transform.position;
-        return points.Count == 0
-               || points[0] != startPosition
-               || points[^1] != endPosition
-               || !isStraight && formingPosition != _curFormingPointPosition
-               || isStraight && MyMath.GetMidPoint(startPosition, endPosition) != formingPosition;
     }
 
 

@@ -10,8 +10,17 @@ public class CrossRoadEntrance : MonoBehaviour
     public CrossRoad crossRoad;
     public bool state;
 
-    private void Start()
+    private static List<GameObject> _entrancesList = new List<GameObject>();
+    
+    public void Awake()
     {
-        
+        _entrancesList.Add(gameObject);
     }
+
+    public void OnDestroy()
+    {
+        _entrancesList.Remove(gameObject);
+    }
+    
+    
 }
