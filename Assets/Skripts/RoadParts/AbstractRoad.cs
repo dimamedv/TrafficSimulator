@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
-using static GlobalSettings;
 
 public abstract class AbstractRoad : MonoBehaviour
 {
@@ -83,13 +82,25 @@ public abstract class AbstractRoad : MonoBehaviour
         float remains = x % GlobalSettings.gridStep;
         float isNegative = (x < 0 ? -1 : 1);
 
-        if (isNegative * remains < gridStep / 2)
+        if (isNegative * remains < GlobalSettings.gridStep / 2)
             return x - remains;
         else
-            return x - remains + isNegative * gridStep;
+            return x - remains + isNegative * GlobalSettings.gridStep;
     }
 
-    
+    // Возвращает истину, если одна из точек сменила сове положение. Ложь в ином случае.
+    protected bool NeedsRebuild()
+    {
+        var formingPosition = formingPoint.transform.position;
+        var startPosition = startPost.transform.position;
+        var endPosition = endPost.transform.position;
+        return points.Count == 0
+               || points[0] != startPosition
+               || points[^1] != endPosition
+               || !isStraight && formingPosition != _curFormingPointPosition
+               || isStraight && MyMath.GetMidPoint(startPosition, endPosition) != formingPosition;
+    }
+
+
     protected abstract void BuildRoad(bool endIteration = true);
-    protected abstract bool NeedsRebuild();
 }

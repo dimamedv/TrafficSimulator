@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using static MyMath;
 using static GlobalSettings;
 
 public class SimpleRoad : AbstractRoad
@@ -23,10 +22,8 @@ public class SimpleRoad : AbstractRoad
     {
         RebuildGrid();
         
-        if (childConnection && childConnection.GetComponent<SimpleRoad>() && !endIteration)
-        {
+        if (!endIteration && childConnection && childConnection.GetComponent<SimpleRoad>())
             childConnection.GetComponent<SimpleRoad>().BuildRoad();
-        }
         CheckoutChildPost();
         CheckoutParentPost();
 
@@ -35,7 +32,7 @@ public class SimpleRoad : AbstractRoad
         if (isStraight)
         {
             formingPoint.transform.position =
-             GetMidPoint(startPost.transform.position, endPost.transform.position);
+             MyMath.GetMidPoint(startPost.transform.position, endPost.transform.position);
             CalculateQuadraticBezierCurve(startPost.transform.position, formingPoint.transform.position,
                 endPost.transform.position, 1);
         }
@@ -89,7 +86,7 @@ public class SimpleRoad : AbstractRoad
         for (int i = 0; i < points.Count; i++) Instantiate(_bezierCubeGreen, points[i], new Quaternion());
     }
 
-    // 
+    // Рассчитывает координаты точек излома дороги
     private void CalculateMeshVertexPoints()
     {
         if (parentConnection && parentConnection.GetComponent<SimpleRoad>())
@@ -184,22 +181,10 @@ public class SimpleRoad : AbstractRoad
     {
         prefixSumSegments.Add(0.0f);
         for (int i = 0; i < points.Count - 1; i++)
-            prefixSumSegments.Add(prefixSumSegments[i] + getDistance(points[i], points[i + 1]));
+            prefixSumSegments.Add(prefixSumSegments[i] + MyMath.getDistance(points[i], points[i + 1]));
     }
 
-    // Возвращает истину, если одна из точек сменила сове положение. Ложь в ином случае.
-    protected override bool NeedsRebuild()
-    {
-        var formingPosition = formingPoint.transform.position;
-        var startPosition = startPost.transform.position;
-        var endPosition = endPost.transform.position;
-        return points.Count == 0
-               || points[0] != startPosition
-               || points[^1] != endPosition
-               || !isStraight && formingPosition != _curFormingPointPosition
-               || isStraight && GetMidPoint(startPosition, endPosition) != formingPosition;
-    }
-
+    // Включает видимость всех детей объекта _gameObject
     public static void TurnOnKids(GameObject _gameObject)
     {
         for (int i = 0; i < _gameObject.transform.childCount; i++)
@@ -209,6 +194,7 @@ public class SimpleRoad : AbstractRoad
         }
     }
 
+    // Выключает видимость всех детей объекта _gameObject
     public static void TurnOffKids(GameObject _gameObject)
     {
         for (int i = 0; i < _gameObject.transform.childCount; i++)
@@ -217,6 +203,7 @@ public class SimpleRoad : AbstractRoad
             _gameObject.transform.GetChild(i).GetComponent<BoxCollider>().enabled = false;
         }
     }
+
     protected void CheckoutChildPost()
     {
         childConnection = null;

@@ -8,9 +8,9 @@ public class GlobalSettings : MonoBehaviour
     public static float width = 2; 
     public static float gridStep = 1; 
 
-    public int targetFrameRate = 30;
+    public static int targetFrameRate = 30;
 
-    private void Start()
+    private static void Start()
     {
         QualitySettings.vSyncCount = 0;
         Application.targetFrameRate = targetFrameRate;
