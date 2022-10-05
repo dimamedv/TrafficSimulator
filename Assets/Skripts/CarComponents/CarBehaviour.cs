@@ -48,6 +48,11 @@ public class CarBehaviour : MonoBehaviour
                 Destroy(gameObject);
         }
     }
+
+    private float getOptimalSpeed()
+    {
+        return 0;
+    }
     
     
 }

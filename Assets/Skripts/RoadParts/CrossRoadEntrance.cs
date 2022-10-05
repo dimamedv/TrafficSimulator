@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,17 +6,11 @@ using UnityEngine;
 public class CrossRoadEntrance : MonoBehaviour
 {
     public AbstractRoad parentRoad;
+    public List<AbstractRoad> childRoads;
     public CrossRoad crossRoad;
-    
-    
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public bool state;
 
-    // Update is called once per frame
-    void Update()
+    private void Start()
     {
         
     }
