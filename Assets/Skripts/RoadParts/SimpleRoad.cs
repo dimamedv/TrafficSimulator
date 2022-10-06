@@ -12,6 +12,7 @@ public class SimpleRoad : AbstractRoad
     public List<float> prefixSumSegments = new List<float>(); // Массив префиксных сумм. Последний элемент - длина всей дороги
     public bool createCrossRoadEntrance;
     public GameObject crossRoadEntrancePrefab;
+    public GameObject crossRoadEntrance;
 
     public new void Start()
     {
@@ -23,8 +24,22 @@ public class SimpleRoad : AbstractRoad
     {
         RebuildGrid();
         
+        if (createCrossRoadEntrance && !transform.Find("CrossRoadEntrance"))
+        {
+            crossRoadEntrance = Instantiate(crossRoadEntrancePrefab, endPost.transform.position,
+                endPost.transform.rotation);
+            crossRoadEntrance.transform.SetParent(gameObject.transform);
+            crossRoadEntrance.transform.name = "CrossRoadEntrance";
+        } else if (!createCrossRoadEntrance && transform.Find("CrossRoadEntrance"))
+        {
+            Destroy(crossRoadEntrance);
+            CrossRoadEntrance.EntrancesList.Remove(crossRoadEntrance);
+            crossRoadEntrance = null;
+        }
+        
         if (!endIteration && childConnection && childConnection.GetComponent<SimpleRoad>())
             childConnection.GetComponent<SimpleRoad>().BuildRoad();
+        
         CheckoutChildPost();
         CheckoutParentPost();
 
@@ -61,16 +76,6 @@ public class SimpleRoad : AbstractRoad
             childConnection.GetComponent<SimpleRoad>().BuildRoad();
         if (parentConnection && parentConnection.GetComponent<SimpleRoad>() && !endIteration)
             parentConnection.GetComponent<SimpleRoad>().BuildRoad();
-        
-
-        if (createCrossRoadEntrance)
-        {
-            GameObject crossRoadEntrance = Instantiate(crossRoadEntrancePrefab, endPost.transform.position,
-                endPost.transform.rotation);
-            crossRoadEntrance.transform.SetParent(gameObject.transform);
-            crossRoadEntrance.transform.name = "CrossRoadEntrance";
-        }
-
     }
 
     // Обнуляет все списки
@@ -216,6 +221,19 @@ public class SimpleRoad : AbstractRoad
     protected void CheckoutChildPost()
     {
         childConnection = null;
+
+        foreach (var checkedCrossRoadEntrance in CrossRoadEntrance.EntrancesList)
+        {
+            checkedCrossRoadEntrance.GetComponent<CrossRoadEntrance>().parentRoads.Remove(gameObject);
+            if (checkedCrossRoadEntrance.GetComponent<CrossRoadEntrance>().transform.position ==
+                endPost.transform.position)
+            {
+                childConnection = checkedCrossRoadEntrance;
+                childConnection.GetComponent<CrossRoadEntrance>().parentRoads.Add(gameObject);
+                return;
+            } 
+        }
+        
         foreach (var checkedRoad in RoadList)
         {
             if (checkedRoad.GetComponent<SimpleRoad>().startPost.transform.position == endPost.transform.position &&
@@ -229,6 +247,19 @@ public class SimpleRoad : AbstractRoad
     protected void CheckoutParentPost()
     {
         parentConnection = null;
+        
+        foreach (var checkedCrossRoadEntrance in CrossRoadEntrance.EntrancesList)
+        {
+            checkedCrossRoadEntrance.GetComponent<CrossRoadEntrance>().childRoads.Remove(gameObject);
+            if (checkedCrossRoadEntrance.GetComponent<CrossRoadEntrance>().transform.position ==
+                startPost.transform.position)
+            {
+                parentConnection = checkedCrossRoadEntrance;
+                parentConnection.GetComponent<CrossRoadEntrance>().childRoads.Add(gameObject);
+                return;
+            }
+        }
+        
         foreach (var checkedRoad in RoadList)
         {
             if (checkedRoad.GetComponent<SimpleRoad>().endPost.transform.position == startPost.transform.position &&

@@ -5,21 +5,21 @@ using UnityEngine;
 
 public class CrossRoadEntrance : MonoBehaviour
 {
-    public AbstractRoad parentRoad;
-    public List<AbstractRoad> childRoads;
+    public List<GameObject> parentRoads;
+    public List<GameObject> childRoads;
     public CrossRoad crossRoad;
     public bool state;
 
-    private static List<GameObject> _entrancesList = new List<GameObject>();
+    public static List<GameObject> EntrancesList = new List<GameObject>();
     
     public void Awake()
     {
-        _entrancesList.Add(gameObject);
+        EntrancesList.Add(gameObject);
     }
 
     public void OnDestroy()
     {
-        _entrancesList.Remove(gameObject);
+        EntrancesList.Remove(gameObject);
     }
     
     
