@@ -32,7 +32,6 @@ public class RoadCreator : MonoBehaviour
         _maxSteps = 2;
     }
 
-
     // Событие, которое активирует перестройку дороги
     public void ButtonCreateRoadIsPressed(int countLanes)
     {
@@ -106,7 +105,7 @@ public class RoadCreator : MonoBehaviour
             DeleteObjects();
     }
 
-    private void CreateRoadSkeleton(int countLanes)
+    private void CreateRoadSkeleton(int countLanes = 1)
     {
         gameObject.GetComponent<RoadEditor>().enabled = false;
         _road = Instantiate(_roadPrefab);

@@ -43,7 +43,8 @@ public class TemplateRoad : AbstractRoad
         }
 
         // Строим ВСЕ вершины, на основе которых будем строить меши
-        CalculateMeshVertexPoints();
+        RebuildParents();
+        CalculateVertexPoints();
 
         // Визуализируем все, что только можно визуализировать
         if (debugRoad) 
@@ -85,14 +86,14 @@ public class TemplateRoad : AbstractRoad
         for (int i = 0; i < points.Count; i++) Instantiate(_bezierCubeGreen, points[i], new Quaternion());
     }
 
-    // Рассчитывает координаты точек излома дороги
-    private void CalculateMeshVertexPoints()
+    // Перестраивает родителей
+    private void RebuildParents()
     {
         if (parentConnection && parentConnection.GetComponent<TemplateRoad>())
         {
             List<Vector3> parentPoints = parentConnection.GetComponent<TemplateRoad>().points;
             Vector3 lineDirectionParent;
-            
+
             //Обработка ошибки выхода за пределы массива точек дороги-родителя при зацикливании дорог
             try
             {
@@ -104,27 +105,35 @@ public class TemplateRoad : AbstractRoad
                 parentPoints = parentConnection.GetComponent<TemplateRoad>().points;
                 lineDirectionParent = (parentPoints[^1] - parentPoints[^2]).normalized;
             }
-            
-            AddVertexes(parentPoints[^1], lineDirectionParent);
+
+            AddMeshVertexes(parentPoints[^1], lineDirectionParent);
+        }
+    }
+
+    // Рассчитывает координаты точек излома дороги
+    private void CalculateVertexPoints()
+    {
+        Vector3 lineDirection;
+        for (int i = 0; i < points.Count - 1; i++)
+        {
+            lineDirection = CalculateLineDirection(points[i + 1], points[i]);
+            AddMeshVertexes(points[i], lineDirection);
         }
         
-        for (int i = 0; i < points.Count - 1; i++)
-            CalculateVertexPoints(points[i], points[i + 1]);
-        
-        Vector3 lineDirection = (points[^1] - points[^2]).normalized;
-        AddVertexes(points[^1], lineDirection);
+        lineDirection = CalculateLineDirection(points[^1], points[^2]);
+        AddMeshVertexes(points[^1], lineDirection);
     }
 
     // Рассчитывает направление для ширины дороги
-    private void CalculateVertexPoints(Vector3 a, Vector3 b)
+    private Vector3 CalculateLineDirection(Vector3 a, Vector3 b)
     {
-        Vector3 lineDirection = (b - a).normalized;
+        return (a - b).normalized;
 
-        AddVertexes(a, lineDirection);
+        //AddVertexes(a, lineDirection);
     }
 
     // Добавляет координаты точек "излома" дороги
-    private void AddVertexes(Vector3 a, Vector3 lineDirection)
+    private void AddMeshVertexes(Vector3 a, Vector3 lineDirection)
     {
         Vector3 v1 = a + Quaternion.Euler(0, -90, 0) * lineDirection * width * _countLanes;
         Vector3 v2 = a + Quaternion.Euler(0, +90, 0) * lineDirection * width * _countLanes;
@@ -164,6 +173,7 @@ public class TemplateRoad : AbstractRoad
         MeshCollider mc = GetComponent<MeshCollider>();
         if (startPost.transform.position != endPost.transform.position)
         {
+            mc.enabled = true;
             mc.sharedMesh = mesh;
         }
         else
