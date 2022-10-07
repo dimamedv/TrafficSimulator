@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using static GlobalSettings;
 
 public class TemplateRoad : AbstractRoad
 {
@@ -10,7 +9,12 @@ public class TemplateRoad : AbstractRoad
     public GameObject _vertexCubeBLue; // Куб для отоборажение одной стороны дороги в режиме дебага
     public GameObject _bezierCubeGreen; // Куб для отображения точек центра дороги в режиме дебага
     public int _countLanes;
+    public Dictionary<string, GameObject> DictOfSimpleRoads = new Dictionary<string, GameObject>();
 
+    public void Awake()
+    {
+        RoadList.Add(gameObject);
+    }
 
     public new void Start()
     {
@@ -21,7 +25,6 @@ public class TemplateRoad : AbstractRoad
     protected override void BuildRoad(bool endIteration = true)
     {
         RebuildGrid();
-        
         if (!endIteration && childConnection && childConnection.GetComponent<TemplateRoad>())
             childConnection.GetComponent<TemplateRoad>().BuildRoad();
         CheckoutChildPost();
@@ -117,6 +120,7 @@ public class TemplateRoad : AbstractRoad
         for (int i = 0; i < points.Count - 1; i++)
         {
             lineDirection = CalculateLineDirection(points[i + 1], points[i]);
+
             AddMeshVertexes(points[i], lineDirection);
         }
         
@@ -132,16 +136,21 @@ public class TemplateRoad : AbstractRoad
         //AddVertexes(a, lineDirection);
     }
 
+    private void AddRoadVertexes()
+    {
+
+    }
+
     // Добавляет координаты точек "излома" дороги
     private void AddMeshVertexes(Vector3 a, Vector3 lineDirection)
     {
-        Vector3 v1 = a + Quaternion.Euler(0, -90, 0) * lineDirection * width * _countLanes;
-        Vector3 v2 = a + Quaternion.Euler(0, +90, 0) * lineDirection * width * _countLanes;
+        Vector3 v1 = a + Quaternion.Euler(0, -90, 0) * lineDirection * GlobalSettings.width * _countLanes;
+        Vector3 v2 = a + Quaternion.Euler(0, +90, 0) * lineDirection * GlobalSettings.width * _countLanes;
         
         _vertexRoad.Add(v1);
         _vertexRoad.Add(v2);
     }
-
+        
     // Строит меши по точкам "излома" дороги
     private void CreateMesh()
     {
@@ -192,20 +201,20 @@ public class TemplateRoad : AbstractRoad
     }
     */
 
-    // Включает видимость всех детей объекта _gameObject
-    public static void TurnOnKids(GameObject _gameObject)
+    // Включает видимость всех формирующих точек объекта _gameObject
+    public static void TurnOnPoints(GameObject _gameObject)
     {
-        for (int i = 0; i < _gameObject.transform.childCount; i++)
+        for (int i = 0; i < _gameObject.transform.childCount - 1; i++)
         {
             _gameObject.transform.GetChild(i).GetComponent<MeshRenderer>().enabled = true;
             _gameObject.transform.GetChild(i).GetComponent<BoxCollider>().enabled = true;
         }
     }
 
-    // Выключает видимость всех детей объекта _gameObject
-    public static void TurnOffKids(GameObject _gameObject)
+    // Выключает видимость всех формирующих точек объекта _gameObject
+    public static void TurnOffPoints(GameObject _gameObject)
     {
-        for (int i = 0; i < _gameObject.transform.childCount; i++)
+        for (int i = 0; i < _gameObject.transform.childCount - 1; i++)
         {
             _gameObject.transform.GetChild(i).GetComponent<MeshRenderer>().enabled = false;
             _gameObject.transform.GetChild(i).GetComponent<BoxCollider>().enabled = false;
@@ -217,8 +226,8 @@ public class TemplateRoad : AbstractRoad
         childConnection = null;
         foreach (var checkedRoad in RoadList)
         {
-            if (checkedRoad.GetComponent<TemplateRoad>().startPost.transform.position == endPost.transform.position &&
-                checkedRoad.gameObject != gameObject)
+            if (checkedRoad.gameObject != gameObject && 
+                checkedRoad.GetComponent<TemplateRoad>().startPost.transform.position == endPost.transform.position)
             {
                 ConnectFromParentToChild(checkedRoad.GetComponent<TemplateRoad>());
             }

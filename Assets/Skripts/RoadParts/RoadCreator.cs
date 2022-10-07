@@ -6,12 +6,14 @@ using UnityEngine.EventSystems;
 public class RoadCreator : MonoBehaviour
 {
     public LayerMask layerMask;
-    public GameObject _roadPrefab;
+    public GameObject _templateRoadPrefab;
+    public GameObject _simpleRoadPrefab;
     public int details;
     public Material material;
 
     private TemplateRoad _template;
     private GameObject _road;
+    private GameObject simpleRoadsFolder;
     private Transform _startPost;
     private Transform _endPost;
     private Transform _formingPoint;
@@ -95,7 +97,7 @@ public class RoadCreator : MonoBehaviour
                 _road.transform.GetChild(++_step).GetComponent<MeshRenderer>().enabled = true;
             else
             {
-                for (int i = 0; i < _road.transform.childCount; i++)
+                for (int i = 0; i < _road.transform.childCount - 1; i++)
                     _road.transform.GetChild(i).GetComponent<MeshRenderer>().enabled = false;
                 CreateRoadSkeleton(_template._countLanes);
             }
@@ -108,18 +110,45 @@ public class RoadCreator : MonoBehaviour
     private void CreateRoadSkeleton(int countLanes = 1)
     {
         gameObject.GetComponent<RoadEditor>().enabled = false;
-        _road = Instantiate(_roadPrefab);
+        _road = Instantiate(_templateRoadPrefab);
         _road.name = "Road";
-        _startPost = _road.transform.GetChild(0);
-        _endPost = _road.transform.GetChild(1);
-        _formingPoint = _road.transform.GetChild(2);
-        for (int i = 0; i < _road.transform.childCount; i++)
-            _road.transform.GetChild(i).GetComponent<MeshRenderer>().enabled = false;
+        _startPost = _road.transform.Find("StartPost");
+        _endPost = _road.transform.Find("EndPost");
+        _formingPoint = _road.transform.Find("FormingPoint");
+        TemplateRoad.TurnOffPoints(_road);
+        //for (int i = 0; i < _road.transform.childCount; i++)
+            //_road.transform.GetChild(i).GetComponent<MeshRenderer>().enabled = false;
         _template = _road.transform.GetComponent<TemplateRoad>();
         _template.enabled = false;
         _template._countLanes = countLanes;
         _startPost.GetComponent<MeshRenderer>().enabled = true;
         _step = 0;
+
+        createSimpleRoads(countLanes);
+    }
+    private void createSimpleRoads(int countLanes)
+    {
+        simpleRoadsFolder = new GameObject("SimpleRoads");
+        simpleRoadsFolder.transform.parent = _road.transform;
+
+        if (countLanes == 1)
+        {
+            InstantiateSimpleRoad("Right0");
+        }
+        else
+        {
+            for (int i = 0; i < countLanes / 2; i++)
+            {
+                InstantiateSimpleRoad("Right" + i);
+                InstantiateSimpleRoad("Left" + i);
+            }
+        }
+    }
+
+    private void InstantiateSimpleRoad(string name)
+    {
+        _template.DictOfSimpleRoads[name] = Instantiate(_simpleRoadPrefab, simpleRoadsFolder.transform);
+        _template.DictOfSimpleRoads[name].transform.name = name;
     }
 
     private void DeleteObjects()

@@ -1578,7 +1578,8 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 64
-  _roadPrefab: {fileID: 3119439897122743010, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
+  _templateRoadPrefab: {fileID: 3119439897122743010, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
+  _simpleRoadPrefab: {fileID: 7381959552727850246, guid: c02e6c1c8831f4040b30e598c6e94acb, type: 3}
   details: 50
   material: {fileID: 2100000, guid: f86df5e9984c2ad4199cf4ac5e9d3bde, type: 2}
 --- !u!114 &1270009638
@@ -1599,6 +1600,9 @@ MonoBehaviour:
   layerMaskGround:
     serializedVersion: 2
     m_Bits: 64
+  lastObject: {fileID: 0}
+  objectHit: {fileID: 0}
+  activePointTransform: {fileID: 0}
 --- !u!1001 &1406254580
 PrefabInstance:
   m_ObjectHideFlags: 0

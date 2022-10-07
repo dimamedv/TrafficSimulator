@@ -27,7 +27,7 @@ public class RoadEditor : MonoBehaviour
     private void StartEditRoad()
     {
         objectHit = hit.transform.gameObject;
-        TemplateRoad.TurnOnKids(objectHit);
+        TemplateRoad.TurnOnPoints(objectHit);
 
         if (objectHit.name == "Road")
         {
@@ -35,7 +35,7 @@ public class RoadEditor : MonoBehaviour
             if (lastObject != null)
             {
                 lastObject.GetComponent<MeshCollider>().enabled = true;
-                TemplateRoad.TurnOffKids(lastObject);
+                TemplateRoad.TurnOffPoints(lastObject);
                 Debug.Log("0");
             }
             Debug.Log("1");
@@ -55,7 +55,7 @@ public class RoadEditor : MonoBehaviour
         if (activePointTransform == null)
         {
             lastObject.GetComponent<MeshCollider>().enabled = true;
-            TemplateRoad.TurnOffKids(lastObject);
+            TemplateRoad.TurnOffPoints(lastObject);
             lastObject = null;
         }
         else

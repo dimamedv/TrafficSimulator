@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 3119439897122743008}
   - component: {fileID: 4903021686374321333}
   m_Layer: 7
-  m_Name: CrookedRoad
+  m_Name: TemplateRoad
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

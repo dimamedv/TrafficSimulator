@@ -8,5 +8,6 @@ public class SimpleRoad : AbstractRoad
 
     protected override void BuildRoad(bool endIteration = true)
     {
+
     }
 }
