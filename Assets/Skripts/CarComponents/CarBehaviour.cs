@@ -48,9 +48,20 @@ public class CarBehaviour : MonoBehaviour
         if (distance >= parentRoad.prefixSumSegments[^1])
         {
             distance = 0;
-            if (parentRoad.childConnection != null)
+            if (!parentRoad.childConnection)
+            {
+                Destroy(gameObject);
+            }
+            else if (parentRoad.childConnection.GetComponent<SimpleRoad>())
+            {
                 parentRoad = parentRoad.childConnection.GetComponent<SimpleRoad>();
-            else 
+            }
+            else if (parentRoad.childConnection.GetComponent<CrossRoadEntrance>() &&
+                      parentRoad.childConnection.GetComponent<CrossRoadEntrance>().childRoads.Count != 0)
+            {
+                parentRoad = parentRoad.childConnection.GetComponent<CrossRoadEntrance>().childRoads[0].GetComponent<SimpleRoad>();
+            } 
+            else
                 Destroy(gameObject);
         }
     }
