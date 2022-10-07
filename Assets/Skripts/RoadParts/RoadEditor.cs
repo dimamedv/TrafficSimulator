@@ -36,9 +36,7 @@ public class RoadEditor : MonoBehaviour
             {
                 lastObject.GetComponent<MeshCollider>().enabled = true;
                 TemplateRoad.TurnOffPoints(lastObject);
-                Debug.Log("0");
             }
-            Debug.Log("1");
             lastObject = objectHit;
         }
         else

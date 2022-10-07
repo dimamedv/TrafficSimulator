@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: -1207626217304241756}
   - component: {fileID: -8530417780717976488}
   - component: {fileID: 4808476303926539414}
+  - component: {fileID: -783530078585117132}
   m_Layer: 0
   m_Name: SimpleRoad
   m_TagString: Untagged
@@ -111,6 +112,21 @@ MonoBehaviour:
   formingPoint: {fileID: 0}
   _curFormingPointPosition: {x: 0, y: 0, z: 0}
   prefixSumSegments: []
+--- !u!114 &-783530078585117132
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7381959552727850246}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2090057e2dfeb948b4ad3ca11ab37e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  carPrefab: {fileID: 8343854920648327717, guid: 0400e5f842870f24c80292515edc3094, type: 3}
+  road: {fileID: 4808476303926539414}
+  time: 5
 --- !u!1001 &5324086546873311256
 PrefabInstance:
   m_ObjectHideFlags: 0

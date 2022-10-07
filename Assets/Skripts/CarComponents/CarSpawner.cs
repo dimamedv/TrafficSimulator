@@ -7,8 +7,6 @@ public class CarSpawner : MonoBehaviour
 {
     // Префаб создаваемой машины.
     public GameObject carPrefab;
-    // Дорога, с которой начинает движение авто
-    public SimpleRoad road;
     // Время, которое будет ждать спавнер
     public float time;
 
@@ -35,7 +33,7 @@ public class CarSpawner : MonoBehaviour
     {
         GameObject createdCar = Instantiate(carPrefab);
         createdCar.name = "Car";
-        createdCar.GetComponent<CarBehaviour>().parentRoad = road;
+        createdCar.GetComponent<CarBehaviour>().parentRoad = gameObject.GetComponent<SimpleRoad>();
         createdCar.transform.Rotate(-Vector3.up * 90);
     }
 }

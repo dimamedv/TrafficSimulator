@@ -48,6 +48,10 @@ public class TemplateRoad : AbstractRoad
         // Строим ВСЕ вершины, на основе которых будем строить меши
         RebuildParents();
         CalculateVertexPoints();
+        for (int i = 0; i < _countLanes / 2; i++)
+        {
+
+        }
 
         // Визуализируем все, что только можно визуализировать
         if (debugRoad) 
@@ -73,6 +77,8 @@ public class TemplateRoad : AbstractRoad
     {
         points.Clear();
         _vertexRoad.Clear();
+        for (int i = 0; i < gameObject.transform.Find("SimpleRoads").childCount; i++)
+            gameObject.transform.Find("SimpleRoads").GetChild(i).GetComponent<SimpleRoad>().points.Clear();
         //prefixSumSegments.Clear();
     }
 
@@ -120,11 +126,12 @@ public class TemplateRoad : AbstractRoad
         for (int i = 0; i < points.Count - 1; i++)
         {
             lineDirection = CalculateLineDirection(points[i + 1], points[i]);
-
+            AddRoadVertexes(points[i], lineDirection);
             AddMeshVertexes(points[i], lineDirection);
         }
         
         lineDirection = CalculateLineDirection(points[^1], points[^2]);
+        AddRoadVertexes(points[^1], lineDirection);
         AddMeshVertexes(points[^1], lineDirection);
     }
 
@@ -136,21 +143,35 @@ public class TemplateRoad : AbstractRoad
         //AddVertexes(a, lineDirection);
     }
 
-    private void AddRoadVertexes()
+    private void AddRoadVertexes(Vector3 a, Vector3 lineDirection, int i)
     {
-
+        if (_countLanes == 1)
+        {
+            DictOfSimpleRoads["Right0"].GetComponent<SimpleRoad>().points.Capacity = points.Count;
+            DictOfSimpleRoads["Right0"].GetComponent<SimpleRoad>().points[0] = a;
+        }
+        else
+        {
+            for (int Lane = 0; Lane < _countLanes / 2; Lane++)
+            {
+                DictOfSimpleRoads["Right" + Lane].GetComponent<SimpleRoad>().points[0] = 
+                    a + Quaternion.Euler(0, +90, 0) * lineDirection * GlobalSettings.width * (Lane + 0.5f));
+                DictOfSimpleRoads["Left" + i].GetComponent<SimpleRoad>().points.Add(a +
+                    Quaternion.Euler(0, -90, 0) * lineDirection * GlobalSettings.width * (i + 0.5f));
+            }
+        }
     }
 
     // Добавляет координаты точек "излома" дороги
     private void AddMeshVertexes(Vector3 a, Vector3 lineDirection)
     {
-        Vector3 v1 = a + Quaternion.Euler(0, -90, 0) * lineDirection * GlobalSettings.width * _countLanes;
-        Vector3 v2 = a + Quaternion.Euler(0, +90, 0) * lineDirection * GlobalSettings.width * _countLanes;
+        Vector3 v1 = a + Quaternion.Euler(0, -90, 0) * lineDirection * GlobalSettings.width * _countLanes / 2;
+        Vector3 v2 = a + Quaternion.Euler(0, +90, 0) * lineDirection * GlobalSettings.width * _countLanes / 2;
         
         _vertexRoad.Add(v1);
         _vertexRoad.Add(v2);
     }
-        
+
     // Строит меши по точкам "излома" дороги
     private void CreateMesh()
     {
@@ -160,7 +181,7 @@ public class TemplateRoad : AbstractRoad
 
         // Звбивает координаты вершин в меш
         Vector3[] v = new Vector3[_vertexRoad.Count];
-        for (int i = 0; i < _vertexRoad.Count; i++) 
+        for (int i = 0; i < _vertexRoad.Count; i++)
             v[i] = _vertexRoad[i];
         mesh.vertices = v;
 
@@ -190,16 +211,6 @@ public class TemplateRoad : AbstractRoad
             mc.enabled = false;
         }
     }
-
-    /*
-    // Рассчитывает длину дороги, заполняя массив префиксных сумм
-    private void CalculateLengthOfRoadSections()
-    {
-        prefixSumSegments.Add(0.0f);
-        for (int i = 0; i < points.Count - 1; i++)
-            prefixSumSegments.Add(prefixSumSegments[i] + MyMath.getDistance(points[i], points[i + 1]));
-    }
-    */
 
     // Включает видимость всех формирующих точек объекта _gameObject
     public static void TurnOnPoints(GameObject _gameObject)

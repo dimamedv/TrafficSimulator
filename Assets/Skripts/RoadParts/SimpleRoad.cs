@@ -10,4 +10,13 @@ public class SimpleRoad : AbstractRoad
     {
 
     }
+
+
+    // Рассчитывает длину дороги, заполняя массив префиксных сумм
+    private void CalculateLengthOfRoadSections()
+    {
+        prefixSumSegments.Add(0.0f);
+        for (int i = 0; i < points.Count - 1; i++)
+            prefixSumSegments.Add(prefixSumSegments[i] + MyMath.getDistance(points[i], points[i + 1]));
+    }
 }
