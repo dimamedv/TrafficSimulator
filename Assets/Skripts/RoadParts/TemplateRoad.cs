@@ -172,7 +172,6 @@ public class TemplateRoad : AbstractRoad
         {
             for (int Lane = 0; Lane < _countLanes / 2; Lane++)
             {
-                Debug.Log(pointIndex);
                 DictOfSimpleRoads["Right" + Lane].GetComponent<SimpleRoad>().points[pointIndex] = 
                     a + Quaternion.Euler(0, +90, 0) * lineDirection * GlobalSettings.width * (Lane + GlobalSettings.width / 4);
                 DictOfSimpleRoads["Left" + Lane].GetComponent<SimpleRoad>().points[^(pointIndex+1)] =

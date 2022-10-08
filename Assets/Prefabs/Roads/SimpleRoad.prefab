@@ -104,7 +104,6 @@ MonoBehaviour:
   isStraight: 0
   parentConnection: {fileID: 0}
   childConnection: {fileID: 0}
-  _vertexRoad: []
   points: []
   carsOnThisRoad: []
   startPost: {fileID: 0}
@@ -112,6 +111,9 @@ MonoBehaviour:
   formingPoint: {fileID: 0}
   _curFormingPointPosition: {x: 0, y: 0, z: 0}
   prefixSumSegments: []
+  createCrossRoadEntrance: 0
+  crossRoadEntrancePrefab: {fileID: 5064607121679084870, guid: d3eed4fe31c294fbc907d3eec0011ca5, type: 3}
+  crossRoadEntrance: {fileID: 0}
 --- !u!114 &-783530078585117132
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -125,7 +127,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   carPrefab: {fileID: 8343854920648327717, guid: 0400e5f842870f24c80292515edc3094, type: 3}
-  road: {fileID: 4808476303926539414}
   time: 5
 --- !u!1001 &5324086546873311256
 PrefabInstance:
