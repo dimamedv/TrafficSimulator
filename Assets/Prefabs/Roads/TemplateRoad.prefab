@@ -101,22 +101,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17380eabdef969244ae1a2e9ece2f94f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  details: 100
+  isStraight: 0
   parentConnection: {fileID: 0}
   childConnection: {fileID: 0}
-  _vertexCubeRed: {fileID: 0}
-  _vertexCubeBLue: {fileID: 0}
-  _bezierCubeGreen: {fileID: 0}
+  _vertexRoad: []
   points: []
-  prefixSumSegments: []
   carsOnThisRoad: []
   startPost: {fileID: 0}
   endPost: {fileID: 0}
   formingPoint: {fileID: 0}
   _curFormingPointPosition: {x: 0, y: 0, z: 0}
-  details: 100
-  isStraight: 0
   debugRoad: 0
-  _vertexRoad: []
+  _vertexCubeRed: {fileID: 0}
+  _vertexCubeBLue: {fileID: 0}
+  _bezierCubeGreen: {fileID: 0}
+  prefixSumSegments: []
+  createCrossRoadEntrance: 0
+  crossRoadEntrancePrefab: {fileID: 5064607121679084870, guid: d3eed4fe31c294fbc907d3eec0011ca5, type: 3}
+  crossRoadEntrance: {fileID: 0}
 --- !u!114 &3119439897122743008
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -153,6 +156,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3119439897122742812}
     m_Modifications:
+    - target: {fileID: 282629353444292131, guid: 4f0948268a382a44a9a36c884c7809ff, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 6d94dd62a552449f28c9b35a56870795, type: 2}
     - target: {fileID: 409893222466027137, guid: 4f0948268a382a44a9a36c884c7809ff, type: 3}
       propertyPath: m_RootOrder
       value: 1

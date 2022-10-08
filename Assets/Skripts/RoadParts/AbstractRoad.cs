@@ -33,6 +33,8 @@ public abstract class AbstractRoad : MonoBehaviour
         roadList.Remove(gameObject);
     }
 
+    abstract protected bool NeedsRebuild();
+
     // Рассчет координат точек Безье
     protected void CalculateQuadraticBezierCurve(Vector3 point0, Vector3 point1, Vector3 point2, int details)
     {
