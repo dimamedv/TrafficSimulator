@@ -10,11 +10,10 @@ public abstract class AbstractRoad : MonoBehaviour
     public bool isStraight; // Прямая ли дорога
     public GameObject parentConnection; // Соединение с родителем
     public GameObject childConnection; // Соединение с ребенком
-    public List<Vector3> _vertexRoad = new List<Vector3>(); // Вершины излома дороги
     public List<Vector3> points = new List<Vector3>(); // Массив центральных точек (Безье), по которым едет машина
     public List<GameObject> carsOnThisRoad; // Массив машин, который в данный момент едут по этой дороге
 
-    public static List<GameObject> RoadList = new List<GameObject>(); // Массив всех дорог
+    public static List<GameObject> roadList = new List<GameObject>(); // Массив всех дорог
     public GameObject startPost; // Стартовая точка
     public GameObject endPost; // Конечная точка
     public GameObject formingPoint; // Формирующая точка
@@ -29,17 +28,9 @@ public abstract class AbstractRoad : MonoBehaviour
         BuildRoad(false);
     }
 
-    void LateUpdate()
-    {
-        if (NeedsRebuild())
-        {
-            BuildRoad(false);
-        }
-    }
-
     public void OnDestroy()
     {
-        RoadList.Remove(gameObject);
+        roadList.Remove(gameObject);
     }
 
     // Рассчет координат точек Безье
@@ -83,19 +74,6 @@ public abstract class AbstractRoad : MonoBehaviour
             return x - remains + isNegative * GlobalSettings.gridStep;
     }
 
-    // Возвращает истину, если одна из точек сменила сове положение. Ложь в ином случае.
-    protected bool NeedsRebuild()
-    {
-        var formingPosition = formingPoint.transform.position;
-        var startPosition = startPost.transform.position;
-        var endPosition = endPost.transform.position;
-        return points.Count == 0
-               || points[0] != startPosition
-               || points[^1] != endPosition
-               || !isStraight && formingPosition != _curFormingPointPosition
-               || isStraight && MyMath.GetMidPoint(startPosition, endPosition) != formingPosition;
-    }
 
-
-    protected abstract void BuildRoad(bool endIteration = true);
+    public abstract void BuildRoad(bool endIteration = true);
 }

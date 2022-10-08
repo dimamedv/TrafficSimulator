@@ -6,14 +6,14 @@ public class SimpleRoad : AbstractRoad
 {
     public List<float> prefixSumSegments = new List<float>(); // Массив префиксных сумм. Последний элемент - длина всей дороги
 
-    protected override void BuildRoad(bool endIteration = true)
+    public override void BuildRoad(bool endIteration = true)
     {
-
+        CalculateLengthOfSimpleRoad();
     }
 
 
     // Рассчитывает длину дороги, заполняя массив префиксных сумм
-    private void CalculateLengthOfRoadSections()
+    private void CalculateLengthOfSimpleRoad()
     {
         prefixSumSegments.Add(0.0f);
         for (int i = 0; i < points.Count - 1; i++)
