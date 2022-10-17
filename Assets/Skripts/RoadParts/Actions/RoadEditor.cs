@@ -6,6 +6,7 @@ public class RoadEditor : MonoBehaviour
 {
     public LayerMask layerMaskRoad;
     public LayerMask layerMaskGround;
+    public LayerMask layerMaskUI;
 
     public GameObject lastObject = null;
     public GameObject objectHit;
@@ -31,21 +32,31 @@ public class RoadEditor : MonoBehaviour
 
         if (objectHit.name == "Road")
         {
-            objectHit.GetComponent<MeshCollider>().enabled = false;
-            if (lastObject != null)
-            {
-                lastObject.GetComponent<MeshCollider>().enabled = true;
-                TemplateRoad.TurnOffPoints(lastObject);
-            }
-            lastObject = objectHit;
+            EditRoad();
         }
         else
         {
-            objectHit.GetComponent<BoxCollider>().enabled = false;
-            if (activePointTransform != null)
-                activePointTransform.GetComponent<BoxCollider>().enabled = true;
-            activePointTransform = objectHit.transform;
+            EditPoint();
         }
+    }
+
+    private void EditRoad()
+    {
+        objectHit.GetComponent<MeshCollider>().enabled = false;
+        if (lastObject != null)
+        {
+            lastObject.GetComponent<MeshCollider>().enabled = true;
+            TemplateRoad.TurnOffPoints(lastObject);
+        }
+        lastObject = objectHit;
+    }
+
+    private void EditPoint()
+    {
+        objectHit.GetComponent<BoxCollider>().enabled = false;
+        if (activePointTransform != null)
+            activePointTransform.GetComponent<BoxCollider>().enabled = true;
+        activePointTransform = objectHit.transform;
     }
 
     private void StopEditRoad()
@@ -56,7 +67,7 @@ public class RoadEditor : MonoBehaviour
             TemplateRoad.TurnOffPoints(lastObject);
             lastObject = null;
         }
-        else
+        else 
         {
             activePointTransform.GetComponent<BoxCollider>().enabled = true;
             activePointTransform = null;

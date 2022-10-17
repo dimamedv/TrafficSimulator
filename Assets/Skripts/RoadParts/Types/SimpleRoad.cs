@@ -8,9 +8,30 @@ public class SimpleRoad : AbstractRoad
     public bool createCrossRoadEntrance;
     public GameObject crossRoadEntrancePrefab;
     public GameObject crossRoadEntrance;
+    public bool isReadyMadePoints;
 
-    public override void BuildRoad(bool endIteration = true)
+    private void Update()
     {
+        BuildRoad();
+    }
+
+    public override void BuildRoad(bool endIteration = true, bool isReadyMadePoints = false)
+    {
+        if (isReadyMadePoints == false) {
+            ClearLists();
+            if (isStraight)
+            {
+                formingPoint.transform.position =
+                    MyMath.GetMidPoint(startPost.transform.position, endPost.transform.position);
+                CalculateQuadraticBezierCurve(startPost.transform.position, formingPoint.transform.position,
+                    endPost.transform.position, 1);
+            }
+            else
+            {
+                CalculateQuadraticBezierCurve(startPost.transform.position, formingPoint.transform.position,
+                endPost.transform.position, details);
+            }
+        }
         CalculateLengthOfSimpleRoad();
 
         if (createCrossRoadEntrance && !transform.Find("CrossRoadEntrance"))
@@ -26,6 +47,9 @@ public class SimpleRoad : AbstractRoad
             CrossRoadEntrance.EntrancesList.Remove(crossRoadEntrance);
             crossRoadEntrance = null;
         }
+
+        if (gameObject.GetComponent<MeshVisualization>())
+            gameObject.GetComponent<MeshVisualization>().RenderingRoad(points);
     }
 
 

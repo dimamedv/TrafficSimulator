@@ -8,8 +8,6 @@ public class TemplateRoad : AbstractRoad
     public GameObject _vertexCubeRed; // Куб для отоборажение одной стороны дороги в режиме дебага
     public GameObject _vertexCubeBLue; // Куб для отоборажение одной стороны дороги в режиме дебага
     public GameObject _bezierCubeGreen; // Куб для отображения точек центра дороги в режиме дебага
-    public int _countLanes;
-    public List<Vector3> _vertexRoad = new List<Vector3>(); // Вершины излома дороги (для полигонов)
     public Dictionary<string, GameObject> DictOfSimpleRoads = new Dictionary<string, GameObject>();
 
     public void Awake()
@@ -44,7 +42,7 @@ public class TemplateRoad : AbstractRoad
                || isStraight && MyMath.GetMidPoint(startPosition, endPosition) != formingPosition;
     }
 
-    public override void BuildRoad(bool endIteration = true)
+    public override void BuildRoad(bool endIteration = true, bool isReadyMadePoints = false)
     {
         RebuildGrid();
         if (!endIteration && childConnection && childConnection.GetComponent<TemplateRoad>())
@@ -70,17 +68,13 @@ public class TemplateRoad : AbstractRoad
 
         // Строим ВСЕ вершины, на основе которых будем строить меши
         RebuildParents();
-        CalculateVertexPoints();
+        CalculateRoadVertexes();
         BuildSimpleRoads();
 
-        // Визуализируем все, что только можно визуализировать
-        if (debugRoad) 
-            ShowDebugPoints();
-        
-        CreateMesh();
+        // Запускаем процесс визуализации
+        gameObject.GetComponent<MeshVisualization>().RenderingRoad(points);
 
         // Остаточные действия
-        //CalculateLengthOfRoadSections();
         _curFormingPointPosition = formingPoint.transform.position;
         
         if (childConnection && childConnection.GetComponent<TemplateRoad>() && !endIteration)
@@ -90,13 +84,6 @@ public class TemplateRoad : AbstractRoad
 
         //if (parentConnection == null)
             //gameObject.AddComponent<CarSpawner>();
-    }
-
-    // Обнуляет все списки
-    private void ClearLists()
-    {
-        points.Clear();
-        _vertexRoad.Clear();
     }
 
     private void ClearSimpleRoads()
@@ -132,32 +119,22 @@ public class TemplateRoad : AbstractRoad
                 lineDirectionParent = (parentPoints[^1] - parentPoints[^2]).normalized;
             }
 
-            AddMeshVertexes(parentPoints[^1], lineDirectionParent);
+            gameObject.GetComponent<MeshVisualization>().AddMeshVertexes(parentPoints[^1], lineDirectionParent);
         }
     }
 
     // Рассчитывает координаты точек излома дороги
-    private void CalculateVertexPoints()
+    private void CalculateRoadVertexes()
     {
         Vector3 lineDirection;
         for (int pointIndex = 0; pointIndex < points.Count - 1; pointIndex++)
         {
-            lineDirection = CalculateLineDirection(points[pointIndex + 1], points[pointIndex]);
+            lineDirection = MyMath.CalculateLineDirection(points[pointIndex + 1], points[pointIndex]);
             AddRoadVertexes(points[pointIndex], lineDirection, pointIndex);
-            AddMeshVertexes(points[pointIndex], lineDirection);
         }
         
-        lineDirection = CalculateLineDirection(points[^1], points[^2]);
+        lineDirection = MyMath.CalculateLineDirection(points[^1], points[^2]);
         AddRoadVertexes(points[^1], lineDirection, points.Count - 1);
-        AddMeshVertexes(points[^1], lineDirection);
-    }
-
-    // Рассчитывает направление для ширины дороги
-    private Vector3 CalculateLineDirection(Vector3 a, Vector3 b)
-    {
-        return (a - b).normalized;
-
-        //AddVertexes(a, lineDirection);
     }
 
     // Добавляет в "простые дороги" координаты точек, по которым в будущем будет ехать машина
@@ -180,79 +157,15 @@ public class TemplateRoad : AbstractRoad
         }
     }
 
-    // Добавляет координаты точек "излома" дороги
-    private void AddMeshVertexes(Vector3 a, Vector3 lineDirection)
-    {
-        Vector3 v1 = a + Quaternion.Euler(0, -90, 0) * lineDirection * GlobalSettings.width * _countLanes / 2;
-        Vector3 v2 = a + Quaternion.Euler(0, +90, 0) * lineDirection * GlobalSettings.width * _countLanes / 2;
-        
-        _vertexRoad.Add(v1);
-        _vertexRoad.Add(v2);
-    }
-
     // Запускает метод BuildRoad для всех SimpleRoad для этой дороги.
     private void BuildSimpleRoads()
     {
         for (int i = 0; i < _countLanes; i++)
         {
             if (i % 2 == 0)
-                DictOfSimpleRoads["Right" + i / 2].GetComponent<SimpleRoad>().BuildRoad();
+                DictOfSimpleRoads["Right" + i / 2].GetComponent<SimpleRoad>().BuildRoad(true, true);
             else
-                DictOfSimpleRoads["Left" + i / 2].GetComponent<SimpleRoad>().BuildRoad();
-        }
-    }
-
-    // Визуализация Дебаг точек
-    private void ShowDebugPoints()
-    {
-        for (int i = 0; i < _vertexRoad.Count; i++)
-        {
-            if (i % 2 == 0)
-                Instantiate(_vertexCubeRed, _vertexRoad[i], new Quaternion());
-            else
-                Instantiate(_vertexCubeBLue, _vertexRoad[i], new Quaternion());
-        }
-        for (int i = 0; i < points.Count; i++) 
-            Instantiate(_bezierCubeGreen, points[i], new Quaternion());
-    }
-
-    // Строит меши по точкам "излома" дороги
-    private void CreateMesh()
-    {
-        MeshFilter mf = GetComponent<MeshFilter>();
-        Mesh mesh = new Mesh();
-        mf.mesh = mesh;
-
-        // Звбивает координаты вершин в меш
-        Vector3[] v = new Vector3[_vertexRoad.Count];
-        for (int i = 0; i < _vertexRoad.Count; i++)
-            v[i] = _vertexRoad[i];
-        mesh.vertices = v;
-
-        // Индексы вершин излома из mesh.vertices
-        int[] triangles = new int[(_vertexRoad.Count - 2) * 3 * 2];
-
-        for (int i = 0; i < (_vertexRoad.Count - 2) * 2; i++)
-        {
-            int j = i / 2;
-
-            for (int k = 0; k < 3; k++) triangles[i * 3 + k] = j++;
-            i++;
-
-            for (int k = 0; k < 3; k++) triangles[i * 3 + k] = --j;
-        }
-
-        mesh.triangles = triangles;
-
-        MeshCollider mc = GetComponent<MeshCollider>();
-        if (startPost.transform.position != endPost.transform.position)
-        {
-            mc.enabled = true;
-            mc.sharedMesh = mesh;
-        }
-        else
-        {
-            mc.enabled = false;
+                DictOfSimpleRoads["Left" + i / 2].GetComponent<SimpleRoad>().BuildRoad(true, true);
         }
     }
 
@@ -281,7 +194,7 @@ public class TemplateRoad : AbstractRoad
         childConnection = null;
         foreach (var checkedRoad in roadList)
         {
-            if (checkedRoad.gameObject != gameObject && 
+            if (checkedRoad.gameObject != gameObject && checkedRoad.GetComponent<TemplateRoad>() && 
                 checkedRoad.GetComponent<TemplateRoad>().startPost.transform.position == endPost.transform.position)
             {
                 ConnectFromParentToChild(checkedRoad.GetComponent<TemplateRoad>());

@@ -97,8 +97,7 @@ public class RoadCreator : MonoBehaviour
                 _road.transform.GetChild(++_step).GetComponent<MeshRenderer>().enabled = true;
             else
             {
-                for (int i = 0; i < _road.transform.childCount - 1; i++)
-                    _road.transform.GetChild(i).GetComponent<MeshRenderer>().enabled = false;
+                TemplateRoad.TurnOffPoints(_road);
                 CreateRoadSkeleton(_template._countLanes);
             }
         else if (Input.GetMouseButtonDown(1))
@@ -116,13 +115,12 @@ public class RoadCreator : MonoBehaviour
         _endPost = _road.transform.Find("EndPost");
         _formingPoint = _road.transform.Find("FormingPoint");
         TemplateRoad.TurnOffPoints(_road);
-        //for (int i = 0; i < _road.transform.childCount; i++)
-            //_road.transform.GetChild(i).GetComponent<MeshRenderer>().enabled = false;
         _template = _road.transform.GetComponent<TemplateRoad>();
         _template.enabled = false;
         _template._countLanes = countLanes;
         _startPost.GetComponent<MeshRenderer>().enabled = true;
         _step = 0;
+        _road.AddComponent<MeshVisualization>();
 
         createSimpleRoads(countLanes);
     }

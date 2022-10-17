@@ -13,6 +13,8 @@ GameObject:
   - component: {fileID: -8530417780717976488}
   - component: {fileID: 4808476303926539414}
   - component: {fileID: -783530078585117132}
+  - component: {fileID: -3518202867701715353}
+  - component: {fileID: 3663035148554021591}
   m_Layer: 0
   m_Name: SimpleRoad
   m_TagString: Untagged
@@ -106,6 +108,7 @@ MonoBehaviour:
   childConnection: {fileID: 0}
   points: []
   carsOnThisRoad: []
+  _countLanes: 1
   startPost: {fileID: 0}
   endPost: {fileID: 0}
   formingPoint: {fileID: 0}
@@ -114,6 +117,7 @@ MonoBehaviour:
   createCrossRoadEntrance: 0
   crossRoadEntrancePrefab: {fileID: 5064607121679084870, guid: d3eed4fe31c294fbc907d3eec0011ca5, type: 3}
   crossRoadEntrance: {fileID: 0}
+  isReadyMadePoints: 0
 --- !u!114 &-783530078585117132
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -128,6 +132,32 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   carPrefab: {fileID: 8343854920648327717, guid: 0400e5f842870f24c80292515edc3094, type: 3}
   time: 5
+--- !u!64 &-3518202867701715353
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7381959552727850246}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 0}
+--- !u!114 &3663035148554021591
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7381959552727850246}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b586d4738b42a54bbc796a66e9c25d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &5324086546873311256
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -186,6 +216,10 @@ PrefabInstance:
     - target: {fileID: 6545930907395441979, guid: 1b23e89c62025d04ba0c21dfc3d018b5, type: 3}
       propertyPath: m_Name
       value: FormingPoint
+      objectReference: {fileID: 0}
+    - target: {fileID: 6545930907395441979, guid: 1b23e89c62025d04ba0c21dfc3d018b5, type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1b23e89c62025d04ba0c21dfc3d018b5, type: 3}
@@ -257,6 +291,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: EndPost
       objectReference: {fileID: 0}
+    - target: {fileID: 8116178819741311948, guid: 4f0948268a382a44a9a36c884c7809ff, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4f0948268a382a44a9a36c884c7809ff, type: 3}
 --- !u!4 &6599070289484183179 stripped
@@ -322,6 +360,10 @@ PrefabInstance:
     - target: {fileID: 5252301188195550223, guid: 997115982c6ea45488d7f78854c9d493, type: 3}
       propertyPath: m_Name
       value: StartPost
+      objectReference: {fileID: 0}
+    - target: {fileID: 5252301188195550223, guid: 997115982c6ea45488d7f78854c9d493, type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 997115982c6ea45488d7f78854c9d493, type: 3}

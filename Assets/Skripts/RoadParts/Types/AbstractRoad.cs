@@ -10,8 +10,9 @@ public abstract class AbstractRoad : MonoBehaviour
     public bool isStraight; // Прямая ли дорога
     public GameObject parentConnection; // Соединение с родителем
     public GameObject childConnection; // Соединение с ребенком
-    public List<Vector3> points = new List<Vector3>(); // Массив центральных точек (Безье), по которым едет машина
+    public List<Vector3> points = new List<Vector3>(); // Массив центральных точек (Безье)
     public List<GameObject> carsOnThisRoad; // Массив машин, который в данный момент едут по этой дороге
+    public int _countLanes = 1;
 
     public static List<GameObject> roadList = new List<GameObject>(); // Массив всех дорог
     public GameObject startPost; // Стартовая точка
@@ -74,6 +75,12 @@ public abstract class AbstractRoad : MonoBehaviour
             return x - remains + isNegative * GlobalSettings.gridStep;
     }
 
+    // Обнуляет все списки
+    protected void ClearLists()
+    {
+        points.Clear();
+    }
 
-    public abstract void BuildRoad(bool endIteration = true);
+
+    public abstract void BuildRoad(bool endIteration = true, bool isReadyMadePoints = false);
 }
