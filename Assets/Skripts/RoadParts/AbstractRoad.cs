@@ -20,15 +20,6 @@ public abstract class AbstractRoad : MonoBehaviour
     public GameObject formingPoint; // Формирующая точка
     public Vector3 _curFormingPointPosition; // "Указатель" на формирующую точку, чтобы отслеживать перемещение
 
-
-    public void Awake()
-    {
-        startPost = transform.GetChild(0).gameObject;
-        endPost = transform.GetChild(1).gameObject;
-        formingPoint = transform.GetChild(2).gameObject;
-        RoadList.Add(gameObject);
-    }
-
     public void Start()
     {
         BuildRoad(false);
@@ -40,11 +31,6 @@ public abstract class AbstractRoad : MonoBehaviour
         {
             BuildRoad(false);
         }
-    }
-
-    public void OnDestroy()
-    {
-        RoadList.Remove(gameObject);
     }
 
     abstract protected bool NeedsRebuild();

@@ -108,9 +108,9 @@ MonoBehaviour:
   _vertexRoad: []
   points: []
   carsOnThisRoad: []
-  startPost: {fileID: 0}
-  endPost: {fileID: 0}
-  formingPoint: {fileID: 0}
+  startPost: {fileID: 5252301188195550223, guid: 997115982c6ea45488d7f78854c9d493, type: 3}
+  endPost: {fileID: 8116178819741311948, guid: 4f0948268a382a44a9a36c884c7809ff, type: 3}
+  formingPoint: {fileID: 6545930907395441979, guid: 1b23e89c62025d04ba0c21dfc3d018b5, type: 3}
   _curFormingPointPosition: {x: 0, y: 0, z: 0}
   debugRoad: 0
   _vertexCubeRed: {fileID: 0}
@@ -120,6 +120,7 @@ MonoBehaviour:
   createCrossRoadEntrance: 0
   crossRoadEntrancePrefab: {fileID: 5064607121679084870, guid: d3eed4fe31c294fbc907d3eec0011ca5, type: 3}
   crossRoadEntrance: {fileID: 0}
+  templateOwner: {fileID: 0}
 --- !u!114 &3119439897122743008
 MonoBehaviour:
   m_ObjectHideFlags: 0

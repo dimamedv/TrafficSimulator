@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using static GlobalSettings;
 
@@ -13,6 +14,15 @@ public class SimpleRoad : AbstractRoad
     public bool createCrossRoadEntrance;
     public GameObject crossRoadEntrancePrefab;
     public GameObject crossRoadEntrance;
+    public GameObject templateOwner;
+
+    public void Awake()
+    {
+        startPost = transform.GetChild(0).gameObject;
+        endPost = transform.GetChild(1).gameObject;
+        formingPoint = transform.GetChild(2).gameObject;
+        RoadList.Add(gameObject);
+    }
 
     public new void Start()
     {
@@ -20,46 +30,26 @@ public class SimpleRoad : AbstractRoad
         _curFormingPointPosition = formingPoint.transform.position;
     }
     
+    public void OnDestroy()
+    {
+        RoadList.Remove(gameObject);
+    }
+
     protected override void BuildRoad(bool endIteration = true)
     {
         RebuildGrid();
-        
-        if (createCrossRoadEntrance && !transform.Find("CrossRoadEntrance"))
-        {
-            crossRoadEntrance = Instantiate(crossRoadEntrancePrefab, endPost.transform.position,
-                endPost.transform.rotation);
-            crossRoadEntrance.transform.SetParent(gameObject.transform);
-            crossRoadEntrance.transform.name = "CrossRoadEntrance";
-        } else if (!createCrossRoadEntrance && transform.Find("CrossRoadEntrance"))
-        {
-            Destroy(crossRoadEntrance);
-            CrossRoadEntrance.EntrancesList.Remove(crossRoadEntrance);
-            crossRoadEntrance = null;
-        }
+        CheckCrossRoadEntranceState();
         
         if (!endIteration && childConnection && childConnection.GetComponent<SimpleRoad>())
             childConnection.GetComponent<SimpleRoad>().BuildRoad();
         
-        CheckoutChildPost();
-        CheckoutParentPost();
-
-        // Подготавливаем "почву" для построения дороги
+        CheckoutChildConnection();
+        CheckoutParentConnection();
+        
         ClearLists();
-        if (isStraight)
-        {
-            formingPoint.transform.position =
-             MyMath.GetMidPoint(startPost.transform.position, endPost.transform.position);
-            CalculateQuadraticBezierCurve(startPost.transform.position, formingPoint.transform.position,
-                endPost.transform.position, 1);
-        }
-        else
-        {
-            CalculateQuadraticBezierCurve(startPost.transform.position, formingPoint.transform.position,
-            endPost.transform.position, details);
-        }
+        GetPointsForMesh();
 
         // Строим ВСЕ вершины, на основе которых будем строить меши
-
         CalculateMeshVertexPoints();
 
         // Визуализируем все, что только можно визуализировать
@@ -76,6 +66,46 @@ public class SimpleRoad : AbstractRoad
             childConnection.GetComponent<SimpleRoad>().BuildRoad();
         if (parentConnection && parentConnection.GetComponent<SimpleRoad>() && !endIteration)
             parentConnection.GetComponent<SimpleRoad>().BuildRoad();
+    }
+
+    private void GetPointsForMesh()
+    {
+        if (templateOwner == null)
+        {
+            if (isStraight)
+            {
+                formingPoint.transform.position =
+                    MyMath.GetMidPoint(startPost.transform.position, endPost.transform.position);
+                CalculateQuadraticBezierCurve(startPost.transform.position, formingPoint.transform.position,
+                    endPost.transform.position, 1);
+            }
+            else
+            {
+                CalculateQuadraticBezierCurve(startPost.transform.position, formingPoint.transform.position,
+                    endPost.transform.position, details);
+            }
+        }
+        else
+        {
+            
+        }
+    }
+
+    private void CheckCrossRoadEntranceState()
+    {
+        if (createCrossRoadEntrance && !transform.Find("CrossRoadEntrance"))
+        {
+            crossRoadEntrance = Instantiate(crossRoadEntrancePrefab, endPost.transform.position,
+                endPost.transform.rotation);
+            crossRoadEntrance.transform.SetParent(gameObject.transform);
+            crossRoadEntrance.transform.name = "CrossRoadEntrance";
+        }
+        else if (!createCrossRoadEntrance && transform.Find("CrossRoadEntrance"))
+        {
+            Destroy(crossRoadEntrance);
+            CrossRoadEntrance.EntrancesList.Remove(crossRoadEntrance);
+            crossRoadEntrance = null;
+        }
     }
 
     // Обнуляет все списки
@@ -218,7 +248,7 @@ public class SimpleRoad : AbstractRoad
         }
     }
 
-    protected void CheckoutChildPost()
+    protected void CheckoutChildConnection()
     {
         childConnection = null;
 
@@ -244,7 +274,7 @@ public class SimpleRoad : AbstractRoad
         }
     }
 
-    protected void CheckoutParentPost()
+    protected void CheckoutParentConnection()
     {
         parentConnection = null;
         
