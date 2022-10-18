@@ -16,11 +16,9 @@ public class SimpleRoad : AbstractRoad
     public GameObject crossRoadEntrance;
     public GameObject templateOwner;
 
-    public void Awake()
+    public override void Awake()
     {
-        startPost = transform.GetChild(0).gameObject;
-        endPost = transform.GetChild(1).gameObject;
-        formingPoint = transform.GetChild(2).gameObject;
+        base.Awake();
         RoadList.Add(gameObject);
     }
 
@@ -35,7 +33,7 @@ public class SimpleRoad : AbstractRoad
         RoadList.Remove(gameObject);
     }
 
-    protected override void BuildRoad(bool endIteration = true)
+    public override void BuildRoad(bool endIteration = true)
     {
         RebuildGrid();
         CheckCrossRoadEntranceState();
@@ -87,7 +85,10 @@ public class SimpleRoad : AbstractRoad
         }
         else
         {
-            
+            points = templateOwner.GetComponent<TemplateRoad>().GetBezierPointsByIdentifier(name);
+            startPost.transform.position = points[0];
+            endPost.transform.position = points[^1];
+            formingPoint.SetActive(false);
         }
     }
 

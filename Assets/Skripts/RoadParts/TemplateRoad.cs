@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Text.RegularExpressions;
 
 public class TemplateRoad : AbstractRoad
 {
@@ -11,15 +12,16 @@ public class TemplateRoad : AbstractRoad
     public Dictionary<string, GameObject> RoadsOfTemplate;
 
 
-    public void Awake()
+    public override void Awake()
     {
+        base.Awake();
         Initialization();
     }
 
 
     protected override bool NeedsRebuild()
     {
-        return false;
+        return true;
     }
 
     private void Initialization()
@@ -31,7 +33,7 @@ public class TemplateRoad : AbstractRoad
             string roadName = "left" + i;
             RoadsOfTemplate.Add(roadName, CreateRoadInstance(roadName));
         }
-        
+
         for (int i = 0; i < numOfRightSideRoads; i++)
         {
             string roadName = "right" + i;
@@ -50,15 +52,46 @@ public class TemplateRoad : AbstractRoad
         return road;
     }
 
-    public List<Vector3> GetBezierPointsByIdentifier()
+    public List<Vector3> GetBezierPointsByIdentifier(string roadIdentifier)
     {
+        List<Vector3> resultPointArray = new List<Vector3>();
+        points.Clear();
+        CalculateQuadraticBezierCurve(startPost.transform.position, endPost.transform.position,
+            formingPoint.transform.position, details);
 
-        return null;
+        Regex directionRegex = new Regex(@"^\D+");
+        Regex lineNumRegex = new Regex(@"\d+");
+        string direction = directionRegex.Match(roadIdentifier).Value;
+        int lineNum = int.Parse(lineNumRegex.Match(roadIdentifier).Value);
+
+        Quaternion rotation = Quaternion.Euler(0, 0, 0);
+        if (direction == "left")
+        {
+            rotation = Quaternion.Euler(0, -90, 0);
+        }
+        else if (direction == "right")
+        {
+            rotation = Quaternion.Euler(0, 90, 0);
+        }
+
+        Vector3 lineDirection = Vector3.zero; 
+        for (int i = 0; i < points.Count - 1; i++)
+        {
+            lineDirection = (points[i + 1] - points[i]).normalized;
+            resultPointArray.Add(points[i] + rotation * lineDirection * 2 * (1 + lineNum));
+        }
+
+        resultPointArray.Add(points[^1] +  rotation * lineDirection * 2 * (1 + lineNum));
+
+        return resultPointArray;
     }
-    
 
-    protected override void BuildRoad(bool endIteration = true)
+
+    public override void BuildRoad(bool endIteration = true)
     {
-        
+        foreach (var road in RoadsOfTemplate)
+        {
+            road.Value.GetComponent<SimpleRoad>().BuildRoad(false);
+        }
     }
 }
