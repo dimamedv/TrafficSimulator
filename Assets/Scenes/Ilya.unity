@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657815, g: 0.49641192, b: 0.57481617, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -770,9 +770,25 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 6110321431822945322, guid: 790e8c5ac29e84707bec4abde75884b7, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -10.67
+      objectReference: {fileID: 0}
+    - target: {fileID: 6110321431822945322, guid: 790e8c5ac29e84707bec4abde75884b7, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 39.3
+      objectReference: {fileID: 0}
     - target: {fileID: 6284767572071464986, guid: 790e8c5ac29e84707bec4abde75884b7, type: 3}
       propertyPath: m_Name
       value: RoadTemplate
+      objectReference: {fileID: 0}
+    - target: {fileID: 7335485061093631669, guid: 790e8c5ac29e84707bec4abde75884b7, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 5.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7335485061093631669, guid: 790e8c5ac29e84707bec4abde75884b7, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -6.41
       objectReference: {fileID: 0}
     - target: {fileID: 7625226231513287407, guid: 790e8c5ac29e84707bec4abde75884b7, type: 3}
       propertyPath: m_RootOrder
@@ -780,7 +796,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7625226231513287407, guid: 790e8c5ac29e84707bec4abde75884b7, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -15.22
       objectReference: {fileID: 0}
     - target: {fileID: 7625226231513287407, guid: 790e8c5ac29e84707bec4abde75884b7, type: 3}
       propertyPath: m_LocalPosition.y
@@ -788,7 +804,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7625226231513287407, guid: 790e8c5ac29e84707bec4abde75884b7, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -4.27
       objectReference: {fileID: 0}
     - target: {fileID: 7625226231513287407, guid: 790e8c5ac29e84707bec4abde75884b7, type: 3}
       propertyPath: m_LocalRotation.w
@@ -817,6 +833,14 @@ PrefabInstance:
     - target: {fileID: 7625226231513287407, guid: 790e8c5ac29e84707bec4abde75884b7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8155467111284210678, guid: 790e8c5ac29e84707bec4abde75884b7, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -17.57
+      objectReference: {fileID: 0}
+    - target: {fileID: 8155467111284210678, guid: 790e8c5ac29e84707bec4abde75884b7, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 3.88
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 790e8c5ac29e84707bec4abde75884b7, type: 3}
@@ -1091,7 +1115,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SendPointerHoverToParent: 1
   m_HorizontalAxis: Horizontal
   m_VerticalAxis: Vertical
   m_SubmitButton: Submit
@@ -1730,7 +1753,7 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 64
-  _roadPrefab: {fileID: 0}
+  _roadPrefab: {fileID: 3119439897122743010, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
   details: 50
   material: {fileID: 2100000, guid: f86df5e9984c2ad4199cf4ac5e9d3bde, type: 2}
 --- !u!114 &1270009638
