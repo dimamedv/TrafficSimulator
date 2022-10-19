@@ -21,9 +21,15 @@ public class TemplateRoad : AbstractRoad
 
     protected override bool NeedsRebuild()
     {
-        return true;
-    }
-
+        var formingPosition = formingPoint.transform.position;
+        var startPosition = startPost.transform.position;
+        var endPosition = endPost.transform.position;
+        return points.Count == 0
+               || points[0] != startPosition
+               || points[^1] != endPosition
+               || !isStraight && formingPosition != _curFormingPointPosition
+               || isStraight && MyMath.GetMidPoint(startPosition, endPosition) != formingPosition;
+    }           
     private void Initialization()
     {
         RoadsOfTemplate = new Dictionary<string, GameObject>();
@@ -82,6 +88,11 @@ public class TemplateRoad : AbstractRoad
         }
 
         resultPointArray.Add(points[^1] +  rotation * lineDirection * 2 * (1 + lineNum));
+
+        if (direction == "left")
+        {
+            resultPointArray.Reverse();
+        }
 
         return resultPointArray;
     }

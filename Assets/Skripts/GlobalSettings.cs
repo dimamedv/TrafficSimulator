@@ -10,9 +10,8 @@ public class GlobalSettings : MonoBehaviour
 
     public static int targetFrameRate = 30;
 
-    private static void Start()
+    private void Start()
     {
-        QualitySettings.vSyncCount = 0;
         Application.targetFrameRate = targetFrameRate;
     }
 }
