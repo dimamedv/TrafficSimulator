@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Text.RegularExpressions;
+using static GlobalSettings;
 
 public class TemplateRoad : AbstractRoad
 {
@@ -84,10 +85,10 @@ public class TemplateRoad : AbstractRoad
         for (int i = 0; i < points.Count - 1; i++)
         {
             lineDirection = (points[i + 1] - points[i]).normalized;
-            resultPointArray.Add(points[i] + rotation * lineDirection * 2 * (1 + lineNum));
+            resultPointArray.Add(points[i] + rotation * lineDirection * width * (lineNum + 0.5f));
         }
 
-        resultPointArray.Add(points[^1] +  rotation * lineDirection * 2 * (1 + lineNum));
+        resultPointArray.Add(points[^1] +  rotation * lineDirection * width * (lineNum + 0.5f));
 
         if (direction == "left")
         {
@@ -95,7 +96,7 @@ public class TemplateRoad : AbstractRoad
         }
 
         return resultPointArray;
-    }
+    } 
 
 
     public override void BuildRoad(bool endIteration = true)
