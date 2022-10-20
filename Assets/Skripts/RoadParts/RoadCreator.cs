@@ -5,34 +5,32 @@ using UnityEngine.EventSystems;
 
 public class RoadCreator : MonoBehaviour
 {
-    public LayerMask layerMask;
+    public LayerMask layerMaskGround;
     public GameObject _roadPrefab;
     public int details;
     public Material material;
 
-    private SimpleRoad crooked;
+    private SimpleRoad s1mple; // Бро, надо тренироваться
     private GameObject _road;
     private Transform _startPost;
     private Transform _endPost;
     private Transform _formingPoint;
     private int _step = 0;
     private bool _isEnable = false;
-    private int _maxSteps;
+    private int _maxSteps = 1;
 
 
     public void ButtonStraightIsPressed()
     {
         _maxSteps = 1;
-        ButtonIsPressed();
     }
 
     public void ButtonCrookedIsPressed()
     {
         _maxSteps = 2;
-        ButtonIsPressed();
     }
 
-    public void ButtonIsPressed()
+    public void ButtonCreateRoad()
     {
         _isEnable = !_isEnable;
 
@@ -50,38 +48,26 @@ public class RoadCreator : MonoBehaviour
             CheckMouseButton();
         }
     }
-    
-    
+        
     private void UpdateObjectPosToCursorPos()
     {
         switch (_step)
             {
                 case 0:
-                    MovePoint(_startPost, layerMask, true);
+                    RoadEditor.MovePoint(_startPost, layerMaskGround, true);
                     break;
                 case 1:
-                    crooked.enabled = true;
-                    crooked.isStraight = true;
-                    MovePoint(_endPost, layerMask, true);
+                    s1mple.enabled = true;
+                    s1mple.isStraight = true;
+                    RoadEditor.MovePoint(_endPost, layerMaskGround, true);
                     break;
                 case 2:
-                    crooked.isStraight = false;
-                    crooked.details = details;
-                    MovePoint(_formingPoint, layerMask, false);
+                    s1mple.isStraight = false;
+                    s1mple.details = details;
+                    RoadEditor.MovePoint(_formingPoint, layerMaskGround, false);
                     break;
             }
         
-    }
-
-    public static void MovePoint(Transform _transform, LayerMask _layerMask, bool _rebuildPointByGrid)
-    {
-        RaycastHit hit;
-        if (Physics.Raycast(RayFromCursor.ray, out hit, 1000, _layerMask))
-        {
-            _transform.position = hit.point;
-            if (_rebuildPointByGrid)
-                AbstractRoad.RebuildPointByGrid(_transform);
-        }
     }
 
     private void CheckMouseButton()
@@ -111,8 +97,8 @@ public class RoadCreator : MonoBehaviour
         _formingPoint = _road.transform.GetChild(2);
         for (int i = 0; i < _road.transform.childCount; i++)
             _road.transform.GetChild(i).GetComponent<MeshRenderer>().enabled = false;
-        crooked = _road.transform.GetComponent<SimpleRoad>();
-        crooked.enabled = false;
+        s1mple = _road.transform.GetComponent<SimpleRoad>();
+        s1mple.enabled = false;
         _startPost.GetComponent<MeshRenderer>().enabled = true;
         _step = 0;
     }

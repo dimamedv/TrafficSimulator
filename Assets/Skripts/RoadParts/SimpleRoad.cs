@@ -6,10 +6,6 @@ using static GlobalSettings;
 
 public class SimpleRoad : AbstractRoad
 {
-    public bool debugRoad; // Для дебага дороги
-    public GameObject _vertexCubeRed; // Куб для отоборажение одной стороны дороги в режиме дебага
-    public GameObject _vertexCubeBLue; // Куб для отоборажение одной стороны дороги в режиме дебага
-    public GameObject _bezierCubeGreen; // Куб для отображения точек центра дороги в режиме дебага
     public List<float> prefixSumSegments = new List<float>(); // Массив префиксных сумм. Последний элемент - длина всей дороги
     public bool createCrossRoadEntrance;
     public GameObject crossRoadEntrancePrefab;
@@ -51,9 +47,6 @@ public class SimpleRoad : AbstractRoad
         CalculateMeshVertexPoints();
 
         // Визуализируем все, что только можно визуализировать
-        if (debugRoad) 
-            ShowDebugPoints();
-        
         CreateMesh();
 
         // Остаточные действия
@@ -115,19 +108,6 @@ public class SimpleRoad : AbstractRoad
         points.Clear();
         _vertexRoad.Clear();
         prefixSumSegments.Clear();
-    }
-
-    // Визуализация Дебаг точек
-    private void ShowDebugPoints()
-    {
-        for (int i = 0; i < _vertexRoad.Count; i++)
-        {
-            if (i % 2 == 0)
-                Instantiate(_vertexCubeRed, _vertexRoad[i], new Quaternion());
-            else
-                Instantiate(_vertexCubeBLue, _vertexRoad[i], new Quaternion());
-        }
-        for (int i = 0; i < points.Count; i++) Instantiate(_bezierCubeGreen, points[i], new Quaternion());
     }
 
     // Рассчитывает координаты точек излома дороги

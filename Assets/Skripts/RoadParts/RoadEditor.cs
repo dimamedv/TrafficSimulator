@@ -4,50 +4,43 @@ using UnityEngine;
 
 public class RoadEditor : MonoBehaviour
 {
-    public LayerMask layerMaskRoad;
-    public LayerMask layerMaskGround;
+    public LayerMask layerMaskUI; // Слой UI
+    public LayerMask layerMaskRoad; // Слой дороги
+    public LayerMask layerMaskGround; // Слой земли
 
-    private GameObject lastObject = null;
-    private GameObject objectHit;
-    private Transform activePointTransform = null;
-    private RaycastHit hit;
+    private RaycastHit hitRoad;
+    private GameObject objectHit; // Объект, на который упал луч hitRoad
+    private GameObject lastObject = null; // Последний объект, на который упал луч hitRoad
+    private Transform activePointTransform = null; // Точка, на которую упал луч hitRoad
 
     private void Update()
     {
+
         if (Input.GetMouseButtonDown(0))
         {
-            if (activePointTransform == null && Physics.Raycast(RayFromCursor.ray, out hit, 1000, layerMaskRoad))
+            bool intersectionLayerUI = Physics.Raycast(RayFromCursor.ray, 1000, layerMaskUI);
+            bool intersectionLayerRoad = Physics.Raycast(RayFromCursor.ray, out hitRoad, 1000, layerMaskRoad);
+            bool intersectionLayerGround = Physics.Raycast(RayFromCursor.ray, 1000, layerMaskGround);
+
+            if (intersectionLayerUI == false && intersectionLayerRoad == true && activePointTransform == null)
             {
-                objectHit = hit.transform.gameObject;
+                objectHit = hitRoad.transform.gameObject;
                 SimpleRoad.TurnOnKids(objectHit);
 
                 if (objectHit.name == "Road")
-                {
-                    objectHit.GetComponent<MeshCollider>().enabled = false;
-                    if (lastObject != null)
-                    {
-                        lastObject.GetComponent<MeshCollider>().enabled = true;
-                        SimpleRoad.TurnOffKids(lastObject);
-                    }
-                    lastObject = objectHit;
-                }
+                    EditRoad();
                 else
-                {
-                    objectHit.GetComponent<BoxCollider>().enabled = false;
-                    if (activePointTransform != null)
-                        activePointTransform.GetComponent<BoxCollider>().enabled = true;
-                    activePointTransform = objectHit.transform;
-                }
+                    EditPoint();
             }
-            else if (Physics.Raycast(RayFromCursor.ray, 1000, layerMaskGround))
+            else if (intersectionLayerUI == false && intersectionLayerGround == true)
             {
-                if (activePointTransform == null)
+                if (activePointTransform == null && lastObject != null)
                 {
                     lastObject.GetComponent<MeshCollider>().enabled = true;
                     SimpleRoad.TurnOffKids(lastObject);
                     lastObject = null;
                 }
-                else
+                else if (activePointTransform != null)
                 {
                     activePointTransform.GetComponent<BoxCollider>().enabled = false;
                     activePointTransform = null;
@@ -55,9 +48,39 @@ public class RoadEditor : MonoBehaviour
             }
         }
 
-        if (Physics.Raycast(RayFromCursor.ray, out hit, 1000, layerMaskGround) && activePointTransform != null)
+        if (activePointTransform != null)
         {
-            RoadCreator.MovePoint(activePointTransform, layerMaskGround, true);
+            MovePoint(activePointTransform, layerMaskGround, true);
+        }
+    }
+
+    private void EditRoad()
+    {
+        objectHit.GetComponent<MeshCollider>().enabled = false;
+        if (lastObject != null)
+        {
+            lastObject.GetComponent<MeshCollider>().enabled = true;
+            SimpleRoad.TurnOffKids(lastObject);
+        }
+        lastObject = objectHit;
+    }
+
+    private void EditPoint()
+    {
+        objectHit.GetComponent<BoxCollider>().enabled = false;
+        if (activePointTransform != null)
+            activePointTransform.GetComponent<BoxCollider>().enabled = true;
+        activePointTransform = objectHit.transform;
+    }
+
+    public static void MovePoint(Transform _transform, LayerMask _layerMask, bool _rebuildPointByGrid)
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(RayFromCursor.ray, out hit, 1000, _layerMask))
+        {
+            _transform.position = hit.point;
+            if (_rebuildPointByGrid)
+                AbstractRoad.RebuildPointByGrid(_transform);
         }
     }
 }
