@@ -90,10 +90,12 @@ public class MeshVisualization : AbstractVisualization
         {
             int j = i / 2;
 
-            for (int k = 0; k < 3; k++) triangles[i * 3 + k] = j++;
+            for (int k = 0; k < 3; k++) 
+                triangles[i * 3 + k] = j++;
             i++;
 
-            for (int k = 0; k < 3; k++) triangles[i * 3 + k] = --j;
+            for (int k = 0; k < 3; k++) 
+                triangles[i * 3 + k] = --j;
         }
 
         mesh.triangles = triangles;
