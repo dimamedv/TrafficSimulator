@@ -42,13 +42,12 @@ public class ButtonsUI : MonoBehaviour
         if (renderMesh)
         {
             imageTransform.Rotate(new Vector3(0.0f, 0.0f, 180.0f));
-            roadCreator.ButtonStraightIsPressed();
+            roadCreator.ButtonMeshIsPressed();
         }
         else
         {
-
             imageTransform.Rotate(new Vector3(0.0f, 0.0f, -180.0f));
-            roadCreator.ButtonCrookedIsPressed();
+            roadCreator.ButtonLineIsPressed();
         }
     }
 

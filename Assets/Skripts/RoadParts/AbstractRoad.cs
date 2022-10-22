@@ -10,7 +10,6 @@ public abstract class AbstractRoad : MonoBehaviour
     public bool isStraight; // Прямая ли дорога
     public GameObject parentConnection; // Соединение с родителем
     public GameObject childConnection; // Соединение с ребенком
-    public List<Vector3> _vertexRoad = new List<Vector3>(); // Вершины излома дороги
     public List<Vector3> points = new List<Vector3>(); // Массив центральных точек (Безье), по которым едет машина
     public List<GameObject> carsOnThisRoad; // Массив машин, который в данный момент едут по этой дороге
 

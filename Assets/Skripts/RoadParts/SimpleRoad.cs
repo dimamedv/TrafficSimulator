@@ -41,13 +41,9 @@ public class SimpleRoad : AbstractRoad
         CheckoutParentConnection();
         
         ClearLists();
-        GetPointsForMesh();
+        GetPoints();
 
-        // Строим ВСЕ вершины, на основе которых будем строить меши
-        CalculateMeshVertexPoints();
-
-        // Визуализируем все, что только можно визуализировать
-        CreateMesh();
+        gameObject.GetComponent<AbstractVisualization>().RenderingRoad();
 
         // Остаточные действия
         CalculateLengthOfRoadSections();
@@ -59,7 +55,7 @@ public class SimpleRoad : AbstractRoad
             parentConnection.GetComponent<SimpleRoad>().BuildRoad();
     }
 
-    private void GetPointsForMesh()
+    private void GetPoints()
     {
         if (templateOwner == null)
         {
@@ -106,99 +102,7 @@ public class SimpleRoad : AbstractRoad
     private void ClearLists()
     {
         points.Clear();
-        _vertexRoad.Clear();
         prefixSumSegments.Clear();
-    }
-
-    // Рассчитывает координаты точек излома дороги
-    private void CalculateMeshVertexPoints()
-    {
-        if (parentConnection && parentConnection.GetComponent<SimpleRoad>())
-        {
-            List<Vector3> parentPoints = parentConnection.GetComponent<SimpleRoad>().points;
-            Vector3 lineDirectionParent;
-            
-            //Обработка ошибки выхода за пределы массива точек дороги-родителя при зацикливании дорог
-            try
-            {
-                lineDirectionParent = (parentPoints[^1] - parentPoints[^2]).normalized;
-            }
-            catch (ArgumentOutOfRangeException e)
-            {
-                parentConnection.GetComponent<SimpleRoad>().BuildRoad(true);
-                parentPoints = parentConnection.GetComponent<SimpleRoad>().points;
-                lineDirectionParent = (parentPoints[^1] - parentPoints[^2]).normalized;
-            }
-            
-            AddVertexes(parentPoints[^1], lineDirectionParent);
-        }
-        
-        CalculateVertexPoints(points[0], points[1]);
-
-        if (!isStraight)
-            for (int i = 0; i < points.Count - 1; i++)
-                CalculateVertexPoints(points[i], points[i + 1]);
-        
-        Vector3 lineDirection = (points[^1] - points[^2]).normalized;
-        AddVertexes(points[^1], lineDirection);
-    }
-
-    // Рассчитывает направление для ширины дороги
-    private void CalculateVertexPoints(Vector3 a, Vector3 b)
-    {
-        Vector3 lineDirection = (b - a).normalized;
-
-        AddVertexes(a, lineDirection);
-    }
-
-    // Добавляет координаты точек "излома" дороги
-    private void AddVertexes(Vector3 a, Vector3 lineDirection)
-    {
-        Vector3 v1 = a + Quaternion.Euler(0, -90, 0) * lineDirection * width / 2;
-        Vector3 v2 = a + Quaternion.Euler(0, +90, 0) * lineDirection * width / 2;
-        
-        _vertexRoad.Add(v1);
-        _vertexRoad.Add(v2);
-    }
-
-    // Строит меши по точкам "излома" дороги
-    private void CreateMesh()
-    {
-        MeshFilter mf = GetComponent<MeshFilter>();
-        Mesh mesh = new Mesh();
-        mf.mesh = mesh;
-
-        // Звбивает координаты вершин в меш
-        Vector3[] v = new Vector3[_vertexRoad.Count];
-        for (int i = 0; i < _vertexRoad.Count; i++) 
-            v[i] = _vertexRoad[i];
-        mesh.vertices = v;
-
-        // Индексы вершин излома из mesh.vertices
-        int[] triangles = new int[(_vertexRoad.Count - 2) * 3 * 2];
-
-        for (int i = 0; i < (_vertexRoad.Count - 2) * 2; i++)
-        {
-            int j = i / 2;
-
-            for (int k = 0; k < 3; k++) triangles[i * 3 + k] = j++;
-            i++;
-
-            for (int k = 0; k < 3; k++) triangles[i * 3 + k] = --j;
-        }
-
-        mesh.triangles = triangles;
-
-        MeshCollider mc = GetComponent<MeshCollider>();
-        if (startPost.transform.position != endPost.transform.position)
-        {
-            mc.enabled = true;
-            mc.sharedMesh = mesh;
-        }
-        else
-        {
-            mc.enabled = false;
-        }
     }
 
     // Рассчитывает длину дороги, заполняя массив префиксных сумм

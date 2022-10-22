@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7625226231513287407}
   - component: {fileID: -6071538618787842517}
   m_Layer: 0
-  m_Name: RoadTemplate
+  m_Name: TemplateRoad
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -51,7 +51,6 @@ MonoBehaviour:
   isStraight: 0
   parentConnection: {fileID: 0}
   childConnection: {fileID: 0}
-  _vertexRoad: []
   points: []
   carsOnThisRoad: []
   startPost: {fileID: 2440518768289698151}
@@ -68,6 +67,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7625226231513287407}
     m_Modifications:
+    - target: {fileID: 2997635103671292116, guid: 1b23e89c62025d04ba0c21dfc3d018b5, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3442332785918466166, guid: 1b23e89c62025d04ba0c21dfc3d018b5, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -135,6 +138,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7625226231513287407}
     m_Modifications:
+    - target: {fileID: 282629353444292131, guid: 4f0948268a382a44a9a36c884c7809ff, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 409893222466027137, guid: 4f0948268a382a44a9a36c884c7809ff, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -202,6 +209,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7625226231513287407}
     m_Modifications:
+    - target: {fileID: 4300234362921538016, guid: 997115982c6ea45488d7f78854c9d493, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4463526886765861186, guid: 997115982c6ea45488d7f78854c9d493, type: 3}
       propertyPath: m_RootOrder
       value: 0

@@ -17,6 +17,7 @@ public class RoadCreator : MonoBehaviour
     private Transform _formingPoint;
     private int _step = 0;
     private bool _isEnable = false;
+    private bool _renderMesh = true;
     private int _maxSteps = 1;
 
 
@@ -28,6 +29,15 @@ public class RoadCreator : MonoBehaviour
     public void ButtonCrookedIsPressed()
     {
         _maxSteps = 2;
+    }
+    public void ButtonMeshIsPressed()
+    {
+        _renderMesh = true;
+    }
+
+    public void ButtonLineIsPressed()
+    {
+        _renderMesh = false;
     }
 
     public void ButtonCreateRoad()
@@ -100,6 +110,10 @@ public class RoadCreator : MonoBehaviour
         s1mple = _road.transform.GetComponent<SimpleRoad>();
         s1mple.enabled = false;
         _startPost.GetComponent<MeshRenderer>().enabled = true;
+        if (_renderMesh)
+            _road.AddComponent<MeshVisualization>();
+        else
+            _road.AddComponent<LineVisualization>();
         _step = 0;
     }
 

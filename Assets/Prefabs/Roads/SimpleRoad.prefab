@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 3119439897122743008}
   - component: {fileID: 4903021686374321333}
   m_Layer: 7
-  m_Name: CrookedRoad
+  m_Name: SimpleRoad
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -105,17 +105,12 @@ MonoBehaviour:
   isStraight: 0
   parentConnection: {fileID: 0}
   childConnection: {fileID: 0}
-  _vertexRoad: []
   points: []
   carsOnThisRoad: []
   startPost: {fileID: 5252301188195550223, guid: 997115982c6ea45488d7f78854c9d493, type: 3}
   endPost: {fileID: 8116178819741311948, guid: 4f0948268a382a44a9a36c884c7809ff, type: 3}
   formingPoint: {fileID: 6545930907395441979, guid: 1b23e89c62025d04ba0c21dfc3d018b5, type: 3}
   _curFormingPointPosition: {x: 0, y: 0, z: 0}
-  debugRoad: 0
-  _vertexCubeRed: {fileID: 0}
-  _vertexCubeBLue: {fileID: 0}
-  _bezierCubeGreen: {fileID: 0}
   prefixSumSegments: []
   createCrossRoadEntrance: 0
   crossRoadEntrancePrefab: {fileID: 5064607121679084870, guid: d3eed4fe31c294fbc907d3eec0011ca5, type: 3}
@@ -157,6 +152,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3119439897122742812}
     m_Modifications:
+    - target: {fileID: 282629353444292131, guid: 4f0948268a382a44a9a36c884c7809ff, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 282629353444292131, guid: 4f0948268a382a44a9a36c884c7809ff, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -258,6 +257,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3119439897122742812}
     m_Modifications:
+    - target: {fileID: 2997635103671292116, guid: 1b23e89c62025d04ba0c21dfc3d018b5, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3442332785918466166, guid: 1b23e89c62025d04ba0c21dfc3d018b5, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -355,6 +358,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3119439897122742812}
     m_Modifications:
+    - target: {fileID: 4300234362921538016, guid: 997115982c6ea45488d7f78854c9d493, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4463526886765861186, guid: 997115982c6ea45488d7f78854c9d493, type: 3}
       propertyPath: m_RootOrder
       value: 0
