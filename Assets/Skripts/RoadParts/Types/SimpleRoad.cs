@@ -31,7 +31,7 @@ public class SimpleRoad : AbstractRoad
 
     public override void BuildRoad(bool endIteration = true)
     {
-        RebuildGrid();
+        RebuildRoadPostsPositions();
         CheckCrossRoadEntranceState();
         
         if (!endIteration && childConnection && childConnection.GetComponent<SimpleRoad>())

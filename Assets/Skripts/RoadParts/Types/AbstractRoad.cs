@@ -58,10 +58,38 @@ public abstract class AbstractRoad : MonoBehaviour
     }
 
     // Подстраивает точки под сетку
-    protected void RebuildGrid()
+    protected void RebuildRoadPostsPositions()
     {
-        RebuildPointByGrid(startPost.transform);
-        RebuildPointByGrid(endPost.transform);
+        List<Vector3> endPostPositions = new List<Vector3>();
+        List<Vector3> startPostPositions = new List<Vector3>();
+
+        for (int i = 0; i < RoadList.Count; i++)
+        {
+            if (RoadList[i] == gameObject)
+                continue;
+
+            endPostPositions.Add(RoadList[i].GetComponent<AbstractRoad>().endPost.transform.position);
+            startPostPositions.Add(RoadList[i].GetComponent<AbstractRoad>().startPost.transform.position);
+        }
+        
+        RebuildPostPosition(startPost, endPostPositions);
+        RebuildPostPosition(endPost, startPostPositions);
+    }
+
+    public void RebuildPostPosition(GameObject post, List<Vector3> positions)
+    {
+        Vector3 postPosition = post.transform.position;
+        for (int i = 0; i < positions.Count; i++)
+        {
+
+            if (Vector3.Distance(postPosition, positions[i]) <= 2)
+            {
+                post.transform.position = positions[i];
+                return;
+            }
+        }
+        
+        RebuildPointByGrid(post.transform);
     }
 
     public static void RebuildPointByGrid(Transform t)
