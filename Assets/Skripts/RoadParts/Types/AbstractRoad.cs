@@ -82,7 +82,7 @@ public abstract class AbstractRoad : MonoBehaviour
         for (int i = 0; i < positions.Count; i++)
         {
 
-            if (Vector3.Distance(postPosition, positions[i]) <= 2)
+            if (Vector3.Distance(postPosition, positions[i]) <= 4)
             {
                 post.transform.position = positions[i];
                 return;

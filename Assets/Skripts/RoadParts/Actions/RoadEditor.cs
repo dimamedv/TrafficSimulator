@@ -37,7 +37,7 @@ public class RoadEditor : MonoBehaviour
                 if (activePointTransform == null && lastObject != null)
                 {
                     lastObject.GetComponent<MeshCollider>().enabled = true;
-                    SimpleRoad.TurnOffKids(lastObject);
+                    //SimpleRoad.TurnOffKids(lastObject);
                     lastObject = null;
                 }
                 else if (activePointTransform != null)
@@ -82,5 +82,5 @@ public class RoadEditor : MonoBehaviour
             if (_rebuildPointByGrid)
                 AbstractRoad.RebuildPointByGrid(_transform);
         }
-    }
+    }  
 }

@@ -10,7 +10,7 @@ public class TemplateRoad : AbstractRoad
     public GameObject roadPrefab;
     public int numOfLeftSideRoads = 1;
     public int numOfRightSideRoads = 1;
-    public Dictionary<string, GameObject> RoadsOfTemplate;
+    public List<string> RoadsOfTemplate; 
 
 
     public override void Awake()
@@ -33,18 +33,20 @@ public class TemplateRoad : AbstractRoad
     }           
     private void Initialization()
     {
-        RoadsOfTemplate = new Dictionary<string, GameObject>();
+        RoadsOfTemplate = new List<string>();
 
         for (int i = 0; i < numOfLeftSideRoads; i++)
         {
             string roadName = "left" + i;
-            RoadsOfTemplate.Add(roadName, CreateRoadInstance(roadName));
-        }
+            RoadsOfTemplate.Add(roadName);
+            CreateRoadInstance(roadName);
+        } 
 
         for (int i = 0; i < numOfRightSideRoads; i++)
         {
             string roadName = "right" + i;
-            RoadsOfTemplate.Add(roadName, CreateRoadInstance(roadName));
+            RoadsOfTemplate.Add(roadName);
+            CreateRoadInstance(roadName);
         }
     }
 
@@ -103,7 +105,7 @@ public class TemplateRoad : AbstractRoad
     {
         foreach (var road in RoadsOfTemplate)
         {
-            road.Value.GetComponent<SimpleRoad>().BuildRoad(false);
+            gameObject.transform.Find(road).GetComponent<SimpleRoad>().BuildRoad(false);
         }
     }
 }
