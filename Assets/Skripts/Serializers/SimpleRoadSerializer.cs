@@ -16,6 +16,10 @@ public class SimpleRoadSerializer
         prototype.startPostPosition = simpleRoadScript.startPost.transform.position;
         prototype.endPostPosition = simpleRoadScript.endPost.transform.position;
         prototype.formingPostPosition = simpleRoadScript.formingPoint.transform.position;
+
+        prototype.details = simpleRoadScript.details;
+        prototype.isStraight = simpleRoadScript.isStraight;
+        prototype.createCrossRoadEntrance = simpleRoadScript.createCrossRoadEntrance;
     }
 
     public SimpleRoadPrototype getPrototypeFromFile(string path)
@@ -28,16 +32,6 @@ public class SimpleRoadSerializer
         return prototype;
     }
 
-    public void setSimpleRoadFromFile(GameObject createdRoad, string path = "Assets/Saves/testSave")
-    {
-        SimpleRoad roadScript = createdRoad.GetComponent<SimpleRoad>();
-        SimpleRoadPrototype roadPrototype = getPrototypeFromFile(path);
-
-        roadScript.startPost.transform.position = roadPrototype.startPostPosition;
-        roadScript.endPost.transform.position = roadPrototype.endPostPosition;
-        roadScript.formingPoint.transform.position = roadPrototype.formingPostPosition;
-    }
-    
     public void setSimpleRoadFromPrototype(GameObject createdRoad, SimpleRoadPrototype simpleRoadPrototype)
     {
         SimpleRoad roadScript = createdRoad.GetComponent<SimpleRoad>();
@@ -45,6 +39,10 @@ public class SimpleRoadSerializer
         roadScript.startPost.transform.position = simpleRoadPrototype.startPostPosition;
         roadScript.endPost.transform.position = simpleRoadPrototype.endPostPosition;
         roadScript.formingPoint.transform.position = simpleRoadPrototype.formingPostPosition;
+
+        roadScript.details = simpleRoadPrototype.details;
+        roadScript.isStraight = simpleRoadPrototype.isStraight;
+        roadScript.createCrossRoadEntrance = simpleRoadPrototype.createCrossRoadEntrance;
     }
 
     public List<SimpleRoadPrototype> getListOfAllSimpleRoadPrototypes()
