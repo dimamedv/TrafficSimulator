@@ -40,15 +40,11 @@ public class ButtonsUI : MonoBehaviour
 
         Transform imageTransform = gameObject.transform.Find("Canvas").Find("Panel").Find("Render").Find("Toggle");
         if (renderMesh)
-        {
             imageTransform.Rotate(new Vector3(0.0f, 0.0f, 180.0f));
-            roadCreator.ButtonMeshIsPressed();
-        }
         else
-        {
             imageTransform.Rotate(new Vector3(0.0f, 0.0f, -180.0f));
-            roadCreator.ButtonLineIsPressed();
-        }
+
+        roadCreator.ButtonMeshIsPressed(renderMesh);
     }
 
     public void BigRedButton()

@@ -30,8 +30,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6110321431822945322}
-  - {fileID: 8155467111284210678}
   - {fileID: 7335485061093631669}
+  - {fileID: 8155467111284210678}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -60,6 +60,7 @@ MonoBehaviour:
   roadPrefab: {fileID: 3119439897122743010, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
   numOfLeftSideRoads: 1
   numOfRightSideRoads: 1
+  RoadsOfTemplate: []
 --- !u!1001 &6839724625193083776
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -73,7 +74,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3442332785918466166, guid: 1b23e89c62025d04ba0c21dfc3d018b5, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3442332785918466166, guid: 1b23e89c62025d04ba0c21dfc3d018b5, type: 3}
       propertyPath: m_LocalPosition.x
@@ -144,7 +145,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 409893222466027137, guid: 4f0948268a382a44a9a36c884c7809ff, type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 409893222466027137, guid: 4f0948268a382a44a9a36c884c7809ff, type: 3}
       propertyPath: m_LocalPosition.x

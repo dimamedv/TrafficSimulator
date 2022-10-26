@@ -10,34 +10,33 @@ public class RoadCreator : MonoBehaviour
     public int details;
     public Material material;
 
-    private TemplateRoad template; // Бро, надо тренироваться
+    private TemplateRoad template;
     private GameObject _road;
     private Transform _startPost;
     private Transform _endPost;
     private Transform _formingPoint;
-    private int _step = 0;
+    public int _step = 0;
     private bool _isEnable = false;
-    private bool _renderMesh = true;
     private int _maxSteps = 1;
+    private bool _isStraight = true;
+    private bool _renderMesh = true;
     private float _rightLanes = 1;
     private float _leftLanes = 1;
 
     public void ButtonStraightIsPressed()
     {
         _maxSteps = 1;
+        _isStraight = true;
     }
     public void ButtonCrookedIsPressed()
     {
         _maxSteps = 2;
+        _isStraight = false;
     }
 
-    public void ButtonMeshIsPressed()
+    public void ButtonMeshIsPressed(bool renderMesh)
     {
-        _renderMesh = true;
-    }
-    public void ButtonLineIsPressed()
-    {
-        _renderMesh = false;
+        _renderMesh = renderMesh;
     }
 
     public void CountLeftLanes(float lanes)
@@ -118,21 +117,21 @@ public class RoadCreator : MonoBehaviour
         template = _road.transform.GetComponent<TemplateRoad>();
         template.numOfLeftSideRoads = _leftLanes;
         template.numOfRightSideRoads = _rightLanes;
-        template.isStraight = true;
+        template.isStraight = _isStraight;
         template.enabled = false;
-
-        _startPost = template.startPost.transform;
-        _startPost.GetComponent<MeshRenderer>().enabled = true;
-        _formingPoint = template.formingPoint.transform;
-        _endPost = template.endPost.transform;
 
         for (int i = 0; i < _road.transform.childCount; i++)
             _road.transform.GetChild(i).GetComponent<MeshRenderer>().enabled = false;
 
-        if (_renderMesh)
-            _road.GetComponent<MeshVisualization>().enabled = true;
-        else
-            _road.GetComponent<LineVisualization>().enabled = true;
+        _startPost = _road.transform.GetChild(0);
+        _startPost.GetComponent<MeshRenderer>().enabled = true;
+        _endPost = _road.transform.GetChild(1);
+        _formingPoint = _road.transform.GetChild(2);
+
+        //if (_renderMesh)
+            //_road.GetComponent<MeshVisualization>().enabled = true;
+        //else
+            //_road.GetComponent<LineVisualization>().enabled = true;
         _step = 0;
     }
 
