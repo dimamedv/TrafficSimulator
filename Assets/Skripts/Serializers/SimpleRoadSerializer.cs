@@ -8,7 +8,7 @@ public class SimpleRoadSerializer
     public SimpleRoadPrototype prototype;
 
 
-    private SimpleRoadPrototype fillPrototype(GameObject simpleRoad)
+    private void fillPrototype(GameObject simpleRoad)
     {
         prototype = new SimpleRoadPrototype();
         SimpleRoad simpleRoadScript = simpleRoad.GetComponent<SimpleRoad>();
@@ -17,17 +17,10 @@ public class SimpleRoadSerializer
         prototype.endPostPosition = simpleRoadScript.endPost.transform.position;
         prototype.formingPostPosition = simpleRoadScript.formingPoint.transform.position;
 
-        return prototype;
+        prototype.details = simpleRoadScript.details;
+        prototype.isStraight = simpleRoadScript.isStraight;
+        prototype.createCrossRoadEntrance = simpleRoadScript.createCrossRoadEntrance;
     }
-    
-    public void serializeSimpleRoad(GameObject simpleRoad)
-    {
-        fillPrototype(simpleRoad);
-
-        SaveManager.WritePrototypeInFile(prototype, "Assets/Saves/testSave");
-    }
-
-    
 
     public SimpleRoadPrototype getPrototypeFromFile(string path)
     {
@@ -39,17 +32,20 @@ public class SimpleRoadSerializer
         return prototype;
     }
 
-    public void setSimpleRoadFromFile(GameObject createdRoad, string path = "Assets/Saves/testSave")
+    public void setSimpleRoadFromPrototype(GameObject createdRoad, SimpleRoadPrototype simpleRoadPrototype)
     {
         SimpleRoad roadScript = createdRoad.GetComponent<SimpleRoad>();
-        SimpleRoadPrototype roadPrototype = getPrototypeFromFile(path);
 
-        roadScript.startPost.transform.position = roadPrototype.startPostPosition;
-        roadScript.endPost.transform.position = roadPrototype.endPostPosition;
-        roadScript.formingPoint.transform.position = roadPrototype.formingPostPosition;
+        roadScript.startPost.transform.position = simpleRoadPrototype.startPostPosition;
+        roadScript.endPost.transform.position = simpleRoadPrototype.endPostPosition;
+        roadScript.formingPoint.transform.position = simpleRoadPrototype.formingPostPosition;
+
+        roadScript.details = simpleRoadPrototype.details;
+        roadScript.isStraight = simpleRoadPrototype.isStraight;
+        roadScript.createCrossRoadEntrance = simpleRoadPrototype.createCrossRoadEntrance;
     }
 
-    public void serializeAllRoads(string path)
+    public List<SimpleRoadPrototype> getListOfAllSimpleRoadPrototypes()
     {
         List<SimpleRoadPrototype> listOfSimpleRoadPrototypes = new List<SimpleRoadPrototype>();
         GameObject roadFather = GameObject.Find("RoadFather");
@@ -59,7 +55,7 @@ public class SimpleRoadSerializer
             fillPrototype(roadFather.transform.GetChild(i).gameObject);
             listOfSimpleRoadPrototypes.Add(prototype);
         }
-        
-        
+
+        return listOfSimpleRoadPrototypes;
     }
 }
