@@ -5,4 +5,5 @@ using System.Collections.Generic;
 public class SaveFile
 {
     public List<SimpleRoadPrototype> listOfSimpleRoadPrototypes;
+    public List<TemplateRoadPrototype> listOfTemplateRoadPrototypes;
 }

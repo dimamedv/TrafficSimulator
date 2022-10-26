@@ -20,6 +20,7 @@ public class TemplateRoad : AbstractRoad
 
     public void Start()
     {
+        transform.parent = GameObject.Find("TemplateRoadFather").transform;
         Initialization();
     }
 

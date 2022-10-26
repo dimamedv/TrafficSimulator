@@ -7,6 +7,7 @@ using UnityEngine;
 public class SaveManager : MonoBehaviour
 {
     public GameObject simpleRoadPrefab;
+    public GameObject templateRoadPrefab;
     private void Awake()
     {
         
@@ -24,7 +25,9 @@ public class SaveManager : MonoBehaviour
 
         SimpleRoadSerializer simpleRoadSerializer = new SimpleRoadSerializer();
         save.listOfSimpleRoadPrototypes = simpleRoadSerializer.getListOfAllSimpleRoadPrototypes();
-        
+
+        TemplateRoadSerializer templateRoadSerializer = new TemplateRoadSerializer();
+        save.listOfTemplateRoadPrototypes = templateRoadSerializer.getListOfAllSimpleRoadPrototypes();
         
         WritePrototypeInFile(save, path);
         Debug.Log("GameSaved in " + path);
@@ -39,9 +42,16 @@ public class SaveManager : MonoBehaviour
         {
             SimpleRoadSerializer simpleRoadSerializer = new SimpleRoadSerializer();
             GameObject createdRoad = Instantiate(simpleRoadPrefab);
-            createdRoad.name = "roadFromSave";
-        
+
             simpleRoadSerializer.setSimpleRoadFromPrototype(createdRoad, saveFile.listOfSimpleRoadPrototypes[i]);
+        }
+        
+        for (int i = 0; i < saveFile.listOfTemplateRoadPrototypes.Count; i++)
+        {
+            TemplateRoadSerializer templateRoadSerializer = new TemplateRoadSerializer();
+            GameObject createdRoad = Instantiate(templateRoadPrefab);
+
+            templateRoadSerializer.setTemplateRoadFromPrototype(createdRoad, saveFile.listOfTemplateRoadPrototypes[i]);
         }
     }
 }
