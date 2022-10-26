@@ -26,12 +26,6 @@ public abstract class AbstractRoad : MonoBehaviour
         formingPoint = transform.GetChild(2).gameObject;
     }
 
-
-    public void Start()
-    {
-        BuildRoad(false);
-    }
-
     void LateUpdate()
     {
         if (NeedsRebuild())

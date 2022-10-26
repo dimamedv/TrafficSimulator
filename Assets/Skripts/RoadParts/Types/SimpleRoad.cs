@@ -22,7 +22,6 @@ public class SimpleRoad : AbstractRoad
 
     public new void Start()
     {
-        base.Start();
         _curFormingPointPosition = formingPoint.transform.position;
         
         if (!templateOwner)

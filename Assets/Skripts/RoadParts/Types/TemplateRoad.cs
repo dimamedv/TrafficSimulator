@@ -8,17 +8,20 @@ using static GlobalSettings;
 public class TemplateRoad : AbstractRoad
 {
     public GameObject roadPrefab;
-    public int numOfLeftSideRoads = 1;
-    public int numOfRightSideRoads = 1;
+    public float numOfLeftSideRoads = 1;
+    public float numOfRightSideRoads = 1;
     public List<string> RoadsOfTemplate; 
 
 
     public override void Awake()
     {
         base.Awake();
-        Initialization();
     }
 
+    public void Start()
+    {
+        Initialization();
+    }
 
     protected override bool NeedsRebuild()
     {
@@ -35,14 +38,14 @@ public class TemplateRoad : AbstractRoad
     {
         RoadsOfTemplate = new List<string>();
 
-        for (int i = 0; i < numOfLeftSideRoads; i++)
+        for (float i = 0.0f; i < numOfLeftSideRoads; i += 1.0f)
         {
             string roadName = "left" + i;
             RoadsOfTemplate.Add(roadName);
             CreateRoadInstance(roadName);
         } 
 
-        for (int i = 0; i < numOfRightSideRoads; i++)
+        for (float i = 0.0f; i < numOfRightSideRoads; i += 1.0f)
         {
             string roadName = "right" + i;
             RoadsOfTemplate.Add(roadName);
@@ -65,8 +68,18 @@ public class TemplateRoad : AbstractRoad
     {
         List<Vector3> resultPointArray = new List<Vector3>();
         points.Clear();
-        CalculateQuadraticBezierCurve(startPost.transform.position, endPost.transform.position,
-            formingPoint.transform.position, details);
+        if (isStraight)
+        {
+            formingPoint.transform.position =
+                MyMath.GetMidPoint(startPost.transform.position, endPost.transform.position);
+            CalculateQuadraticBezierCurve(startPost.transform.position, formingPoint.transform.position,
+                endPost.transform.position, 1);
+        }
+        else
+        {
+            CalculateQuadraticBezierCurve(startPost.transform.position, formingPoint.transform.position,
+            endPost.transform.position, details);
+        }
 
         Regex directionRegex = new Regex(@"^\D+");
         Regex lineNumRegex = new Regex(@"\d+");
