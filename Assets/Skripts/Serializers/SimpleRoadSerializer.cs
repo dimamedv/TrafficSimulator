@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
@@ -5,8 +6,9 @@ using UnityEngine;
 public class SimpleRoadSerializer
 {
     public SimpleRoadPrototype prototype;
-    
-    public void serializeSimpleRoad(GameObject simpleRoad)
+
+
+    private SimpleRoadPrototype fillPrototype(GameObject simpleRoad)
     {
         prototype = new SimpleRoadPrototype();
         SimpleRoad simpleRoadScript = simpleRoad.GetComponent<SimpleRoad>();
@@ -14,10 +16,18 @@ public class SimpleRoadSerializer
         prototype.startPostPosition = simpleRoadScript.startPost.transform.position;
         prototype.endPostPosition = simpleRoadScript.endPost.transform.position;
         prototype.formingPostPosition = simpleRoadScript.formingPoint.transform.position;
-        
-        string jsonView = JsonUtility.ToJson(prototype);
-        File.WriteAllText("Assets/Saves/testSave", jsonView);
+
+        return prototype;
     }
+    
+    public void serializeSimpleRoad(GameObject simpleRoad)
+    {
+        fillPrototype(simpleRoad);
+
+        SaveManager.WritePrototypeInFile(prototype, "Assets/Saves/testSave");
+    }
+
+    
 
     public SimpleRoadPrototype getPrototypeFromFile(string path)
     {
@@ -37,5 +47,19 @@ public class SimpleRoadSerializer
         roadScript.startPost.transform.position = roadPrototype.startPostPosition;
         roadScript.endPost.transform.position = roadPrototype.endPostPosition;
         roadScript.formingPoint.transform.position = roadPrototype.formingPostPosition;
+    }
+
+    public void serializeAllRoads(string path)
+    {
+        List<SimpleRoadPrototype> listOfSimpleRoadPrototypes = new List<SimpleRoadPrototype>();
+        GameObject roadFather = GameObject.Find("RoadFather");
+        
+        for (int i = 0; i < roadFather.transform.childCount; i++)
+        {
+            fillPrototype(roadFather.transform.GetChild(i).gameObject);
+            listOfSimpleRoadPrototypes.Add(prototype);
+        }
+        
+        
     }
 }

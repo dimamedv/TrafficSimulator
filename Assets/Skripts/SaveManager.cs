@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public class SaveManager : MonoBehaviour
@@ -13,5 +14,11 @@ public class SaveManager : MonoBehaviour
         createdRoad.name = "roadFromSave";
         
         simpleRoadSerializer.setSimpleRoadFromFile(createdRoad);
+    }
+
+    public static void WritePrototypeInFile(object prototype, string path)
+    {
+        string jsonView = JsonUtility.ToJson(prototype);
+        File.WriteAllText("Assets/Saves/testSave", jsonView);
     }
 }
