@@ -17,7 +17,6 @@ public class SimpleRoad : AbstractRoad
     public override void Awake()
     {
         base.Awake();
-        RoadList.Add(gameObject);
     }
 
     public new void Start()
@@ -29,7 +28,12 @@ public class SimpleRoad : AbstractRoad
         
         BuildRoad(false);
     }
-    
+
+    private void OnEnable()
+    {
+        RoadList.Add(gameObject);
+    }
+
     public void OnDestroy()
     { 
         RoadList.Remove(gameObject);
