@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Unity.VisualScripting;
 using UnityEngine;
 using static GlobalSettings;
 
+[Serializable]
 public class SimpleRoad : AbstractRoad
 {
     public List<float> prefixSumSegments = new List<float>(); // Массив префиксных сумм. Последний элемент - длина всей дороги
@@ -22,10 +24,18 @@ public class SimpleRoad : AbstractRoad
     {
         base.Start();
         _curFormingPointPosition = formingPoint.transform.position;
+        
+        if (!templateOwner)
+            transform.SetParent(GameObject.Find("RoadFather").transform);
+        
+        BuildRoad(false);
     }
     
     public void OnDestroy()
     {
+        SimpleRoadSerializer serializer = new SimpleRoadSerializer();
+        serializer.serializeSimpleRoad(gameObject);
+
         RoadList.Remove(gameObject);
     }
 
@@ -211,7 +221,6 @@ public class SimpleRoad : AbstractRoad
                || isStraight && MyMath.GetMidPoint(startPosition, endPosition) != formingPosition
                || createCrossRoadEntrance && transform.Find("CrossRoadEntrance") == null
                || !createCrossRoadEntrance && transform.Find("CrossRoadEntrance");
-    }           
-
+    }
 
 }
