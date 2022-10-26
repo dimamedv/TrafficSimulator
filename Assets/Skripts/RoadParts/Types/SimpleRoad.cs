@@ -32,10 +32,7 @@ public class SimpleRoad : AbstractRoad
     }
     
     public void OnDestroy()
-    {
-        SimpleRoadSerializer serializer = new SimpleRoadSerializer();
-        serializer.serializeSimpleRoad(gameObject);
-
+    { 
         RoadList.Remove(gameObject);
     }
 

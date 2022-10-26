@@ -8,7 +8,7 @@ public class SimpleRoadSerializer
     public SimpleRoadPrototype prototype;
 
 
-    private SimpleRoadPrototype fillPrototype(GameObject simpleRoad)
+    private void fillPrototype(GameObject simpleRoad)
     {
         prototype = new SimpleRoadPrototype();
         SimpleRoad simpleRoadScript = simpleRoad.GetComponent<SimpleRoad>();
@@ -16,18 +16,7 @@ public class SimpleRoadSerializer
         prototype.startPostPosition = simpleRoadScript.startPost.transform.position;
         prototype.endPostPosition = simpleRoadScript.endPost.transform.position;
         prototype.formingPostPosition = simpleRoadScript.formingPoint.transform.position;
-
-        return prototype;
     }
-    
-    public void serializeSimpleRoad(GameObject simpleRoad)
-    {
-        fillPrototype(simpleRoad);
-
-        SaveManager.WritePrototypeInFile(prototype, "Assets/Saves/testSave");
-    }
-
-    
 
     public SimpleRoadPrototype getPrototypeFromFile(string path)
     {
@@ -48,8 +37,17 @@ public class SimpleRoadSerializer
         roadScript.endPost.transform.position = roadPrototype.endPostPosition;
         roadScript.formingPoint.transform.position = roadPrototype.formingPostPosition;
     }
+    
+    public void setSimpleRoadFromPrototype(GameObject createdRoad, SimpleRoadPrototype simpleRoadPrototype)
+    {
+        SimpleRoad roadScript = createdRoad.GetComponent<SimpleRoad>();
 
-    public void serializeAllRoads(string path)
+        roadScript.startPost.transform.position = simpleRoadPrototype.startPostPosition;
+        roadScript.endPost.transform.position = simpleRoadPrototype.endPostPosition;
+        roadScript.formingPoint.transform.position = simpleRoadPrototype.formingPostPosition;
+    }
+
+    public List<SimpleRoadPrototype> getListOfAllSimpleRoadPrototypes()
     {
         List<SimpleRoadPrototype> listOfSimpleRoadPrototypes = new List<SimpleRoadPrototype>();
         GameObject roadFather = GameObject.Find("RoadFather");
@@ -59,7 +57,7 @@ public class SimpleRoadSerializer
             fillPrototype(roadFather.transform.GetChild(i).gameObject);
             listOfSimpleRoadPrototypes.Add(prototype);
         }
-        
-        
+
+        return listOfSimpleRoadPrototypes;
     }
 }
