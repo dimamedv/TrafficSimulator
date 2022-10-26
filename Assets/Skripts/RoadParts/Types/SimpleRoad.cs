@@ -39,8 +39,7 @@ public class SimpleRoad : AbstractRoad
     {
         if (!endIteration)
             RebuildRoadPostsPositions();
-        CheckCrossRoadEntranceState();
-        
+
         if (!endIteration && childConnection && childConnection.GetComponent<SimpleRoad>())
             childConnection.GetComponent<SimpleRoad>().BuildRoad();
         
@@ -50,6 +49,7 @@ public class SimpleRoad : AbstractRoad
         ClearLists();
         GetPoints();
 
+        CheckCrossRoadEntranceState();
         gameObject.GetComponent<AbstractVisualization>().RenderingRoad();
 
         // Остаточные действия
@@ -155,13 +155,23 @@ public class SimpleRoad : AbstractRoad
                 return;
             } 
         }
-        
+
+        bool hasChildRoad = false;
         foreach (var checkedRoad in RoadList)
         {
             if (checkedRoad.GetComponent<SimpleRoad>().startPost.transform.position == endPost.transform.position &&
                 checkedRoad.gameObject != gameObject)
             {
-                ConnectFromParentToChild(checkedRoad.GetComponent<SimpleRoad>());
+                if (!hasChildRoad)
+                {
+                    ConnectFromParentToChild(checkedRoad.GetComponent<SimpleRoad>());
+                    hasChildRoad = true;
+                }
+                else
+                {
+                    createCrossRoadEntrance = true;
+                    return;
+                }
             }
         }
     }
