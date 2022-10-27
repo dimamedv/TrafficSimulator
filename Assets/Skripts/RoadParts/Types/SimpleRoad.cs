@@ -47,13 +47,15 @@ public class SimpleRoad : AbstractRoad
         if (!endIteration && childConnection && childConnection.GetComponent<SimpleRoad>())
             childConnection.GetComponent<SimpleRoad>().BuildRoad();
         
+        ClearLists();
+        GetPoints();
+        
+        CheckCrossRoadEntranceState();
+        
         CheckoutChildConnection();
         CheckoutParentConnection();
         
-        ClearLists();
-        GetPoints();
-
-        CheckCrossRoadEntranceState();
+        
         gameObject.GetComponent<AbstractVisualization>().RenderingRoad();
 
         // Остаточные действия
