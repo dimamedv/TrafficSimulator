@@ -146,10 +146,6 @@ public class RoadCreator : MonoBehaviour
         _endPost = _road.transform.GetChild(1);
         _formingPoint = _road.transform.GetChild(2);
 
-        //if (_renderMesh)
-            //_road.GetComponent<MeshVisualization>().enabled = true;
-        //else
-            //_road.GetComponent<LineVisualization>().enabled = true;
         _step = 0;
     }
 
@@ -170,10 +166,10 @@ public class RoadCreator : MonoBehaviour
         _endPost = _road.transform.GetChild(1);
         _formingPoint = _road.transform.GetChild(2);
 
-        //if (_renderMesh)
-            //_road.AddComponent<MeshVisualization>();
-        //else
-            //_road.AddComponent<LineVisualization>();
+        if (_renderMesh)
+            _road.AddComponent<MeshVisualization>();
+        else
+            _road.AddComponent<LineVisualization>();
         _step = 0;
     }
 

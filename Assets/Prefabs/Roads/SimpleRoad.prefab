@@ -15,7 +15,6 @@ GameObject:
   - component: {fileID: 3119439897122743009}
   - component: {fileID: 3119439897122743008}
   - component: {fileID: 4903021686374321333}
-  - component: {fileID: 5807947543077936683}
   m_Layer: 7
   m_Name: SimpleRoad
   m_TagString: Untagged
@@ -246,18 +245,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
---- !u!114 &5807947543077936683
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3119439897122743010}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e7037af37846cd040bf14479891fda52, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &1419341301434595402
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -267,7 +254,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 282629353444292131, guid: 4f0948268a382a44a9a36c884c7809ff, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 282629353444292131, guid: 4f0948268a382a44a9a36c884c7809ff, type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -372,7 +359,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2997635103671292116, guid: 1b23e89c62025d04ba0c21dfc3d018b5, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3442332785918466166, guid: 1b23e89c62025d04ba0c21dfc3d018b5, type: 3}
       propertyPath: m_RootOrder
@@ -473,7 +460,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4300234362921538016, guid: 997115982c6ea45488d7f78854c9d493, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4463526886765861186, guid: 997115982c6ea45488d7f78854c9d493, type: 3}
       propertyPath: m_RootOrder
