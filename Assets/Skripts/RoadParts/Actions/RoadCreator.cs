@@ -138,7 +138,7 @@ public class RoadCreator : MonoBehaviour
         template.numOfLeftSideRoads = _leftLanes;
         template.numOfRightSideRoads = _rightLanes;
 
-        for (int i = 0; i < _road.transform.childCount; i++)
+        for (int i = 0; i < 3; i++)
             _road.transform.GetChild(i).GetComponent<MeshRenderer>().enabled = false;
 
         _startPost = _road.transform.GetChild(0);
@@ -162,7 +162,7 @@ public class RoadCreator : MonoBehaviour
         _abstractRoad = _road.transform.GetComponent<AbstractRoad>();
         _abstractRoad.enabled = false;
 
-        for (int i = 0; i < _road.transform.childCount; i++)
+        for (int i = 0; i < 3; i++)
             _road.transform.GetChild(i).GetComponent<MeshRenderer>().enabled = false;
 
         _startPost = _road.transform.GetChild(0);
