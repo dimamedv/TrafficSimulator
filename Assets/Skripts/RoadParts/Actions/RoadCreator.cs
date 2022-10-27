@@ -170,6 +170,7 @@ public class RoadCreator : MonoBehaviour
             _road.AddComponent<MeshVisualization>();
         else
             _road.AddComponent<LineVisualization>();
+
         _step = 0;
     }
 
