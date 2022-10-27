@@ -52,7 +52,7 @@ public abstract class AbstractRoad : MonoBehaviour
     }
 
     // Подстраивает точки под сетку
-    protected void RebuildRoadPostsPositions()
+    public void RebuildRoadPostsPositions()
     {
         List<Vector3> endPostPositions = new List<Vector3>();
         List<Vector3> startPostPositions = new List<Vector3>();

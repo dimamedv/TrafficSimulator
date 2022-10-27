@@ -46,7 +46,7 @@ public class SimpleRoad : AbstractRoad
 
         if (!endIteration && childConnection && childConnection.GetComponent<SimpleRoad>())
             childConnection.GetComponent<SimpleRoad>().BuildRoad();
-        
+
         ClearLists();
         GetPoints();
         
@@ -102,6 +102,11 @@ public class SimpleRoad : AbstractRoad
                 endPost.transform.rotation);
             crossRoadEntrance.transform.SetParent(gameObject.transform);
             crossRoadEntrance.transform.name = "CrossRoadEntrance";
+
+            foreach (var road in RoadList)
+            {
+                road.GetComponent<SimpleRoad>().CheckoutParentConnection();
+            }
         }
         else if (!createCrossRoadEntrance && transform.Find("CrossRoadEntrance"))
         {

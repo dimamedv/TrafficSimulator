@@ -37,14 +37,6 @@ public class SaveManager : MonoBehaviour
     {
         string json = File.ReadAllText(path);
         SaveFile saveFile = JsonUtility.FromJson<SaveFile>(json);
-
-        for (int i = 0; i < saveFile.listOfSimpleRoadPrototypes.Count; i++)
-        {
-            SimpleRoadSerializer simpleRoadSerializer = new SimpleRoadSerializer();
-            GameObject createdRoad = Instantiate(simpleRoadPrefab);
-
-            simpleRoadSerializer.setSimpleRoadFromPrototype(createdRoad, saveFile.listOfSimpleRoadPrototypes[i]);
-        }
         
         for (int i = 0; i < saveFile.listOfTemplateRoadPrototypes.Count; i++)
         {
@@ -53,5 +45,15 @@ public class SaveManager : MonoBehaviour
 
             templateRoadSerializer.setTemplateRoadFromPrototype(createdRoad, saveFile.listOfTemplateRoadPrototypes[i]);
         }
+
+        for (int i = 0; i < saveFile.listOfSimpleRoadPrototypes.Count; i++)
+        {
+            SimpleRoadSerializer simpleRoadSerializer = new SimpleRoadSerializer();
+            GameObject createdRoad = Instantiate(simpleRoadPrefab);
+            createdRoad.name = "Road";
+
+            simpleRoadSerializer.setSimpleRoadFromPrototype(createdRoad, saveFile.listOfSimpleRoadPrototypes[i]);
+        }
+        
     }
 }

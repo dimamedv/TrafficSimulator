@@ -15,13 +15,12 @@ public class TemplateRoad : AbstractRoad
 
     public override void Awake()
     {
-        base.Awake();
+        Initialization();
     }
 
     public void Start()
     {
         transform.parent = GameObject.Find("TemplateRoadFather").transform;
-        Initialization();
     }
 
     protected override bool NeedsRebuild()
@@ -35,7 +34,7 @@ public class TemplateRoad : AbstractRoad
                || !isStraight && formingPosition != _curFormingPointPosition
                || isStraight && MyMath.GetMidPoint(startPosition, endPosition) != formingPosition;
     }           
-    private void Initialization()
+    public void Initialization()
     {
         RoadsOfTemplate = new List<string>();
 
