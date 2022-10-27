@@ -13,6 +13,8 @@ public class CarBehaviour : MonoBehaviour
     public float brakingPerSec;
     // Дорога, по которой едет авто
     public SimpleRoad parentRoad;
+    // Расстояние, пройденное машиной
+    public float distance;
 
     // Максимальная скорость автомобиля
     private float maxSpeedPerTick;
@@ -24,8 +26,6 @@ public class CarBehaviour : MonoBehaviour
     private float brakingTime;
     // Тормозной путь
     private float brakingDistances;
-    // Расстояние, пройденное машиной
-    private float distance;
     // Скорость в тик
     private float speedPerTick;
 
@@ -92,7 +92,23 @@ public class CarBehaviour : MonoBehaviour
         }
     }
 
-
+    private GameObject CheckoutNearestCar()
+    {
+        GameObject nearestCar = null;
+        float minDistance = float.MaxValue;
+        SimpleRoad road = parentRoad;
+        //while (road.gameObject.TryGetComponent<CrossRoadEntrance>())
+        foreach (var car in parentRoad.carsOnThisRoad)
+        {
+            float distanceToCar = car.GetComponent<CarBehaviour>().distance - this.distance;
+            if (distanceToCar > 0.0f && distanceToCar < minDistance)
+            {
+                minDistance = distanceToCar;
+                nearestCar = car;
+            }
+        }
+        return nearestCar;
+    }
 
     private void TurnCar(float speed)
     {
