@@ -15,6 +15,8 @@ GameObject:
   - component: {fileID: 3119439897122743009}
   - component: {fileID: 3119439897122743008}
   - component: {fileID: 4903021686374321333}
+  - component: {fileID: 1702403363917643308}
+  - component: {fileID: 2271537596789052183}
   m_Layer: 7
   m_Name: SimpleRoad
   m_TagString: Untagged
@@ -216,6 +218,7 @@ MonoBehaviour:
   crossRoadEntrancePrefab: {fileID: 5064607121679084870, guid: d3eed4fe31c294fbc907d3eec0011ca5, type: 3}
   crossRoadEntrance: {fileID: 0}
   templateOwner: {fileID: 0}
+  renderLine: 0
 --- !u!114 &3119439897122743008
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -245,6 +248,30 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
+--- !u!114 &1702403363917643308
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3119439897122743010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04c773eca45456b4bb24df953c04390e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2271537596789052183
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3119439897122743010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7037af37846cd040bf14479891fda52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1419341301434595402
 PrefabInstance:
   m_ObjectHideFlags: 0

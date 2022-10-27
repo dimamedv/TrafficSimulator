@@ -33,18 +33,18 @@ public class ButtonsUI : MonoBehaviour
         }
     }
 
-    private bool renderMesh = true;
+    private bool renderLine = false;
     public void ChangeRender()
     {
-        renderMesh = !renderMesh;
+        renderLine = !renderLine;
 
         Transform imageTransform = gameObject.transform.Find("Canvas").Find("Panel").Find("Render").Find("Toggle");
-        if (renderMesh)
+        if (renderLine)
             imageTransform.Rotate(new Vector3(0.0f, 0.0f, 180.0f));
         else
             imageTransform.Rotate(new Vector3(0.0f, 0.0f, -180.0f));
 
-        roadCreator.ButtonMeshIsPressed(renderMesh);
+        roadCreator.ButtonMeshIsPressed(renderLine);
     }
 
     public void BigRedButton()

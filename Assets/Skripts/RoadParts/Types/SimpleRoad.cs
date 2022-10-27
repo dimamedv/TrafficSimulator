@@ -13,6 +13,7 @@ public class SimpleRoad : AbstractRoad
     public GameObject crossRoadEntrancePrefab;
     public GameObject crossRoadEntrance;
     public GameObject templateOwner;
+    public bool renderLine = false;
 
     public override void Awake()
     {
@@ -56,7 +57,9 @@ public class SimpleRoad : AbstractRoad
         CheckoutParentConnection();
         
         
-        gameObject.GetComponent<AbstractVisualization>().RenderingRoad();
+        gameObject.GetComponent<MeshVisualization>().RenderingRoad();
+        if (renderLine)
+            gameObject.GetComponent<LineVisualization>().RenderingRoad();
 
         // Остаточные действия
         CalculateLengthOfRoadSections();

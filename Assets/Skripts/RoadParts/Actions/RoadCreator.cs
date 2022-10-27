@@ -20,7 +20,7 @@ public class RoadCreator : MonoBehaviour
     private bool _isEnable = false;
     private int _maxSteps = 1;
     private bool _isStraight = true;
-    private bool _renderMesh = true;
+    private bool _renderLine = false;
     private float _rightLanes = 1;
     private float _leftLanes = 1;
     private bool _isTemplate;
@@ -36,9 +36,9 @@ public class RoadCreator : MonoBehaviour
         _isStraight = false;
     }
 
-    public void ButtonMeshIsPressed(bool renderMesh)
+    public void ButtonMeshIsPressed(bool renderLine)
     {
-        _renderMesh = renderMesh;
+        _renderLine = renderLine;
     }
 
     public void CountLeftLanes(float lanes)
@@ -104,6 +104,7 @@ public class RoadCreator : MonoBehaviour
 
     private void CheckMouseButton()
     {
+        //if ()
         if (Input.GetMouseButtonDown(0))
             if (_step < _maxSteps)
                 _road.transform.GetChild(++_step).GetComponent<MeshRenderer>().enabled = true;
@@ -166,10 +167,8 @@ public class RoadCreator : MonoBehaviour
         _endPost = _road.transform.GetChild(1);
         _formingPoint = _road.transform.GetChild(2);
 
-        if (_renderMesh)
-            _road.AddComponent<MeshVisualization>();
-        else
-            _road.AddComponent<LineVisualization>();
+        if (_renderLine)
+            _road.GetComponent<SimpleRoad>().renderLine = _renderLine;
 
         _step = 0;
     }
