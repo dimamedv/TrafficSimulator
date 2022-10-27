@@ -23,6 +23,7 @@ public class RoadCreator : MonoBehaviour
     private bool _renderMesh = true;
     private float _rightLanes = 1;
     private float _leftLanes = 1;
+    private bool _isTemplate;
 
     public void ButtonStraightIsPressed()
     {
@@ -53,6 +54,7 @@ public class RoadCreator : MonoBehaviour
     public void ButtonCreateTemplateRoad()
     {
         _isEnable = !_isEnable;
+        _isTemplate = true;
 
         if (_isEnable)  
             CreateTemplateRoad();
@@ -62,6 +64,7 @@ public class RoadCreator : MonoBehaviour
     public void ButtonCreateSimpleRoad()
     {
         _isEnable = !_isEnable;
+        _isTemplate = false;
 
         if (_isEnable)
             CreateSimpleRoad();
@@ -109,7 +112,10 @@ public class RoadCreator : MonoBehaviour
                 for (int i = 0; i < _road.transform.childCount; i++)
                     for (int j = 0; j < _road.transform.GetChild(i).childCount; j++)
                         _road.transform.GetChild(j).GetComponent<MeshRenderer>().enabled = false;
-                CreateTemplateRoad();
+                if (_isTemplate)
+                    CreateTemplateRoad();
+                else
+                    CreateSimpleRoad();
             }
         else if (Input.GetMouseButtonDown(1))
             _road.transform.GetChild(_step--).GetComponent<MeshRenderer>().enabled = false;
