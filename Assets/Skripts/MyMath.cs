@@ -12,15 +12,15 @@ public class MyMath
     }
 
     public static float eps = 0.001f;
-    
-    
+
+
     public static float getDistance(Vector3 v1, Vector3 v2)
     {
         double x = v1.x - v2.x;
         double z = v1.z - v2.z;
         return (float)Math.Sqrt(x * x + z * z);
     }
-    
+
 
     public static int binarySearch(ref List<float> a, int size, float x)
     {
@@ -29,13 +29,20 @@ public class MyMath
         while (right - left > 1)
         {
             int mid = left + (right - left) / 2;
-            
-            if (a[mid] < x) 
+
+            if (a[mid] < x)
                 left = mid;
-            else 
+            else
                 right = mid;
         }
 
         return right;
+    }
+
+    public Vector3 getBezieCurveIntersection(List<Vector3> points1, List<Vector3> points2)
+    {
+        
+        
+        return Vector3.zero;
     }
 }
