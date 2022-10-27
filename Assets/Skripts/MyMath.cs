@@ -3,6 +3,41 @@ using System;
 using UnityEngine;
 using System.Security.Cryptography;
 
+public class Box
+{
+    private float minX, maxX, minZ, maxZ;
+
+    public void createByCurve(List<Vector3> points)
+    {
+        minX = points[0].x;
+        maxX = points[0].x;
+        minZ = points[0].z;
+        maxZ = points[0].z;
+        
+        foreach (var point in points)
+        {
+            if (point.x > maxX)
+                maxX = point.x;
+            if (point.x < minX)
+                minX = point.x;
+            if (point.z > maxZ)
+                maxZ = point.z;
+            if (point.z < minZ)
+                minZ = point.z;
+        }
+    }
+
+    public bool hasIntersection(Box box)
+    {
+        return pointIsInside(box.minX, box.minZ) || pointIsInside(box.minX, box.maxZ) ||
+               pointIsInside(box.maxX, box.minZ) || pointIsInside(box.maxX, box.maxZ);
+    }
+
+    public bool pointIsInside(float x, float z)
+    {
+        return (x > minX && x < maxX && z > minZ && z < maxZ);
+    }
+}
 
 public class MyMath
 {
@@ -41,8 +76,13 @@ public class MyMath
 
     public Vector3 getBezieCurveIntersection(List<Vector3> points1, List<Vector3> points2)
     {
+        Box box1 = new Box();
+        Box box2 = new Box();
         
-        
+        box1.createByCurve(points1);
+        box2.createByCurve(points2);
+
         return Vector3.zero;
     }
+
 }
