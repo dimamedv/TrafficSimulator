@@ -10,6 +10,7 @@ public class RoadCreator : MonoBehaviour
     public GameObject _templateRoadPrefab;
     public int details;
     public Material material;
+    public LayerMask layerMaskUI; // Слой UI
 
     private AbstractRoad _abstractRoad;
     private GameObject _road;
@@ -104,8 +105,7 @@ public class RoadCreator : MonoBehaviour
 
     private void CheckMouseButton()
     {
-        //if ()
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && !Physics.Raycast(RayFromCursor.ray, 1000, layerMaskUI))
             if (_step < _maxSteps)
                 _road.transform.GetChild(++_step).GetComponent<MeshRenderer>().enabled = true;
             else
@@ -118,7 +118,7 @@ public class RoadCreator : MonoBehaviour
                 else
                     CreateSimpleRoad();
             }
-        else if (Input.GetMouseButtonDown(1))
+        else if (Input.GetMouseButtonDown(1) && !Physics.Raycast(RayFromCursor.ray, 1000, layerMaskUI))
             _road.transform.GetChild(_step--).GetComponent<MeshRenderer>().enabled = false;
         else if (Input.GetMouseButtonDown(2))
             DeleteObjects();
