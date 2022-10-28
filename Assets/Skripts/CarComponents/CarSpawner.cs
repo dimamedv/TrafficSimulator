@@ -38,5 +38,6 @@ public class CarSpawner : MonoBehaviour
         createdCar.GetComponent<CarBehaviour>().parentRoad = road;
         createdCar.transform.position = road.startPost.transform.position + carPrefab.transform.position;
         createdCar.transform.Rotate(-Vector3.up * 90);
+        road.carsOnThisRoad.Add(createdCar);
     }
 }
