@@ -14,6 +14,7 @@ public class SimpleRoad : AbstractRoad
     public GameObject crossRoadEntrance;
     public GameObject templateOwner;
     public bool renderLine = false;
+    public int id;
 
     public override void Awake()
     {

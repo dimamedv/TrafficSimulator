@@ -155,6 +155,7 @@ public class RoadCreator : MonoBehaviour
         gameObject.GetComponent<RoadEditor>().enabled = false;
         _road = Instantiate(_simpleRoadPrefab);
         _road.name = "Road";
+        
 
         _abstractRoad = _road.transform.GetComponent<AbstractRoad>();
         _abstractRoad.enabled = false;
