@@ -39,6 +39,19 @@ public class Relations
             }
         }
     }
+
+    public int getRelationToRoadById(int neededId)
+    {
+        foreach (var relation in relations)
+        {
+            if (relation.id == neededId)
+            {
+                return relation.priority;
+            }
+        }
+
+        return 0;
+    }
 }
 
 [Serializable]
