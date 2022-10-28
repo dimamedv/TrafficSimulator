@@ -28,6 +28,8 @@ public class SaveManager : MonoBehaviour
 
         TemplateRoadSerializer templateRoadSerializer = new TemplateRoadSerializer();
         save.listOfTemplateRoadPrototypes = templateRoadSerializer.getListOfAllSimpleRoadPrototypes();
+
+        save.nextRoadNumeration = GameObject.Find("Game").GetComponent<GlobalSettings>().nextRoadNumeration;
         
         WritePrototypeInFile(save, path);
         Debug.Log("GameSaved in " + path);
@@ -55,5 +57,6 @@ public class SaveManager : MonoBehaviour
             simpleRoadSerializer.setSimpleRoadFromPrototype(createdRoad, saveFile.listOfSimpleRoadPrototypes[i]);
         }
         
+        GameObject.Find("Game").GetComponent<GlobalSettings>().nextRoadNumeration = saveFile.nextRoadNumeration;
     }
 }
