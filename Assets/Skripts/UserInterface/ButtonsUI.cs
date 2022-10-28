@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ButtonsUI : MonoBehaviour
 {
@@ -11,6 +12,8 @@ public class ButtonsUI : MonoBehaviour
     private void Start()
     {
         roadCreator = roadFather.GetComponent<RoadCreator>();
+        CreateRoadPanel = GameObject.Find("CreateRoadPanel");
+        EditTrafficLightsPanel = GameObject.Find("EditTrafficLightsPanel");
     }
 
 
@@ -19,7 +22,7 @@ public class ButtonsUI : MonoBehaviour
     {
         isStraight = !isStraight;
 
-        Transform imageTransform = gameObject.transform.Find("Canvas").Find("Panel").Find("Type").Find("Toggle");
+        Transform imageTransform = GameObject.Find("Type").transform.Find("Toggle");
         if (isStraight)
         {
             imageTransform.Rotate(new Vector3(0.0f, 0.0f, 180.0f));
@@ -38,7 +41,7 @@ public class ButtonsUI : MonoBehaviour
     {
         renderLine = !renderLine;
 
-        Transform imageTransform = gameObject.transform.Find("Canvas").Find("Panel").Find("Render").Find("Toggle");
+        Transform imageTransform = GameObject.Find("Render").transform.Find("Toggle");
         if (renderLine)
             imageTransform.Rotate(new Vector3(0.0f, 0.0f, 180.0f));
         else
@@ -47,8 +50,35 @@ public class ButtonsUI : MonoBehaviour
         roadCreator.ButtonMeshIsPressed(renderLine);
     }
 
-    public void BigRedButton()
+
+    private bool isCreateRoadPanel = true;
+    private Vector3 HidePos = new Vector3(0.0f, 87.5f - 160.0f, 0.0f);
+    private Vector3 OpenPos = new Vector3(0.0f, 57.0f - 160.0f, 0.0f);
+    private Vector3 HideScale = new Vector3(4.5f, 1.0f, 1.0f);
+    private Vector3 OpenScale = new Vector3(5.25f, 1.15f, 1.0f);
+    private Color HideColor = new Color(0.5882353f, 0.5882353f, 0.5882353f);
+    private Color OpenColor = new Color(0.8548238f, 0.8548238f, 0.8548238f);
+    private GameObject CreateRoadPanel;
+    private GameObject EditTrafficLightsPanel;
+    public void SwitchPanels()
     {
-        Application.Quit();
+        isCreateRoadPanel = !isCreateRoadPanel;
+        Debug.Log(1);
+        if (isCreateRoadPanel)
+            HideAndOpen(EditTrafficLightsPanel, CreateRoadPanel);
+        else
+            HideAndOpen(CreateRoadPanel, EditTrafficLightsPanel);
+    }
+    private void HideAndOpen(GameObject Hide, GameObject Open)
+    {
+        Hide.transform.localPosition = HidePos;
+        Hide.transform.localScale = HideScale;
+        Hide.transform.SetSiblingIndex(0);
+        Hide.transform.Find("Panel").transform.GetComponent<Image>().color = HideColor;
+
+        Open.transform.localPosition = OpenPos;
+        Open.transform.localScale = OpenScale;
+        Open.transform.SetSiblingIndex(1);
+        Open.transform.Find("Panel").transform.GetComponent<Image>().color = OpenColor;
     }
 }
