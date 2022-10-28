@@ -22,7 +22,7 @@ public class RoadEditor : MonoBehaviour
             bool intersectionLayerRoad = Physics.Raycast(RayFromCursor.ray, out hitRoad, 1000, layerMaskRoad);
             bool intersectionLayerGround = Physics.Raycast(RayFromCursor.ray, 1000, layerMaskGround);
 
-            if (intersectionLayerUI == false && intersectionLayerRoad == true && activePointTransform == null)
+            if (intersectionLayerUI == false && intersectionLayerRoad && activePointTransform == null)
             {
                 objectHit = hitRoad.transform.gameObject;
                 SimpleRoad.TurnOnKids(objectHit);
