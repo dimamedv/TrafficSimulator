@@ -16,18 +16,21 @@ public class CarBehaviour : MonoBehaviour
     // Расстояние, пройденное машиной
     public float distance;
 
+
+    // Расстояние, пройденное машиной
+    private float distanceOnThisRoad;
     // Максимальная скорость автомобиля
     private float maxSpeedPerTick;
     // Ускорение в тик
     private float accelerationPerTick;
     // Торможение в секунду
-    public float brakingPerTick;
+    private float brakingPerTick;
     // Время, которое нужно машине для остановки
     private float brakingTime;
     // Тормозной путь
-    private float brakingDistances;
+    private float brakingDistance;
     // Скорость в тик
-    private float speedPerTick;
+    public float speedPerTick;
 
 
     // Событие, которое вызывается в случае столкновения машин
@@ -47,33 +50,84 @@ public class CarBehaviour : MonoBehaviour
     private void FixedUpdate()
     {
         UpdateBrakingStats();
-        ChangeSpeed();
-        if (distance >= parentRoad.prefixSumSegments[^1])
+        if (IsItTimeToSlowDown())
+            SlowDown();
+        else
+            SpeedUp();
+        ChangeDistance();
+
+        if (distanceOnThisRoad >= parentRoad.prefixSumSegments[^1])
             SwitchToChild();
-        TurnCar(speedPerTick * Time.deltaTime);
+        TurnCar(speedPerTick);
     }
 
     private void UpdateBrakingStats()
     {
         brakingTime = speedPerTick / brakingPerTick;
-        brakingDistances = speedPerTick * brakingTime / 2;
+        brakingDistance = speedPerTick * brakingTime / 2;
     }
 
-    private void ChangeSpeed()
+    // Пора ли тормозить?
+    private bool IsItTimeToSlowDown()
+    {
+        GameObject nearestCar = CheckoutNearestCar();
+        Debug.Log(parentRoad.carsOnThisRoad.Count);
+        Debug.Log(nearestCar);
+
+        if (nearestCar != null && brakingDistance + GlobalSettings.SaveDistance < nearestCar.GetComponent<CarBehaviour>().distance)
+            return true;
+        return false;
+    }
+
+    private GameObject CheckoutNearestCar()
+    {
+        GameObject nearestCar = null;
+        float minDistance = float.MaxValue;
+        GameObject road = parentRoad.gameObject;
+        while (road != null && road.GetComponent<SimpleRoad>() != null && road.GetComponent<CrossRoadEntrance>() == null)
+        {
+            foreach (var car in road.GetComponent<SimpleRoad>().carsOnThisRoad)
+            {
+                float distanceToCar = car.GetComponent<CarBehaviour>().distance - this.distance;
+                if (car != gameObject && distanceToCar > 0.0f && distanceToCar < minDistance)
+                {
+                    minDistance = distanceToCar;
+                    nearestCar = car;
+                }
+            }
+            road = road.GetComponent<SimpleRoad>().parentConnection;
+        }
+        return nearestCar;
+    }
+
+    private void SlowDown()
+    {
+        if (speedPerTick - brakingPerTick > 0.0f)
+            speedPerTick -= brakingPerTick;
+        else
+            speedPerTick = 0.0f;
+    }
+
+    private void SpeedUp()
     {
         if (speedPerTick + accelerationPerTick < maxSpeedPerSec)
             speedPerTick += accelerationPerTick;
         else
             speedPerTick = maxSpeedPerSec;
+    }
 
-        distance += speedPerTick * Time.deltaTime;
+    private void ChangeDistance()
+    {
+        distanceOnThisRoad += speedPerTick;
+        distance += speedPerTick;
     }
 
     private void SwitchToChild()
     {
-        distance -= parentRoad.prefixSumSegments[^1];
+        distanceOnThisRoad -= parentRoad.prefixSumSegments[^1];
         if (!parentRoad.childConnection)
         {
+            parentRoad.carsOnThisRoad.Remove(gameObject);
             Destroy(gameObject);
         }
         else if (parentRoad.childConnection.GetComponent<SimpleRoad>())
@@ -92,23 +146,6 @@ public class CarBehaviour : MonoBehaviour
         }
     }
 
-    private GameObject CheckoutNearestCar()
-    {
-        GameObject nearestCar = null;
-        float minDistance = float.MaxValue;
-        SimpleRoad road = parentRoad;
-        //while (road.gameObject.TryGetComponent<CrossRoadEntrance>())
-        foreach (var car in parentRoad.carsOnThisRoad)
-        {
-            float distanceToCar = car.GetComponent<CarBehaviour>().distance - this.distance;
-            if (distanceToCar > 0.0f && distanceToCar < minDistance)
-            {
-                minDistance = distanceToCar;
-                nearestCar = car;
-            }
-        }
-        return nearestCar;
-    }
 
     private void TurnCar(float speed)
     {
