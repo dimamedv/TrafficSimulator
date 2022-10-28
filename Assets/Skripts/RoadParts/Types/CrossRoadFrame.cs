@@ -3,124 +3,65 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
-public enum State
-{
-    Green,
-    Yell,
-    Red
-}
-
-[Serializable]
-public class Relation
-{
-    public int id;
-    public int priority;
-}
-
-
-[Serializable]
 public class Relations
 {
     public int id;
-    public List<Relation> relations;
+    public List<int> roadsToTrackId;
 
-    public void Initialize(List<int> idOfRoadWithGreenLight)
+    public Relations(int id)
     {
-        relations = new List<Relation>();
-        foreach (var curId in idOfRoadWithGreenLight)
-        {
-            if (curId != id)
-            {
-                Relation relation = new Relation
-                {
-                    id = curId,
-                    priority = 0
-                };
-
-                relations.Add(relation);
-            }
-        }
-    }
-
-    public Relation getRelationToRoadById(int neededId)
-    {
-        foreach (var relation in relations)
-        {
-            if (relation.id == neededId)
-            {
-                return relation;
-            }
-        }
-
-        return null;
-    }
-
-    public int getPriorityToRoadById(int neededId)
-    {
-        Relation foundRelation = getRelationToRoadById(neededId);
-        if (foundRelation != null)
-        {
-            return foundRelation.priority;
-        }
-
-        return 0;
-    }
-
-    public void setRelationToRoadById(int neededId, int value)
-    {
-        foreach (var relation in relations)
-        {
-            if (relation.id == neededId)
-            {
-                relation.priority = value;
-                return;
-            }
-        }
+        this.id = id;
+        roadsToTrackId = new List<int>();
     }
 }
+
 
 [Serializable]
 public class CrossRoadFrame
 {
-    public List<int> idOfRoadsWithGreenLight;
     public List<Relations> listOfRelations;
 
-    public void Initialization(List<int> newIdOfRoadsWithGreenLight)
+    public void Initialize(List<int> roadsWithGreenLightId)
     {
-        idOfRoadsWithGreenLight = newIdOfRoadsWithGreenLight;
+        listOfRelations = new List<Relations>();
         
-        foreach (var idOfRoad in idOfRoadsWithGreenLight)
+        for (int i = 0; i < roadsWithGreenLightId.Count; i++)
         {
-            Relations relations = new Relations();
-            relations.id = idOfRoad;
-            relations.Initialize(idOfRoadsWithGreenLight);
+            Relations relations = new Relations(roadsWithGreenLightId[i]);
+            listOfRelations.Add(relations);
         }
     }
 
-    public Relations getRelationsById(int neededId)
+    public List<int> GetRoadToTrackById(int id)
     {
         foreach (var relations in listOfRelations)
         {
-            if (relations.id == neededId)
-            {
-                return relations;
-            }
+            if (relations.id == id)
+                return relations.roadsToTrackId;
         }
 
         return null;
     }
 
-    public void setRelationFromTo(int idFrom, int idTo, int value)
+    public void SetRoadsToTrackById(int id, List<int> roadToTrackIds)
     {
-        Relations relations = getRelationsById(idFrom);
-        relations.setRelationToRoadById(idTo, value);
-        
-        if (value == 1)
-            value = 2;
-        else if (value == 2)
-            value = 1;
-
-        relations = getRelationsById(idTo);
-        relations.setRelationToRoadById(idFrom, value);
+        foreach (var relations in listOfRelations)
+        {
+            if (relations.id == id)
+            {
+                relations.roadsToTrackId = roadToTrackIds;
+            }
+        }
+    }
+    
+    public void AddRoadsToTrackById(int id, int roadToAdd)
+    {
+        foreach (var relations in listOfRelations)
+        {
+            if (relations.id == id)
+            {
+                relations.roadsToTrackId.Add(roadToAdd);
+            }
+        }
     }
 }

@@ -10,13 +10,16 @@ public class SaveManager : MonoBehaviour
     public GameObject templateRoadPrefab;
     private void Awake()
     {
-        List<int> list = new List<int>() { 1, 2, 3, 5, 7};
-
         CrossRoadFrame frame = new CrossRoadFrame();
-        frame.Initialization(list);
+        List<int> list1 = new List<int>() { 1, 2, 3, 4, 6, 8 };
         
-        frame.setRelationFromTo(1, 5, 2);
-        frame.setRelationFromTo(1, 2, 1);
+        frame.Initialize(list1);
+        
+        List<int> list2 = new List<int>() { 3, 4 };
+        frame.SetRoadsToTrackById(1, list2);
+        frame.SetRoadsToTrackById(6, list2);
+
+        frame.GetRoadToTrackById(1);
     }
 
     public static void WritePrototypeInFile(object prototype, string path)
