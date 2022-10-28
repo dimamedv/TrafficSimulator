@@ -52,8 +52,8 @@ public class ButtonsUI : MonoBehaviour
 
 
     private bool isCreateRoadPanel = true;
-    private Vector3 HidePos = new Vector3(0.0f, 87.5f - 160.0f, 0.0f);
-    private Vector3 OpenPos = new Vector3(0.0f, 57.0f - 160.0f, 0.0f);
+    private Vector3 HidePos = new Vector3(0.0f, 87.5f - 217f, 0.0f);
+    private Vector3 OpenPos = new Vector3(0.0f, 57.0f - 217f, 0.0f);
     private Vector3 HideScale = new Vector3(4.5f, 1.0f, 1.0f);
     private Vector3 OpenScale = new Vector3(5.25f, 1.15f, 1.0f);
     private Color HideColor = new Color(0.5882353f, 0.5882353f, 0.5882353f);
