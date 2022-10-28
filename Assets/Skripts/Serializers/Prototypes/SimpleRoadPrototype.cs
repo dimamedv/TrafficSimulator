@@ -11,4 +11,6 @@ public class SimpleRoadPrototype
     public int details;
     public bool isStraight;
     public bool createCrossRoadEntrance;
+
+    public int id;
 }

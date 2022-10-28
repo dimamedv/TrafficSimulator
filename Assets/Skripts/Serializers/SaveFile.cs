@@ -6,4 +6,5 @@ public class SaveFile
 {
     public List<SimpleRoadPrototype> listOfSimpleRoadPrototypes;
     public List<TemplateRoadPrototype> listOfTemplateRoadPrototypes;
+    public int nextRoadNumeration;
 }

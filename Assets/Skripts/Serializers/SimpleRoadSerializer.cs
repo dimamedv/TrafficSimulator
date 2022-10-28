@@ -20,6 +20,8 @@ public class SimpleRoadSerializer
         prototype.details = simpleRoadScript.details;
         prototype.isStraight = simpleRoadScript.isStraight;
         prototype.createCrossRoadEntrance = simpleRoadScript.createCrossRoadEntrance;
+
+        prototype.id = simpleRoadScript.id;
     }
 
     public SimpleRoadPrototype getPrototypeFromFile(string path)
@@ -43,6 +45,8 @@ public class SimpleRoadSerializer
         roadScript.details = simpleRoadPrototype.details;
         roadScript.isStraight = simpleRoadPrototype.isStraight;
         roadScript.createCrossRoadEntrance = simpleRoadPrototype.createCrossRoadEntrance;
+
+        roadScript.id = simpleRoadPrototype.id;
     }
 
     public List<SimpleRoadPrototype> getListOfAllSimpleRoadPrototypes()
