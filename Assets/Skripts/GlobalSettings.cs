@@ -8,7 +8,7 @@ public class GlobalSettings : MonoBehaviour
 {
     public static float width = 3; 
     public static float gridStep = 1;
-    public static float SaveDistance = 1;
+    public static float SaveDistance = 5;
 
     public int nextRoadNumeration;
 

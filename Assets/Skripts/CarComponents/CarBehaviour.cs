@@ -20,7 +20,7 @@ public class CarBehaviour : MonoBehaviour
     // Расстояние, пройденное машиной
     private float distanceOnThisRoad;
     // Максимальная скорость автомобиля
-    private float maxSpeedPerTick;
+    public float maxSpeedPerTick;
     // Ускорение в тик
     private float accelerationPerTick;
     // Торможение в секунду
@@ -71,11 +71,13 @@ public class CarBehaviour : MonoBehaviour
     private bool IsItTimeToSlowDown()
     {
         GameObject nearestCar = CheckoutNearestCar();
-        Debug.Log(parentRoad.carsOnThisRoad.Count);
-        Debug.Log(nearestCar);
 
-        if (nearestCar != null && brakingDistance + GlobalSettings.SaveDistance < nearestCar.GetComponent<CarBehaviour>().distance)
+        if (nearestCar != null && distance + brakingDistance + GlobalSettings.SaveDistance > nearestCar.GetComponent<CarBehaviour>().distance)
+        {
+            Debug.Log(parentRoad.carsOnThisRoad.Count);
+            Debug.Log(nearestCar);
             return true;
+        }
         return false;
     }
 
@@ -110,10 +112,10 @@ public class CarBehaviour : MonoBehaviour
 
     private void SpeedUp()
     {
-        if (speedPerTick + accelerationPerTick < maxSpeedPerSec)
+        if (speedPerTick + accelerationPerTick < maxSpeedPerTick)
             speedPerTick += accelerationPerTick;
         else
-            speedPerTick = maxSpeedPerSec;
+            speedPerTick = maxSpeedPerTick;
     }
 
     private void ChangeDistance()
