@@ -18,6 +18,12 @@ public class RelationsEditor : MonoBehaviour
 
     private void Awake()
     {
+        frames = new List<CrossRoadFrame>();
+        frames.Add(new CrossRoadFrame());
+        frames[0].Initialize(new List<int> {0, 2, 3});
+        chosenRoadsId = new List<int> { 0, 2, 3 };
+        currentFrame = 0;
+        
     }
 
 
@@ -45,12 +51,13 @@ public class RelationsEditor : MonoBehaviour
                 }
                 else
                 {
-                    if (!secondarySelectedRoadsId.Contains(hitRoad.GetComponent<SimpleRoad>().id))
+                    if (!secondarySelectedRoadsId.Contains(hitRoad.GetComponent<SimpleRoad>().id) &&
+                        hitRoad.GetComponent<SimpleRoad>().id != selectedRoad.GetComponent<SimpleRoad>().id)
                     {
                         secondarySelectedRoadsId.Add(hitRoad.GetComponent<SimpleRoad>().id);
                         EnableLineRenderWithMaterial(hitRoad, Color.red);
                     }
-                    else
+                    else if (hitRoad.GetComponent<SimpleRoad>().id != selectedRoad.GetComponent<SimpleRoad>().id)
                     {
                         secondarySelectedRoadsId.Remove(hitRoad.GetComponent<SimpleRoad>().id);
                         DisableLineRender(hitRoad);
@@ -58,7 +65,7 @@ public class RelationsEditor : MonoBehaviour
                 }
             }
         }
-        else if (Input.GetMouseButtonDown(1))
+        else if (Input.GetMouseButtonDown(1) && selectedRoad)
         {
             foreach (var road in SimpleRoad.RoadList)
             {
@@ -67,10 +74,7 @@ public class RelationsEditor : MonoBehaviour
                     DisableLineRender(road);
                 }
             }
-
-            frames[currentFrame]
-                .SetRoadsToTrackById(selectedRoad.GetComponent<SimpleRoad>().id, secondarySelectedRoadsId);
-
+            
             DisableLineRender(selectedRoad);
             selectedRoad = null;
         }
@@ -80,6 +84,7 @@ public class RelationsEditor : MonoBehaviour
     {
         SimpleRoad roadScript = road.GetComponent<SimpleRoad>();
         roadScript.renderLine = true;
+        roadScript.BuildRoad();
         road.GetComponent<LineRenderer>().materials[0].color = color;
         road.GetComponent<LineRenderer>().enabled = true;
     }
