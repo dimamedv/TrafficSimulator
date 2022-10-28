@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657826, g: 0.49641263, b: 0.57481676, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2447,8 +2447,11 @@ MonoBehaviour:
     m_Bits: 64
   _simpleRoadPrefab: {fileID: 3119439897122743010, guid: de2e988b4c6a4b746ba5774e481eb451, type: 3}
   _templateRoadPrefab: {fileID: 6284767572071464986, guid: 790e8c5ac29e84707bec4abde75884b7, type: 3}
-  details: 50
+  details: 150
   material: {fileID: 2100000, guid: f86df5e9984c2ad4199cf4ac5e9d3bde, type: 2}
+  layerMaskUI:
+    serializedVersion: 2
+    m_Bits: 32
   _step: 0
 --- !u!114 &1270009638
 MonoBehaviour:
@@ -2482,6 +2485,7 @@ GameObject:
   - component: {fileID: 1365717913}
   - component: {fileID: 1365717915}
   - component: {fileID: 1365717914}
+  - component: {fileID: 1365717916}
   m_Layer: 5
   m_Name: Panel
   m_TagString: Untagged
@@ -2552,6 +2556,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1365717912}
   m_CullTransparentMesh: 1
+--- !u!65 &1365717916
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1365717912}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 99.11, y: -99.2, z: 1.01}
+  m_Center: {x: 0, y: -0.0000001738785, z: -5.591316}
 --- !u!1001 &1406254580
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3291,6 +3308,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ff12474f5b130e4e8eecca38a7312fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  nextRoadNumeration: 0
 --- !u!114 &1809229488
 MonoBehaviour:
   m_ObjectHideFlags: 0
