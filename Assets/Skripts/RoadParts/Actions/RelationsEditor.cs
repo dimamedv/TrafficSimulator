@@ -17,12 +17,7 @@ public class RelationsEditor : MonoBehaviour
 
     private void OnEnable()
     {
-        frames = new List<CrossRoadFrame>();
-        frames.Add(new CrossRoadFrame());
-        frames[0].Initialize(new List<int> {0, 2, 3});
-        OpenFrame(currentFrame);
         
-        frames[currentFrame].roadsInFrameId = new List<int> { 0, 2, 3 };
     }
 
     public void OpenFrame(int frameId)

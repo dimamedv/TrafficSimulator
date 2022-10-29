@@ -16,7 +16,7 @@ public class FrameRoadsSelector : MonoBehaviour
         frames = new List<CrossRoadFrame>();
         currentFrame = 0;
 
-        UpdateFrameListByNumber(2);
+        UpdateFrameListByNumber(1);
         OpenFrame(currentFrame);
     }
 
