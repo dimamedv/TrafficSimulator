@@ -60,6 +60,7 @@ public class TemplateRoad : AbstractRoad
         road.name = roadName;
         road.GetComponent<SimpleRoad>().templateOwner = gameObject;
         road.transform.SetParent(gameObject.transform);
+        road.GetComponent<SimpleRoad>().id = -1;
 
         return road;
     }

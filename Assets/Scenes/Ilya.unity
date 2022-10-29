@@ -4316,6 +4316,8 @@ GameObject:
   - component: {fileID: 1270009636}
   - component: {fileID: 1270009637}
   - component: {fileID: 1270009638}
+  - component: {fileID: 1270009639}
+  - component: {fileID: 1270009640}
   m_Layer: 0
   m_Name: RoadFather
   m_TagString: Untagged
@@ -4368,7 +4370,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1270009634}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f52c8dde126a86248bf06cc9c5a379f6, type: 3}
   m_Name: 

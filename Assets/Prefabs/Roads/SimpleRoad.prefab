@@ -219,6 +219,7 @@ MonoBehaviour:
   crossRoadEntrance: {fileID: 0}
   templateOwner: {fileID: 0}
   renderLine: 0
+  id: 0
 --- !u!114 &3119439897122743008
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -20,10 +20,18 @@ public class Relations
 public class CrossRoadFrame
 {
     public List<Relations> listOfRelations;
+    public List<int> roadsInFrameId;
+
+    public CrossRoadFrame()
+    {
+        roadsInFrameId = new List<int>();
+        roadsInFrameId = new List<int>();
+    }
 
     public void Initialize(List<int> roadsWithGreenLightId)
     {
         listOfRelations = new List<Relations>();
+        roadsInFrameId = roadsWithGreenLightId;
         
         for (int i = 0; i < roadsWithGreenLightId.Count; i++)
         {

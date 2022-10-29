@@ -129,7 +129,7 @@ public class RoadCreator : MonoBehaviour
         gameObject.GetComponent<RoadEditor>().enabled = false;
         _road = Instantiate(_templateRoadPrefab);
         _road.transform.parent = transform;
-        _road.name = "Road";
+        _road.name = "TemplateRoad";
 
         _abstractRoad = _road.transform.GetComponent<AbstractRoad>();
         _abstractRoad.isStraight = _isStraight;
