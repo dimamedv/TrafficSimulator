@@ -52,8 +52,8 @@ public class ButtonsUI : MonoBehaviour
 
 
     private bool isCreateRoadPanel = true;
-    private Vector3 HidePos = new Vector3(0.0f, 87.5f - 217f, 0.0f);
-    private Vector3 OpenPos = new Vector3(0.0f, 57.0f - 217f, 0.0f);
+    private Vector3 HidePos = new Vector3(0.0f, 87.5f, 0.0f);
+    private Vector3 OpenPos = new Vector3(0.0f, 57.0f, 0.0f);
     private Vector3 HideScale = new Vector3(4.5f, 1.0f, 1.0f);
     private Vector3 OpenScale = new Vector3(5.25f, 1.15f, 1.0f);
     private Color HideColor = new Color(0.5882353f, 0.5882353f, 0.5882353f);
@@ -63,22 +63,22 @@ public class ButtonsUI : MonoBehaviour
     public void SwitchPanels()
     {
         isCreateRoadPanel = !isCreateRoadPanel;
-        Debug.Log(1);
-        if (isCreateRoadPanel)
-            HideAndOpen(EditTrafficLightsPanel, CreateRoadPanel);
-        else
-            HideAndOpen(CreateRoadPanel, EditTrafficLightsPanel);
-    }
-    private void HideAndOpen(GameObject Hide, GameObject Open)
-    {
-        Hide.transform.localPosition = HidePos;
-        Hide.transform.localScale = HideScale;
-        Hide.transform.SetSiblingIndex(0);
-        Hide.transform.Find("Panel").transform.GetComponent<Image>().color = HideColor;
 
-        Open.transform.localPosition = OpenPos;
-        Open.transform.localScale = OpenScale;
-        Open.transform.SetSiblingIndex(1);
-        Open.transform.Find("Panel").transform.GetComponent<Image>().color = OpenColor;
+        if (isCreateRoadPanel)
+            HideAndOpen(EditTrafficLightsPanel.transform, CreateRoadPanel.transform);
+        else
+            HideAndOpen(CreateRoadPanel.transform, EditTrafficLightsPanel.transform);
+    }
+    private void HideAndOpen(Transform Hide, Transform Open)
+    {
+        Hide.GetComponent<RectTransform>().anchoredPosition = HidePos;
+        Hide.localScale = HideScale;
+        Hide.SetSiblingIndex(0);
+        Hide.Find("Panel").transform.GetComponent<Image>().color = HideColor;
+
+        Open.GetComponent<RectTransform>().anchoredPosition = OpenPos;
+        Open.localScale = OpenScale;
+        Open.SetSiblingIndex(1);
+        Open.Find("Panel").transform.GetComponent<Image>().color = OpenColor;
     }
 }
