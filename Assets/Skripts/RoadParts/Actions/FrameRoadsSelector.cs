@@ -17,6 +17,7 @@ public class FrameRoadsSelector : MonoBehaviour
         currentFrame = 0;
 
         UpdateFrameListByNumber(2);
+        OpenFrame(currentFrame);
     }
 
     public void OpenFrame(int frameIndex)
