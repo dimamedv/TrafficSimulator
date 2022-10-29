@@ -8,7 +8,9 @@ using static GlobalSettings;
 [Serializable]
 public class SimpleRoad : AbstractRoad
 {
-    public List<float> prefixSumSegments = new List<float>(); // Массив префиксных сумм. Последний элемент - длина всей дороги
+    public List<float>
+        prefixSumSegments = new List<float>(); // Массив префиксных сумм. Последний элемент - длина всей дороги
+
     public bool createCrossRoadEntrance;
     public GameObject crossRoadEntrancePrefab;
     public GameObject crossRoadEntrance;
@@ -24,10 +26,10 @@ public class SimpleRoad : AbstractRoad
     public new void Start()
     {
         _curFormingPointPosition = formingPoint.transform.position;
-        
+
         if (!templateOwner)
             transform.SetParent(GameObject.Find("RoadFather").transform);
-        
+
         BuildRoad(false);
     }
 
@@ -37,7 +39,7 @@ public class SimpleRoad : AbstractRoad
     }
 
     public void OnDestroy()
-    { 
+    {
         RoadList.Remove(gameObject);
     }
 
@@ -51,13 +53,11 @@ public class SimpleRoad : AbstractRoad
 
         ClearLists();
         GetPoints();
-        
-        CheckCrossRoadEntranceState();
-        
+
         CheckoutChildConnection();
         CheckoutParentConnection();
-        
-        
+
+
         gameObject.GetComponent<MeshVisualization>().RenderingRoad();
         if (renderLine)
             gameObject.GetComponent<LineVisualization>().RenderingRoad();
@@ -65,7 +65,7 @@ public class SimpleRoad : AbstractRoad
         // Остаточные действия
         CalculateLengthOfRoadSections();
         _curFormingPointPosition = formingPoint.transform.position;
-        
+
         if (childConnection && childConnection.GetComponent<SimpleRoad>() && !endIteration)
             childConnection.GetComponent<SimpleRoad>().BuildRoad();
         if (parentConnection && parentConnection.GetComponent<SimpleRoad>() && !endIteration)
@@ -157,6 +157,8 @@ public class SimpleRoad : AbstractRoad
 
     protected void CheckoutChildConnection()
     {
+        CheckCrossRoadEntranceState();
+
         childConnection = null;
 
         foreach (var checkedCrossRoadEntrance in CrossRoadEntrance.EntrancesList)
@@ -168,7 +170,7 @@ public class SimpleRoad : AbstractRoad
                 childConnection = checkedCrossRoadEntrance;
                 childConnection.GetComponent<CrossRoadEntrance>().parentRoads.Add(gameObject);
                 return;
-            } 
+            }
         }
 
         bool hasChildRoad = false;
@@ -193,8 +195,19 @@ public class SimpleRoad : AbstractRoad
 
     protected void CheckoutParentConnection()
     {
+        if (parentConnection && parentConnection.GetComponent<CrossRoadEntrance>() != null)
+        {
+            List<GameObject> copyOfParentRoads = parentConnection.GetComponent<CrossRoadEntrance>().parentRoads
+                .GetRange(0, parentConnection.GetComponent<CrossRoadEntrance>().parentRoads.Count);
+            
+            foreach (var road in copyOfParentRoads)
+            {
+                road.GetComponent<SimpleRoad>().BuildRoad();
+            }
+        }
+
         parentConnection = null;
-        
+
         foreach (var checkedCrossRoadEntrance in CrossRoadEntrance.EntrancesList)
         {
             checkedCrossRoadEntrance.GetComponent<CrossRoadEntrance>().childRoads.Remove(gameObject);
@@ -206,7 +219,7 @@ public class SimpleRoad : AbstractRoad
                 return;
             }
         }
-        
+
         foreach (var checkedRoad in RoadList)
         {
             if (checkedRoad.GetComponent<SimpleRoad>().endPost.transform.position == startPost.transform.position &&
@@ -228,7 +241,7 @@ public class SimpleRoad : AbstractRoad
         parentConnection = newParentRoad.gameObject;
         newParentRoad.childConnection = gameObject;
     }
-    
+
     // Возвращает истину, если одна из точек сменила сове положение. Ложь в ином случае.
     protected override bool NeedsRebuild()
     {
@@ -243,5 +256,4 @@ public class SimpleRoad : AbstractRoad
                || createCrossRoadEntrance && transform.Find("CrossRoadEntrance") == null
                || !createCrossRoadEntrance && transform.Find("CrossRoadEntrance");
     }
-
 }

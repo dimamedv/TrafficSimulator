@@ -7,7 +7,6 @@ using UnityEngine;
 public class RelationsEditor : MonoBehaviour
 {
     public GameObject selectedRoad;
-    public List<int> chosenRoadsId;
     public List<int> secondarySelectedRoadsId;
     public List<CrossRoadFrame> frames;
     public int currentFrame;
@@ -16,14 +15,39 @@ public class RelationsEditor : MonoBehaviour
     public LayerMask layerMaskRoad; // Слой дороги
 
 
-    private void Awake()
+    private void OnEnable()
     {
         frames = new List<CrossRoadFrame>();
         frames.Add(new CrossRoadFrame());
         frames[0].Initialize(new List<int> {0, 2, 3});
-        chosenRoadsId = new List<int> { 0, 2, 3 };
-        currentFrame = 0;
+        OpenFrame(currentFrame);
         
+        frames[currentFrame].roadsInFrameId = new List<int> { 0, 2, 3 };
+    }
+
+    public void OpenFrame(int frameId)
+    {
+        currentFrame = frameId;
+        selectedRoad = null;
+
+        foreach (var road in SimpleRoad.RoadList)
+        {
+            if (CheckIfRoadInListById(road, frames[frameId].roadsInFrameId))
+            {
+                EnableLineRenderWithMaterial(road, Color.blue);
+            }
+        }
+    }
+
+    public void CloseFrame()
+    {
+        foreach (var road in SimpleRoad.RoadList)
+        {
+            if (CheckIfRoadInListById(road, frames[currentFrame].roadsInFrameId))
+            {
+                DisableLineRender(road);
+            }
+        }
     }
 
 
@@ -32,7 +56,7 @@ public class RelationsEditor : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             GameObject hitRoad = RayCastRoad();
-            if (hitRoad != null && chosenRoadsId.Contains(hitRoad.GetComponent<SimpleRoad>().id))
+            if (hitRoad != null && CheckIfRoadInListById(hitRoad, frames[currentFrame].roadsInFrameId))
             {
                 if (selectedRoad == null)
                 {
@@ -60,7 +84,7 @@ public class RelationsEditor : MonoBehaviour
                     else if (hitRoad.GetComponent<SimpleRoad>().id != selectedRoad.GetComponent<SimpleRoad>().id)
                     {
                         secondarySelectedRoadsId.Remove(hitRoad.GetComponent<SimpleRoad>().id);
-                        DisableLineRender(hitRoad);
+                        EnableLineRenderWithMaterial(hitRoad, Color.blue);
                     }
                 }
             }
@@ -69,13 +93,12 @@ public class RelationsEditor : MonoBehaviour
         {
             foreach (var road in SimpleRoad.RoadList)
             {
-                if (secondarySelectedRoadsId.Contains(road.GetComponent<SimpleRoad>().id))
+                if (frames[currentFrame].roadsInFrameId.Contains(road.GetComponent<SimpleRoad>().id))
                 {
-                    DisableLineRender(road);
+                    EnableLineRenderWithMaterial(road, Color.blue);
                 }
             }
             
-            DisableLineRender(selectedRoad);
             selectedRoad = null;
         }
     }
@@ -109,5 +132,10 @@ public class RelationsEditor : MonoBehaviour
         }
 
         return null;
+    }
+
+    public bool CheckIfRoadInListById(GameObject road, List<int> roadList)
+    {
+        return roadList.Contains(road.GetComponent<SimpleRoad>().id);
     }
 }
