@@ -32,6 +32,7 @@ public class CarBehaviour : MonoBehaviour
     public float brakingDistance;
     // Скорость в тик
     public float speedPerTick;
+    Transform crossroadEntrance;
 
 
     // Событие, которое вызывается в случае столкновения машин
@@ -57,6 +58,7 @@ public class CarBehaviour : MonoBehaviour
         UpdateBrakingStats();
         ChangeDistance();
 
+        crossroadEntrance = parentRoad.transform.Find("CrossRoadEntrance");
         if (distanceOnThisRoad >= parentRoad.prefixSumSegments[^1])
             SwitchToChild();
         TurnCar(speedPerTick);
@@ -88,15 +90,17 @@ public class CarBehaviour : MonoBehaviour
         return false;
     }
 
+    // Возвращает блтжайшую машину на пути
     private GameObject CheckoutNearestCar()
     {
         GameObject nearestCar = null;
         float minDistance = float.MaxValue;
-        GameObject road = parentRoad.gameObject;
-        while (road != null && road.GetComponent<SimpleRoad>() != null && road.GetComponent<CrossRoadEntrance>() == null)
+        Transform crossroadEntrancePtr = crossroadEntrance;
+        while (crossroadEntrancePtr != null && crossroadEntrancePtr.GetComponent<CrossRoadEntrance>().childRoads.Count > 0)
         {
-            foreach (var car in road.GetComponent<SimpleRoad>().carsOnThisRoad)
+            foreach (var car in crossroadEntrance.GetComponent<CrossRoadEntrance>().childRoads[0].GetComponent<SimpleRoad>().carsOnThisRoad)
             {
+                Debug.Log(car.GetComponent<CarBehaviour>().distance);
                 float distanceToCar = car.GetComponent<CarBehaviour>().distance - this.distance;
                 if (car != gameObject && distanceToCar > 0.0f && distanceToCar < minDistance)
                 {
@@ -104,11 +108,12 @@ public class CarBehaviour : MonoBehaviour
                     nearestCar = car;
                 }
             }
-            road = road.GetComponent<SimpleRoad>().parentConnection;
+            crossroadEntrancePtr = crossroadEntrance.GetComponent<CrossRoadEntrance>().childRoads[0].GetComponent<SimpleRoad>().transform.Find("CrossRoadEntrance");
         }
         return nearestCar;
     }
 
+    // Уменьшает скорость машины в этом тике
     private void SlowDown()
     {
         if (speedPerTick - brakingPerTick > 0.0f)
@@ -117,6 +122,7 @@ public class CarBehaviour : MonoBehaviour
             speedPerTick = 0.0f;
     }
 
+    // Увеличивает скорость машины в этом тике
     private void SpeedUp()
     {
         if (speedPerTick + accelerationPerTick < maxSpeedPerTick)
@@ -125,39 +131,31 @@ public class CarBehaviour : MonoBehaviour
             speedPerTick = maxSpeedPerTick;
     }
 
+    // Обновляет тормозные характеристики машины
     private void UpdateBrakingStats()
     {
         brakingTime = speedPerTick / brakingPerTick;
         brakingDistance = speedPerTick * brakingTime / 2;
     }
 
+    // Изменяет дистанцию, пройденную автомобилем
     private void ChangeDistance()
     {
         distanceOnThisRoad += speedPerTick;
         distance += speedPerTick;
     }
 
+    // 
     private void SwitchToChild()
     {
         distanceOnThisRoad -= parentRoad.prefixSumSegments[^1];
-        if (!parentRoad.childConnection)
-        {
-            parentRoad.carsOnThisRoad.Remove(gameObject);
-            Destroy(gameObject);
-        }
-        else if (parentRoad.childConnection.GetComponent<SimpleRoad>())
-        {
-            parentRoad = parentRoad.childConnection.GetComponent<SimpleRoad>();
-            parentRoad.carsOnThisRoad.Add(gameObject);
-        }
-        else if (parentRoad.childConnection.GetComponent<CrossRoadEntrance>() &&
-                  parentRoad.childConnection.GetComponent<CrossRoadEntrance>().childRoads.Count != 0) // Соединение на перекрестке
-        {                                                                                             // По дефолту едет на первый съезд
-            parentRoad = parentRoad.childConnection.GetComponent<CrossRoadEntrance>().childRoads[0].GetComponent<SimpleRoad>();
+        if (crossroadEntrance != null && crossroadEntrance.GetComponent<CrossRoadEntrance>().childRoads.Count != 0) 
+        {                                                                                             
+            parentRoad = crossroadEntrance.GetComponent<CrossRoadEntrance>().childRoads[0].GetComponent<SimpleRoad>();
         }
         else
         {
-            Destroy(gameObject);
+            DeleteCar();
         }
     }
 
@@ -170,6 +168,19 @@ public class CarBehaviour : MonoBehaviour
         transform.Rotate(-Vector3.up * 90);
 
         transform.position += transform.right * speed;
+    }
+
+    private void DeleteCar()
+    {
+        parentRoad.carsOnThisRoad.Remove(gameObject);
+        Destroy(gameObject);
+    }
+
+    private void ChangeRoad()
+    {
+        parentRoad.carsOnThisRoad.Remove(gameObject);
+        parentRoad = crossroadEntrance.GetComponent<CrossRoadEntrance>().childRoads[0].GetComponent<SimpleRoad>();
+        parentRoad.carsOnThisRoad.Add(gameObject);
     }
 
     private float getOptimalSpeed()

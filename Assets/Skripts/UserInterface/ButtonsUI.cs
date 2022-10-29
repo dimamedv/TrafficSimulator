@@ -21,7 +21,7 @@ public class ButtonsUI : MonoBehaviour
     public void ChangeTypeRoad()
     {
         isStraight = !isStraight;
-
+        
         Transform imageTransform = GameObject.Find("Type").transform.Find("Toggle");
         if (isStraight)
         {

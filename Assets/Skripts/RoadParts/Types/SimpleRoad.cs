@@ -70,6 +70,8 @@ public class SimpleRoad : AbstractRoad
             childConnection.GetComponent<SimpleRoad>().BuildRoad();
         if (parentConnection && parentConnection.GetComponent<SimpleRoad>() && !endIteration)
             parentConnection.GetComponent<SimpleRoad>().BuildRoad();
+        if (parentConnection == null)
+            gameObject.GetComponent<CarSpawner>().enabled = true;
     }
 
     private void GetPoints()
