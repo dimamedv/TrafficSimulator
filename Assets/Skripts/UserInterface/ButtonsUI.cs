@@ -5,12 +5,12 @@ using UnityEngine.UI;
 
 public class ButtonsUI : MonoBehaviour
 {
-    public GameObject roadFather;
-
+    private GameObject roadFather;
     private RoadCreator roadCreator;
 
     private void Start()
     {
+        roadFather = GameObject.Find("RoadFather");
         roadCreator = roadFather.GetComponent<RoadCreator>();
         CreateRoadPanel = GameObject.Find("CreateRoadPanel");
         EditTrafficLightsPanel = GameObject.Find("EditTrafficLightsPanel");
@@ -64,10 +64,20 @@ public class ButtonsUI : MonoBehaviour
     {
         isCreateRoadPanel = !isCreateRoadPanel;
 
+        roadFather.GetComponent<RoadCreator>().enabled = isCreateRoadPanel;
+        roadFather.GetComponent<RoadEditor>().enabled = isCreateRoadPanel;
+        roadFather.GetComponent<FrameRoadsSelector>().enabled = !isCreateRoadPanel;
+        roadFather.GetComponent<RelationsEditor>().enabled = !isCreateRoadPanel;
+
         if (isCreateRoadPanel)
+        {
             HideAndOpen(EditTrafficLightsPanel.transform, CreateRoadPanel.transform);
+        }
         else
+        {
             HideAndOpen(CreateRoadPanel.transform, EditTrafficLightsPanel.transform);
+
+        }
     }
     private void HideAndOpen(Transform Hide, Transform Open)
     {
