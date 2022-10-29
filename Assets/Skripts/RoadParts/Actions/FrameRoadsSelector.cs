@@ -20,6 +20,17 @@ public class FrameRoadsSelector : MonoBehaviour
         OpenFrame(currentFrame);
     }
 
+    public void IncreaseFrameCount()
+    {
+        UpdateFrameListByNumber(frames.Count + 1);
+    }
+    
+    public void DecreaseFrameCount()
+    {
+        if (frames.Count - 1 >= 0)
+            UpdateFrameListByNumber(frames.Count - 1);
+    }
+
     public void OpenFrame(int frameIndex)
     {
         if (frameIndex < frames.Count)
