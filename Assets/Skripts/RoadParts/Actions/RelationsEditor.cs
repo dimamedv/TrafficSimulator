@@ -13,11 +13,13 @@ public class RelationsEditor : MonoBehaviour
 
     public LayerMask layerMaskUI; // Слой UI
     public LayerMask layerMaskRoad; // Слой дороги
-
-
+    
+    
+    
+ 
     private void OnEnable()
     {
-        
+        frames = gameObject.GetComponent<FrameRoadsSelector>().frames;
     }
 
     public void OpenFrame(int frameId)
