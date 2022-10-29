@@ -8,31 +8,44 @@ public class CarBehaviour : MonoBehaviour
 {
     // Максимальная скорость автомобиля
     public float maxSpeedPerSec;
+
     // Ускорение в секунду
     public float accelerationPerSec;
+
     // Торможение в секунду
     public float brakingPerSec;
+
     // Дорога, по которой едет авто
     public SimpleRoad parentRoad;
+
     // Расстояние, пройденное машиной
     public float distance;
 
 
     // Расстояние, пройденное машиной
     public float distanceOnThisRoad;
+
     // Максимальная скорость автомобиля
     public float maxSpeedPerTick;
+
     // Ускорение в тик
     public float accelerationPerTick;
+
     // Торможение в секунду
     public float brakingPerTick;
+
     // Время, которое нужно машине для остановки
     public float brakingTime;
+
     // Тормозной путь
     public float brakingDistance;
+
     // Скорость в тик
     public float speedPerTick;
     Transform crossroadEntrance;
+
+    public GameObject destinationPost;
+    public List<GameObject> path;
 
 
     // Событие, которое вызывается в случае столкновения машин
@@ -47,6 +60,8 @@ public class CarBehaviour : MonoBehaviour
         maxSpeedPerTick = maxSpeedPerSec * Time.deltaTime;
         accelerationPerTick = accelerationPerSec * Time.deltaTime;
         brakingPerTick = brakingPerSec * Time.deltaTime;
+
+        path = new List<GameObject>();
     }
 
     private void FixedUpdate()
@@ -74,11 +89,14 @@ public class CarBehaviour : MonoBehaviour
             // Расстояние до ближайшей машины
             float distanceToNearestCar = nearestCar.GetComponent<CarBehaviour>().distance - this.distance;
             // Габариты этой машины
-            float thisCarDimensions = gameObject.transform.localScale.x * gameObject.GetComponent<BoxCollider>().size.x / 2;
+            float thisCarDimensions =
+                gameObject.transform.localScale.x * gameObject.GetComponent<BoxCollider>().size.x / 2;
             // Габариты ближайшей машины
-            float nearestCarDimensions = nearestCar.transform.localScale.x * nearestCar.GetComponent<BoxCollider>().size.x / 2;
+            float nearestCarDimensions =
+                nearestCar.transform.localScale.x * nearestCar.GetComponent<BoxCollider>().size.x / 2;
             // Безопасная дистанция остановки
-            float saveStoppingDistance = brakingDistance + GlobalSettings.SaveDistance + nearestCarDimensions + thisCarDimensions;
+            float saveStoppingDistance =
+                brakingDistance + GlobalSettings.SaveDistance + nearestCarDimensions + thisCarDimensions;
             // Пора ли тормозить?
             bool isItTimeToSlowDown = saveStoppingDistance > distanceToNearestCar;
 
@@ -87,6 +105,7 @@ public class CarBehaviour : MonoBehaviour
                 return true;
             }
         }
+
         return false;
     }
 
@@ -96,9 +115,11 @@ public class CarBehaviour : MonoBehaviour
         GameObject nearestCar = null;
         float minDistance = float.MaxValue;
         Transform crossroadEntrancePtr = crossroadEntrance;
-        while (crossroadEntrancePtr != null && crossroadEntrancePtr.GetComponent<CrossRoadEntrance>().childRoads.Count > 0)
+        while (crossroadEntrancePtr != null &&
+               crossroadEntrancePtr.GetComponent<CrossRoadEntrance>().childRoads.Count > 0)
         {
-            foreach (var car in crossroadEntrance.GetComponent<CrossRoadEntrance>().childRoads[0].GetComponent<SimpleRoad>().carsOnThisRoad)
+            foreach (var car in crossroadEntrance.GetComponent<CrossRoadEntrance>().childRoads[0]
+                         .GetComponent<SimpleRoad>().carsOnThisRoad)
             {
                 Debug.Log(car.GetComponent<CarBehaviour>().distance);
                 float distanceToCar = car.GetComponent<CarBehaviour>().distance - this.distance;
@@ -108,8 +129,11 @@ public class CarBehaviour : MonoBehaviour
                     nearestCar = car;
                 }
             }
-            crossroadEntrancePtr = crossroadEntrance.GetComponent<CrossRoadEntrance>().childRoads[0].GetComponent<SimpleRoad>().transform.Find("CrossRoadEntrance");
+
+            crossroadEntrancePtr = crossroadEntrance.GetComponent<CrossRoadEntrance>().childRoads[0]
+                .GetComponent<SimpleRoad>().transform.Find("CrossRoadEntrance");
         }
+
         return nearestCar;
     }
 
@@ -149,8 +173,8 @@ public class CarBehaviour : MonoBehaviour
     private void SwitchToChild()
     {
         distanceOnThisRoad -= parentRoad.prefixSumSegments[^1];
-        if (crossroadEntrance != null && crossroadEntrance.GetComponent<CrossRoadEntrance>().childRoads.Count != 0) 
-        {                                                                                             
+        if (crossroadEntrance != null && crossroadEntrance.GetComponent<CrossRoadEntrance>().childRoads.Count != 0)
+        {
             parentRoad = crossroadEntrance.GetComponent<CrossRoadEntrance>().childRoads[0].GetComponent<SimpleRoad>();
         }
         else
@@ -162,8 +186,10 @@ public class CarBehaviour : MonoBehaviour
 
     private void TurnCar(float speed)
     {
-        int nextPointIndex = MyMath.binarySearch(ref parentRoad.prefixSumSegments, parentRoad.prefixSumSegments.Count, distance);
-        transform.LookAt(new Vector3(parentRoad.points[nextPointIndex].x, parentRoad.points[nextPointIndex].y + transform.position.y,
+        int nextPointIndex = MyMath.binarySearch(ref parentRoad.prefixSumSegments, parentRoad.prefixSumSegments.Count,
+            distance);
+        transform.LookAt(new Vector3(parentRoad.points[nextPointIndex].x,
+            parentRoad.points[nextPointIndex].y + transform.position.y,
             parentRoad.points[nextPointIndex].z));
         transform.Rotate(-Vector3.up * 90);
 
@@ -187,6 +213,53 @@ public class CarBehaviour : MonoBehaviour
     {
         return 0;
     }
-    
-    
+
+    public bool findPathToDestination(GameObject currentRoad)
+    {
+        if (destinationPost == null)
+            return false;
+        
+        SimpleRoad curRoadScript = currentRoad.GetComponent<SimpleRoad>();
+        
+        if (curRoadScript.endPost == destinationPost)
+        {
+            path.Clear();
+            path.Add(currentRoad);
+            return true;
+        }
+        
+        if (curRoadScript.childConnection)
+        {
+            if (curRoadScript.childConnection.GetComponent<SimpleRoad>())
+            {
+                if (findPathToDestination(curRoadScript.childConnection))
+                {
+                    path.Add(currentRoad);
+                    return true;
+                }
+            }
+            else if (curRoadScript.childConnection.GetComponent<CrossRoadEntrance>())
+            {
+                foreach (var road in curRoadScript.childConnection.GetComponent<CrossRoadEntrance>().childRoads)
+                {
+                    if (findPathToDestination(road))
+                    {
+                        path.Add(currentRoad);
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+
+    public GameObject getNextRoad()
+    {
+        GameObject next = path[^1];
+        path.RemoveAt(path.Count - 1);
+
+        return next;
+    }
 }
