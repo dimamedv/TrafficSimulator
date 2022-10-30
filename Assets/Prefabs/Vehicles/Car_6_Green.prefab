@@ -437,12 +437,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 8343854920648327717}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 90aaec62220b83047837ae3e4523d7f5, type: 3}
+  m_Script: {fileID: 11500000, guid: 156c6616eaa694342a6386a191cbf528, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxSpeedPerSec: 70
-  accelerationPerSec: 0.5
-  brakingPerSec: 1
+  maxSpeedPerSec: 0
+  accelerationPerSec: 0
+  brakingPerSec: 0
   parentRoad: {fileID: 0}
   distance: 0
   distanceOnThisRoad: 0
@@ -452,6 +452,9 @@ MonoBehaviour:
   brakingTime: 0
   brakingDistance: 0
   speedPerTick: 0
+  crossroadEntrance: {fileID: 0}
+  destinationPost: {fileID: 0}
+  path: []
 --- !u!65 &585563376334975582
 BoxCollider:
   m_ObjectHideFlags: 0
