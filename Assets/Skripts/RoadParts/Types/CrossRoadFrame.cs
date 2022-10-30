@@ -25,7 +25,6 @@ public class CrossRoadFrame
     public CrossRoadFrame()
     {
         roadsInFrameId = new List<int>();
-        roadsInFrameId = new List<int>();
     }
 
     public void Initialize(List<int> roadsWithGreenLightId)

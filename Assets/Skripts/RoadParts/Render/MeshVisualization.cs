@@ -10,6 +10,7 @@ public class MeshVisualization : AbstractVisualization
 
     public override void RenderingRoad()
     {
+        abstractRoad = gameObject.GetComponent<AbstractRoad>();
         _vertexRoad.Clear();
         ConnectMeshWithParent();
         CalculateMeshVertexPoints();

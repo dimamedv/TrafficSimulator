@@ -136,4 +136,15 @@ public class RelationsEditor : MonoBehaviour
     {
         return roadList.Contains(road.GetComponent<SimpleRoad>().id);
     }
+
+    public GameObject GetRoadById(int id)
+    {
+        foreach (var road in SimpleRoad.RoadList)
+        {
+            if (road.GetComponent<SimpleRoad>().id == id)
+                return road;
+        }
+
+        return null;
+    }
 }
