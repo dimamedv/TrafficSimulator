@@ -183,4 +183,10 @@ public class FrameRoadsSelector : MonoBehaviour
     {
         return roadList.Contains(road.GetComponent<SimpleRoad>().id);
     }
+
+    // ¬озвращает true, если entrance €вл€етс€ частью перекрестка
+    public bool CheckIfIsEntranceToCrossRoad(GameObject checkedEntrance)
+    {
+        return crossRoadEntrances.Contains(checkedEntrance);
+    }
 }

@@ -21,6 +21,4 @@ public class CrossRoadEntrance : MonoBehaviour
     {
         EntrancesList.Remove(gameObject);
     }
-    
-    
 }
