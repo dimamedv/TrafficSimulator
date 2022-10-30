@@ -72,8 +72,8 @@ public class SimpleRoad : AbstractRoad
             childConnection.GetComponent<SimpleRoad>().BuildRoad();
         if (parentConnection && parentConnection.GetComponent<SimpleRoad>() && !endIteration)
             parentConnection.GetComponent<SimpleRoad>().BuildRoad();
-        if (parentConnection == null)
-            gameObject.GetComponent<CarSpawner>().enabled = true;
+        // if (parentConnection == null)
+        //     gameObject.GetComponent<CarSpawner>().enabled = true;
     }
 
     private void GetPoints()
@@ -199,6 +199,17 @@ public class SimpleRoad : AbstractRoad
 
     protected void CheckoutParentConnection()
     {
+        if (parentConnection && parentConnection.GetComponent<CrossRoadEntrance>() != null)
+        {
+            List<GameObject> copyOfParentRoads = parentConnection.GetComponent<CrossRoadEntrance>().parentRoads
+                .GetRange(0, parentConnection.GetComponent<CrossRoadEntrance>().parentRoads.Count);
+            
+            foreach (var road in copyOfParentRoads)
+            {
+                road.GetComponent<SimpleRoad>().BuildRoad();
+            }
+        }
+
         parentConnection = null;
 
         foreach (var checkedCrossRoadEntrance in CrossRoadEntrance.EntrancesList)

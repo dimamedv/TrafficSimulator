@@ -1,15 +1,18 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class FrameRoadsSelector : MonoBehaviour
 {
     public List<CrossRoadFrame> frames;
+    public List<GameObject> crossRoadEntrances;
     public int currentFrame;
 
     public LayerMask layerMaskUI; // Слой UI
     public LayerMask layerMaskRoad; // Слой дороги
+    
 
     public void Awake()
     {
@@ -28,6 +31,8 @@ public class FrameRoadsSelector : MonoBehaviour
     public void OnDisable()
     {
         CloseFrame();
+        UpdateCrossRoadEntrances();
+        
     }
 
     public void CloseFrame()
@@ -36,6 +41,41 @@ public class FrameRoadsSelector : MonoBehaviour
         {
             DisableLineRender(road);
         }
+
+        if (frames[currentFrame].roadsInFrameId.Count != frames[currentFrame].listOfRelations.Count)
+        {
+            frames[currentFrame].listOfRelations = new List<Relations>();
+            foreach (var id in frames[currentFrame].roadsInFrameId)
+            {
+                frames[currentFrame].listOfRelations.Add(new Relations(id));
+            }
+        }
+    }
+
+    public void UpdateCrossRoadEntrances()
+    {
+        crossRoadEntrances = new List<GameObject>();
+        foreach (var frame in frames)
+        {
+            foreach (var id in frame.roadsInFrameId)
+            {
+                foreach (var road in SimpleRoad.RoadList)
+                {
+                    if (road.GetComponent<SimpleRoad>().id == id)
+                    {
+                        if (!crossRoadEntrances.Contains(road.GetComponent<SimpleRoad>().parentConnection))
+                        {
+                            crossRoadEntrances.Add(road.GetComponent<SimpleRoad>().parentConnection);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public bool CheckIfEntranceIsInCrossRoad(GameObject entrance)
+    {
+        return crossRoadEntrances.Contains(entrance);
     }
 
     public void IncreaseFrameCount()

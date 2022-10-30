@@ -71,5 +71,6 @@ public class SaveManager : MonoBehaviour
         
         GameObject.Find("Game").GetComponent<GlobalSettings>().nextRoadNumeration = saveFile.nextRoadNumeration;
         GameObject.Find("RoadFather").GetComponent<FrameRoadsSelector>().frames = saveFile.frames;
+        GameObject.Find("RoadFather").GetComponent<FrameRoadsSelector>().UpdateCrossRoadEntrances();
     }
 }
