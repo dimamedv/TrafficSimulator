@@ -20,6 +20,24 @@ public class FrameRoadsSelector : MonoBehaviour
         OpenFrame(currentFrame);
     }
 
+    public void OnEnable()
+    {
+        OpenFrame(currentFrame);
+    }
+
+    public void OnDisable()
+    {
+        CloseFrame();
+    }
+
+    public void CloseFrame()
+    {
+        foreach (var road in SimpleRoad.RoadList)
+        {
+            DisableLineRender(road);
+        }
+    }
+
     public void IncreaseFrameCount()
     {
         UpdateFrameListByNumber(frames.Count + 1);
@@ -42,7 +60,15 @@ public class FrameRoadsSelector : MonoBehaviour
             {
                 EnableLineRenderWithMaterial(road, Color.blue);
             }
+
+            if (CheckIfRoadInListById(road, frames[frameIndex].roadsInFrameId))
+            {
+                EnableLineRenderWithMaterial(road, Color.green);
+            }
+            
         }
+        
+        
     }
 
     public void UpdateFrameListByNumber(int number)
@@ -93,7 +119,7 @@ public class FrameRoadsSelector : MonoBehaviour
     public void DisableLineRender(GameObject road)
     {
         SimpleRoad roadScript = road.GetComponent<SimpleRoad>();
-        roadScript.renderLine = true;
+        roadScript.renderLine = false;
         road.GetComponent<LineRenderer>().enabled = false;
     }
 

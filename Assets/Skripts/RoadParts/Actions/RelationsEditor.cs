@@ -13,13 +13,17 @@ public class RelationsEditor : MonoBehaviour
 
     public LayerMask layerMaskUI; // Слой UI
     public LayerMask layerMaskRoad; // Слой дороги
-    
-    
-    
- 
+
+
     private void OnEnable()
     {
         frames = gameObject.GetComponent<FrameRoadsSelector>().frames;
+        OpenFrame(currentFrame);
+    }
+
+    private void OnDisable()
+    {
+        CloseFrame();
     }
 
     public void OpenFrame(int frameId)
@@ -40,10 +44,7 @@ public class RelationsEditor : MonoBehaviour
     {
         foreach (var road in SimpleRoad.RoadList)
         {
-            if (CheckIfRoadInListById(road, frames[currentFrame].roadsInFrameId))
-            {
-                DisableLineRender(road);
-            }
+            DisableLineRender(road);
         }
     }
 
@@ -95,7 +96,7 @@ public class RelationsEditor : MonoBehaviour
                     EnableLineRenderWithMaterial(road, Color.blue);
                 }
             }
-            
+
             selectedRoad = null;
         }
     }
@@ -112,7 +113,7 @@ public class RelationsEditor : MonoBehaviour
     public void DisableLineRender(GameObject road)
     {
         SimpleRoad roadScript = road.GetComponent<SimpleRoad>();
-        roadScript.renderLine = true;
+        roadScript.renderLine = false;
         road.GetComponent<LineRenderer>().enabled = false;
     }
 

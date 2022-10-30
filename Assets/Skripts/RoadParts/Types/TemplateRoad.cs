@@ -55,11 +55,10 @@ public class TemplateRoad : AbstractRoad
 
     private GameObject CreateRoadInstance(string roadName)
     {
-        GameObject road = Instantiate(roadPrefab);
+        GameObject road = Instantiate(roadPrefab, gameObject.transform);
 
         road.name = roadName;
         road.GetComponent<SimpleRoad>().templateOwner = gameObject;
-        road.transform.SetParent(gameObject.transform);
         road.GetComponent<SimpleRoad>().id = -1;
 
         return road;

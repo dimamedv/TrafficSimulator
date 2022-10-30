@@ -59,8 +59,10 @@ public class SimpleRoad : AbstractRoad
 
 
         gameObject.GetComponent<MeshVisualization>().RenderingRoad();
+
         if (renderLine)
             gameObject.GetComponent<LineVisualization>().RenderingRoad();
+
 
         // Остаточные действия
         CalculateLengthOfRoadSections();
@@ -197,17 +199,6 @@ public class SimpleRoad : AbstractRoad
 
     protected void CheckoutParentConnection()
     {
-        if (parentConnection && parentConnection.GetComponent<CrossRoadEntrance>() != null)
-        {
-            List<GameObject> copyOfParentRoads = parentConnection.GetComponent<CrossRoadEntrance>().parentRoads
-                .GetRange(0, parentConnection.GetComponent<CrossRoadEntrance>().parentRoads.Count);
-            
-            foreach (var road in copyOfParentRoads)
-            {
-                road.GetComponent<SimpleRoad>().BuildRoad();
-            }
-        }
-
         parentConnection = null;
 
         foreach (var checkedCrossRoadEntrance in CrossRoadEntrance.EntrancesList)
