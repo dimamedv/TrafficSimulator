@@ -107,9 +107,9 @@ public abstract class CarBehaviour : MonoBehaviour
     private void SwitchToChild()
     {
         distanceOnThisRoad -= parentRoad.prefixSumSegments[^1];
-        if (crossroadEntrance != null && crossroadEntrance.GetComponent<CrossRoadEntrance>().childRoads.Count != 0)
+        if (crossroadEntrance != null && crossroadEntrance.GetComponent<CrossRoadEntrance>().childRoads.Count != 0) 
         {
-            parentRoad = crossroadEntrance.GetComponent<CrossRoadEntrance>().childRoads[0].GetComponent<SimpleRoad>();
+            ChangeRoad();
         }
         else
         {
@@ -142,12 +142,6 @@ public abstract class CarBehaviour : MonoBehaviour
         parentRoad = crossroadEntrance.GetComponent<CrossRoadEntrance>().childRoads[0].GetComponent<SimpleRoad>();
         parentRoad.carsOnThisRoad.Add(gameObject);
     }
-
-    private float getOptimalSpeed()
-    {
-        return 0;
-    }
-
     public bool findPathToDestination(GameObject currentRoad)
     {
         if (destinationPost == null)
@@ -196,4 +190,5 @@ public abstract class CarBehaviour : MonoBehaviour
 
         return next;
     }
+
 }
