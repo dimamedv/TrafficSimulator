@@ -98,7 +98,6 @@ public class CarBehaviour : MonoBehaviour
         {
             foreach (var car in crossroadEntrance.GetComponent<CrossRoadEntrance>().childRoads[0].GetComponent<SimpleRoad>().carsOnThisRoad)
             {
-                Debug.Log(car.GetComponent<CarBehaviour>().distance);
                 float distanceToCar = car.GetComponent<CarBehaviour>().distance - this.distance;
                 if (car != gameObject && distanceToCar > 0.0f && distanceToCar < minDistance)
                 {
@@ -148,8 +147,8 @@ public class CarBehaviour : MonoBehaviour
     {
         distanceOnThisRoad -= parentRoad.prefixSumSegments[^1];
         if (crossroadEntrance != null && crossroadEntrance.GetComponent<CrossRoadEntrance>().childRoads.Count != 0) 
-        {                                                                                             
-            parentRoad = crossroadEntrance.GetComponent<CrossRoadEntrance>().childRoads[0].GetComponent<SimpleRoad>();
+        {
+            ChangeRoad();
         }
         else
         {
@@ -160,7 +159,7 @@ public class CarBehaviour : MonoBehaviour
 
     private void TurnCar(float speed)
     {
-        int nextPointIndex = MyMath.binarySearch(ref parentRoad.prefixSumSegments, parentRoad.prefixSumSegments.Count, distance);
+        int nextPointIndex = MyMath.binarySearch(ref parentRoad.prefixSumSegments, parentRoad.prefixSumSegments.Count, distanceOnThisRoad);
         transform.LookAt(new Vector3(parentRoad.points[nextPointIndex].x, parentRoad.points[nextPointIndex].y + transform.position.y,
             parentRoad.points[nextPointIndex].z));
         transform.Rotate(-Vector3.up * 90);
@@ -179,12 +178,5 @@ public class CarBehaviour : MonoBehaviour
         parentRoad.carsOnThisRoad.Remove(gameObject);
         parentRoad = crossroadEntrance.GetComponent<CrossRoadEntrance>().childRoads[0].GetComponent<SimpleRoad>();
         parentRoad.carsOnThisRoad.Add(gameObject);
-    }
-
-    private float getOptimalSpeed()
-    {
-        return 0;
-    }
-    
-    
+    } 
 }

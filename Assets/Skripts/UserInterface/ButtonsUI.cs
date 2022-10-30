@@ -15,6 +15,7 @@ public class ButtonsUI : MonoBehaviour
         CreateRoadPanel = GameObject.Find("CreateRoadPanel");
         EditTrafficLightsPanel = GameObject.Find("EditTrafficLightsPanel");
         trafficLightFrames = GameObject.Find("TrafficLightFrames");
+        frames.Add("1");
     }
 
 
@@ -67,8 +68,6 @@ public class ButtonsUI : MonoBehaviour
 
         roadFather.GetComponent<RoadCreator>().enabled = isCreateRoadPanel;
         roadFather.GetComponent<RoadEditor>().enabled = isCreateRoadPanel;
-        roadFather.GetComponent<FrameRoadsSelector>().enabled = !isCreateRoadPanel;
-        roadFather.GetComponent<RelationsEditor>().enabled = !isCreateRoadPanel;
 
         if (isCreateRoadPanel)
         {
@@ -103,14 +102,47 @@ public class ButtonsUI : MonoBehaviour
         Dropdown dropdown = trafficLightFrames.transform.Find("Dropdown").GetComponent<Dropdown>();
         dropdown.ClearOptions();
         dropdown.AddOptions(frames);
+        roadFather.GetComponent<FrameRoadsSelector>().IncreaseFrameCount();
     }
     public void TrafficLinesFramesDecrease()
     {
-        frames.Remove(countFrames.ToString());
         if (countFrames > 1)
+        {
+            frames.Remove(countFrames.ToString());
             countFrames--;
-        Dropdown dropdown = trafficLightFrames.transform.Find("Dropdown").GetComponent<Dropdown>();
-        dropdown.ClearOptions();
-        dropdown.AddOptions(frames);
+            Dropdown dropdown = trafficLightFrames.transform.Find("Dropdown").GetComponent<Dropdown>();
+            dropdown.ClearOptions();
+            dropdown.AddOptions(frames);
+            roadFather.GetComponent<FrameRoadsSelector>().DecreaseFrameCount();
+        }
+    }
+    public void SelectFrame(int frame)
+    {
+        roadFather.GetComponent<FrameRoadsSelector>().OpenFrame(frame);
+    }
+
+    private bool chooseRoad = false;
+    private bool choosePriority = false;
+    public void ButtonChooseRoad()
+    {
+        chooseRoad = !chooseRoad;
+        roadFather.GetComponent<FrameRoadsSelector>().enabled = chooseRoad;
+
+        if (chooseRoad)
+        {
+            choosePriority = false;
+            roadFather.GetComponent<RelationsEditor>().enabled = choosePriority;
+        }
+    }
+    public void ButtonChoosePriority()
+    {
+        choosePriority = !choosePriority;
+        roadFather.GetComponent<RelationsEditor>().enabled = choosePriority;
+
+        if (chooseRoad)
+        {
+            chooseRoad = false;
+            roadFather.GetComponent<FrameRoadsSelector>().enabled = chooseRoad;
+        }
     }
 }
