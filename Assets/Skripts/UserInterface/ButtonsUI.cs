@@ -14,6 +14,7 @@ public class ButtonsUI : MonoBehaviour
         roadCreator = roadFather.GetComponent<RoadCreator>();
         CreateRoadPanel = GameObject.Find("CreateRoadPanel");
         EditTrafficLightsPanel = GameObject.Find("EditTrafficLightsPanel");
+        trafficLightFrames = GameObject.Find("TrafficLightFrames");
     }
 
 
@@ -90,5 +91,26 @@ public class ButtonsUI : MonoBehaviour
         Open.localScale = OpenScale;
         Open.SetSiblingIndex(1);
         Open.Find("Panel").transform.GetComponent<Image>().color = OpenColor;
+    }
+
+    GameObject trafficLightFrames;
+    private int countFrames = 1;
+    private List<string> frames = new List<string>();
+    public void TrafficLinesFramesIncrease()
+    {
+        countFrames++;
+        frames.Add(countFrames.ToString());
+        Dropdown dropdown = trafficLightFrames.transform.Find("Dropdown").GetComponent<Dropdown>();
+        dropdown.ClearOptions();
+        dropdown.AddOptions(frames);
+    }
+    public void TrafficLinesFramesDecrease()
+    {
+        frames.Remove(countFrames.ToString());
+        if (countFrames > 1)
+            countFrames--;
+        Dropdown dropdown = trafficLightFrames.transform.Find("Dropdown").GetComponent<Dropdown>();
+        dropdown.ClearOptions();
+        dropdown.AddOptions(frames);
     }
 }

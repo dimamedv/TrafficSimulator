@@ -83,9 +83,7 @@ public class CarBehaviour : MonoBehaviour
             bool isItTimeToSlowDown = saveStoppingDistance > distanceToNearestCar;
 
             if (isItTimeToSlowDown)
-            {
                 return true;
-            }
         }
         return false;
     }
