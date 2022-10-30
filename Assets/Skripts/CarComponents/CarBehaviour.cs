@@ -5,49 +5,40 @@ using System;
 using System.Runtime.ConstrainedExecution;
 using UnityEngine.UIElements;
 
-public class CarBehaviour : MonoBehaviour
+public abstract class CarBehaviour : MonoBehaviour
 {
     // Максимальная скорость автомобиля
     public float maxSpeedPerSec;
-
     // Ускорение в секунду
     public float accelerationPerSec;
-
     // Торможение в секунду
     public float brakingPerSec;
-
     // Дорога, по которой едет авто
     public SimpleRoad parentRoad;
-
     // Расстояние, пройденное машиной
     public float distance;
 
 
     // Расстояние, пройденное машиной
     public float distanceOnThisRoad;
-
     // Максимальная скорость автомобиля
     public float maxSpeedPerTick;
-
     // Ускорение в тик
     public float accelerationPerTick;
-
     // Торможение в секунду
     public float brakingPerTick;
-
     // Время, которое нужно машине для остановки
     public float brakingTime;
-
     // Тормозной путь
     public float brakingDistance;
-
     // Скорость в тик
     public float speedPerTick;
 
-    Transform crossroadEntrance;
+    public Transform crossroadEntrance;
     public GameObject destinationPost;
     public List<GameObject> path;
 
+    public abstract bool IsItTimeToSlowDown();
 
     // Событие, которое вызывается в случае столкновения машин
     private void OnTriggerEnter(Collider collider)
@@ -80,82 +71,6 @@ public class CarBehaviour : MonoBehaviour
         TurnCar(speedPerTick);
     }
 
-    // Пора ли тормозить?
-    private bool IsItTimeToSlowDown()
-    {
-        // Ближайшая машина
-        if (CarAtDangerousDistance(FindNearestCar()))
-            return true;
-
-        return false;
-        
-    }
-
-    // Возвращает блтжайшую машину на пути
-    private GameObject FindNearestCar()
-    {
-        Transform crossroadEntrancePtr = crossroadEntrance;
-        while (crossroadEntrancePtr != null &&
-               crossroadEntrancePtr.GetComponent<CrossRoadEntrance>().childRoads.Count > 0) //
-        {
-            foreach (var car in crossroadEntrance.GetComponent<CrossRoadEntrance>().childRoads[0] //
-                         .GetComponent<SimpleRoad>().carsOnThisRoad)
-            {
-                float distanceToCar = car.GetComponent<CarBehaviour>().distance - this.distance;
-                if (car != gameObject && distanceToCar > 0.0f)
-                    return car;
-            }
-
-            crossroadEntrancePtr = crossroadEntrance.GetComponent<CrossRoadEntrance>().childRoads[0] //
-                .GetComponent<SimpleRoad>().transform.Find("CrossRoadEntrance");
-        }
-
-        return null;
-    }
-    // 
-    private bool CarAtDangerousDistance(GameObject nearestCar)
-    {
-        if (nearestCar != null)
-        {
-            // Расстояние до ближайшей машины
-            float distanceToNearestCar = nearestCar.GetComponent<CarBehaviour>().distance - this.distance;
-            // Габариты этой машины
-            float thisCarDimensions =
-                gameObject.transform.localScale.x * gameObject.GetComponent<BoxCollider>().size.x / 2;
-            // Габариты ближайшей машины
-            float nearestCarDimensions =
-                nearestCar.transform.localScale.x * nearestCar.GetComponent<BoxCollider>().size.x / 2;
-            // Безопасная дистанция остановки
-            float saveStoppingDistance =
-                brakingDistance + GlobalSettings.SaveDistance + nearestCarDimensions + thisCarDimensions;
-            // Пора ли тормозить?
-            bool isItTimeToSlowDown = saveStoppingDistance > distanceToNearestCar;
-
-            if (isItTimeToSlowDown)
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /*
-    private GameObject FindNearestCrossroad()
-    {
-        Transform crossroadEntrancePtr = crossroadEntrance;
-        while (crossroadEntrancePtr != null &&
-               crossroadEntrancePtr.GetComponent<CrossRoadEntrance>().childRoads.Count > 0) //
-        { 
-            foreach (var road in crossroadEntrance.GetComponent<CrossRoadEntrance>().childRoads)
-                if (road )
-        }
-        return new GameObject();
-    }
-    */
-
-
-
     // Уменьшает скорость машины в этом тике
     private void SlowDown()
     {
@@ -186,12 +101,6 @@ public class CarBehaviour : MonoBehaviour
     {
         distanceOnThisRoad += speedPerTick;
         distance += speedPerTick;
-    }
-
-    //
-    private float GetTime(float S, float v)
-    {
-        return S / v;
     }
 
     // 

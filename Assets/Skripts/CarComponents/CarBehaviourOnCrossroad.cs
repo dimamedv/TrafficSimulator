@@ -1,21 +1,60 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static FrameRoadsSelector;
 
-public class CarBehaviourOnCrossroad : MonoBehaviour
+public class CarBehaviourOnCrossroad : CarBehaviour
 {
     // Пора ли тормозить?
-    public bool IsItTimeToSlowDown()
+    public override bool IsItTimeToSlowDown()
     {
         // Ближайшая машина
-        if (CarAtDangerousDistance(FindNearestCar()))
+        float nearestCarDistance = GetNearesCarDistance();
+        GameObject nearestCrossroad = new GameObject();
+        float nearestCrossroadDistance = float.MaxValue;
+
+        if (nearestCarDistance < nearestCrossroadDistance)
+            return nearestCarDistance < brakingDistance + GlobalSettings.SaveDistance;
+
+        if (TimeToPass(nearestCrossroadDistance) > 30.0f)
             return true;
+
+        if (nearestCrossroad.GetComponent<CrossRoadEntrance>().childRoads.Count == 0)
+            return false;
+
+        int idRoad = nearestCrossroad.GetComponent<CrossRoadEntrance>().childRoads[0].GetComponent<SimpleRoad>().id;
+        GameObject roadFather = GameObject.Find("RoadFather");
+        foreach (var road in roadFather.GetComponent<FrameRoadsSelector>().frames[0].GetRoadToTrackById(idRoad))
+        {
+            
+        }
 
         return false;
 
     }
 
-    // Возвращает блтжайшую машину на пути
+    
+    // 
+    private float GetNearesCarDistance()
+    {
+        GameObject nearestCar = FindNearestCar();
+        if (nearestCar != null)
+        {
+            // Габариты этой машины
+            float thisCarDimensions =
+                gameObject.transform.localScale.x * gameObject.GetComponent<BoxCollider>().size.x / 2;
+            // Габариты ближайшей машины
+            float nearestCarDimensions =
+                nearestCar.transform.localScale.x * nearestCar.GetComponent<BoxCollider>().size.x / 2;
+            // Расстояние до ближайшей машины
+            float distanceToNearestCar = nearestCar.GetComponent<CarBehaviour>().distance - this.distance - thisCarDimensions - nearestCarDimensions;
+
+            return distanceToNearestCar;
+        }
+
+        return float.MaxValue;
+    }
+    // Возвращает ближайшую машину на пути
     private GameObject FindNearestCar()
     {
         Transform crossroadEntrancePtr = crossroadEntrance;
@@ -36,34 +75,7 @@ public class CarBehaviourOnCrossroad : MonoBehaviour
 
         return null;
     }
-    // 
-    private bool CarAtDangerousDistance(GameObject nearestCar)
-    {
-        if (nearestCar != null)
-        {
-            // Расстояние до ближайшей машины
-            float distanceToNearestCar = nearestCar.GetComponent<CarBehaviour>().distance - this.distance;
-            // Габариты этой машины
-            float thisCarDimensions =
-                gameObject.transform.localScale.x * gameObject.GetComponent<BoxCollider>().size.x / 2;
-            // Габариты ближайшей машины
-            float nearestCarDimensions =
-                nearestCar.transform.localScale.x * nearestCar.GetComponent<BoxCollider>().size.x / 2;
-            // Безопасная дистанция остановки
-            float saveStoppingDistance =
-                brakingDistance + GlobalSettings.SaveDistance + nearestCarDimensions + thisCarDimensions;
-            // Пора ли тормозить?
-            bool isItTimeToSlowDown = saveStoppingDistance > distanceToNearestCar;
-
-            if (isItTimeToSlowDown)
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
+    
     /*
     private GameObject FindNearestCrossroad()
     {
@@ -78,4 +90,11 @@ public class CarBehaviourOnCrossroad : MonoBehaviour
     }
     */
 
+    private float TimeToPass(float distance)
+    {
+        float equidistantTime = (maxSpeedPerTick - speedPerTick) / accelerationPerTick;
+        float equidistantDistance = speedPerTick * equidistantTime + accelerationPerTick * equidistantTime * equidistantTime / 2;
+        float equidimensionalTime = (distance - equidistantDistance) / maxSpeedPerTick;
+        return equidistantTime + equidimensionalTime;
+    }
 }
