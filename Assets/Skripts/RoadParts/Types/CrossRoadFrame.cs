@@ -17,7 +17,7 @@ public class Relations
 
 
 [Serializable]
-public class CrossRoadFrame
+public class CrossRoadFrame 
 {
     public List<Relations> listOfRelations;
     public List<int> roadsInFrameId;
@@ -70,5 +70,16 @@ public class CrossRoadFrame
                 relations.roadsToTrackId.Add(roadToAdd);
             }
         }
+    }
+
+    public GameObject GetRoadById(int id)
+    {
+        foreach (var road in SimpleRoad.RoadList)
+        {
+            if (road.GetComponent<SimpleRoad>().id == id)
+                return road;
+        }
+
+        return null;
     }
 }

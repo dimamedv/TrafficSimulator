@@ -26,8 +26,8 @@ public class CarSpawner : MonoBehaviour
         _timeUpdate -= Time.deltaTime;
         if (_timeUpdate <= 0)
         {
-            CarSpawn();
             _timeUpdate = time;
+            CarSpawn();
         }
     }
 

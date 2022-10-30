@@ -78,7 +78,7 @@ public class RoadEditor : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(RayFromCursor.ray, out hit, 1000, _layerMask))
         {
-            _transform.position = hit.point;
+            _transform.position = new Vector3(hit.point.x, 0.0f, hit.point.z);
             if (_rebuildPointByGrid)
                 AbstractRoad.RebuildPointByGrid(_transform);
         }
