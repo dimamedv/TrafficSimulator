@@ -24,9 +24,19 @@ public class CarBehaviourOnCrossroad : CarBehaviour
 
         int idRoad = nearestCrossroad.GetComponent<CrossRoadEntrance>().childRoads[0].GetComponent<SimpleRoad>().id;
         GameObject roadFather = GameObject.Find("RoadFather");
-        foreach (var road in roadFather.GetComponent<FrameRoadsSelector>().frames[0].GetRoadToTrackById(idRoad))
+        FrameRoadsSelector frameRoadsSelector  = roadFather.GetComponent<FrameRoadsSelector>();
+        foreach (var road in frameRoadsSelector.frames[frameRoadsSelector.currentFrame].GetRoadToTrackById(idRoad))
         {
-            
+            SimpleRoad simpleRoad = frameRoadsSelector.frames[frameRoadsSelector.currentFrame].GetRoadById(road).GetComponent<SimpleRoad>();
+            SimpleRoad simpleParent = simpleRoad.GetComponent<SimpleRoad>().childConnection.GetComponent<SimpleRoad>();
+            float distanceCar = simpleRoad.prefixSumSegments[^1] + simpleParent.prefixSumSegments[^1];
+            while (simpleParent != null)
+            {
+                if (simpleParent.carsOnThisRoad.Count > 0)
+                {
+                    
+                }
+            }
         }
 
         return false;
@@ -90,7 +100,7 @@ public class CarBehaviourOnCrossroad : CarBehaviour
     }
     */
 
-    private float TimeToPass(float distance)
+    public float TimeToPass(float distance)
     {
         float equidistantTime = (maxSpeedPerTick - speedPerTick) / accelerationPerTick;
         float equidistantDistance = speedPerTick * equidistantTime + accelerationPerTick * equidistantTime * equidistantTime / 2;
