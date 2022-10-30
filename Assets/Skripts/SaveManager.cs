@@ -8,13 +8,14 @@ public class SaveManager : MonoBehaviour
 {
     public GameObject simpleRoadPrefab;
     public GameObject templateRoadPrefab;
+
     private void Awake()
     {
         CrossRoadFrame frame = new CrossRoadFrame();
         List<int> list1 = new List<int>() { 1, 2, 3, 4, 6, 8 };
-        
+
         frame.Initialize(list1);
-        
+
         List<int> list2 = new List<int>() { 3, 4 };
         frame.SetRoadsToTrackById(1, list2);
         frame.SetRoadsToTrackById(6, list2);
@@ -39,7 +40,9 @@ public class SaveManager : MonoBehaviour
         save.listOfTemplateRoadPrototypes = templateRoadSerializer.getListOfAllSimpleRoadPrototypes();
 
         save.nextRoadNumeration = GameObject.Find("Game").GetComponent<GlobalSettings>().nextRoadNumeration;
-        
+
+        save.frames = GameObject.Find("RoadFather").GetComponent<FrameRoadsSelector>().frames;
+
         WritePrototypeInFile(save, path);
         Debug.Log("GameSaved in " + path);
     }
@@ -48,7 +51,7 @@ public class SaveManager : MonoBehaviour
     {
         string json = File.ReadAllText(path);
         SaveFile saveFile = JsonUtility.FromJson<SaveFile>(json);
-        
+
         for (int i = 0; i < saveFile.listOfTemplateRoadPrototypes.Count; i++)
         {
             TemplateRoadSerializer templateRoadSerializer = new TemplateRoadSerializer();
@@ -56,7 +59,7 @@ public class SaveManager : MonoBehaviour
 
             templateRoadSerializer.setTemplateRoadFromPrototype(createdRoad, saveFile.listOfTemplateRoadPrototypes[i]);
         }
-
+        
         for (int i = 0; i < saveFile.listOfSimpleRoadPrototypes.Count; i++)
         {
             SimpleRoadSerializer simpleRoadSerializer = new SimpleRoadSerializer();
@@ -67,5 +70,6 @@ public class SaveManager : MonoBehaviour
         }
         
         GameObject.Find("Game").GetComponent<GlobalSettings>().nextRoadNumeration = saveFile.nextRoadNumeration;
+        GameObject.Find("RoadFather").GetComponent<FrameRoadsSelector>().frames = saveFile.frames;
     }
 }
