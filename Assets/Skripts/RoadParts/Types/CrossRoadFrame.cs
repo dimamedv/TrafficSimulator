@@ -21,6 +21,7 @@ public class CrossRoadFrame
 {
     public List<Relations> listOfRelations;
     public List<int> roadsInFrameId;
+    public float time;
 
     public CrossRoadFrame()
     {
