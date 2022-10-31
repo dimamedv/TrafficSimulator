@@ -33,12 +33,12 @@ public class CarBehaviourOnCrossroad : CarBehaviour
         if (timeToNearestCrossroad > 30.0f)
             return true;
 
-        return true;
-        /*
         if (roadFather.GetComponent<RelationsEditor>().frames[currentFrame].GetRoadToTrackById(nearestCrossroad.GetComponent<SimpleRoad>().id)
                 .Count == 0)
             return false;
 
+        return true;
+        /*
         int idRoad = nearestCrossroad.GetComponent<SimpleRoad>().id;
         FrameRoadsSelector frameRoadsSelector = roadFather.GetComponent<FrameRoadsSelector>();
         foreach (var road in frameRoadsSelector.frames[frameRoadsSelector.currentFrame].GetRoadToTrackById(idRoad))
@@ -111,7 +111,6 @@ public class CarBehaviourOnCrossroad : CarBehaviour
             speedPerTick * equidistantTime + accelerationPerTick * equidistantTime * equidistantTime / 2;
         float equidimensionalTime = (crossroadEnd * Time.deltaTime - equidistantDistance) / maxSpeedPerTick;
         float res = equidistantTime + equidimensionalTime;
-        Debug.Log("равноус. вр. = " + equidistantTime + "; Дист. равноус. = " + equidistantDistance + "; равн. вр. = " + equidimensionalTime + "; Итог = " + res);
         return res;
     }
 }
