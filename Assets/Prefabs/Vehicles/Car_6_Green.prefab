@@ -471,7 +471,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxSpeedPerSec: 20
   accelerationPerSec: 4
-  brakingPerSec: 8
+  brakingPerSec: 2
   parentRoad: {fileID: 0}
   distance: 0
   distanceOnThisRoad: 0
@@ -484,4 +484,7 @@ MonoBehaviour:
   crossroadEntrance: {fileID: 0}
   destinationPost: {fileID: 0}
   path: []
+  nearestCrossroadDistance: 0
+  nearestCrossroad: {fileID: 0}
   currentFrame: 0
+  nearestCarDistance: 0

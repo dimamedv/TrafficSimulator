@@ -10,26 +10,31 @@ public class CarBehaviourOnCrossroad : CarBehaviour
 
     public float nearestCarDistance;
 
+    // Габариты этой машины
+    public float thisCarDimensions;
+
+    private void Start()
+    {
+        thisCarDimensions = gameObject.transform.localScale.x * gameObject.GetComponent<BoxCollider>().size.x / 2;
+    }
+
     // Пора ли тормозить?
     public override bool IsItTimeToSlowDown()
     {
         nearestCarDistance = GetNearestCarDistance();
 
-        if (path.Count == 0)
-            nearestCrossroadDistance = float.MaxValue;
-        
-        //GetNearestCrossroad();
-
         if (nearestCarDistance < nearestCrossroadDistance)
             return nearestCarDistance < brakingDistance + GlobalSettings.SaveDistance;
 
-        if (nearestCrossroadDistance > brakingDistance)
+        if (nearestCrossroadDistance > brakingDistance + thisCarDimensions + GlobalSettings.SaveDistance)
             return false;
 
-        float timeToNearestCrossroad = TimeToPass(nearestCrossroadDistance);
+        float timeToNearestCrossroad = TimeToPass(crossroadEnd);
         if (timeToNearestCrossroad > 30.0f)
             return true;
 
+        return true;
+        /*
         if (roadFather.GetComponent<RelationsEditor>().frames[currentFrame].GetRoadToTrackById(nearestCrossroad.GetComponent<SimpleRoad>().id)
                 .Count == 0)
             return false;
@@ -56,6 +61,7 @@ public class CarBehaviourOnCrossroad : CarBehaviour
         }
 
         return false;
+        */
     }
 
 
@@ -65,9 +71,6 @@ public class CarBehaviourOnCrossroad : CarBehaviour
         GameObject nearestCar = FindNearestCar();
         if (nearestCar != null)
         {
-            // Габариты этой машины
-            float thisCarDimensions =
-                gameObject.transform.localScale.x * gameObject.GetComponent<BoxCollider>().size.x / 2;
             // Габариты ближайшей машины
             float nearestCarDimensions =
                 nearestCar.transform.localScale.x * nearestCar.GetComponent<BoxCollider>().size.x / 2;
@@ -83,14 +86,18 @@ public class CarBehaviourOnCrossroad : CarBehaviour
     // Возвращает ближайшую машину на пути
     private GameObject FindNearestCar()
     {
-        for (int i = path.Count - 1; i >= 0; i--)
+        SimpleRoad curParentRoad = parentRoad;
+        int i = path.Count;
+        while (i > 0)
         {
-            foreach (var car in path[i].GetComponent<SimpleRoad>().carsOnThisRoad)
+            for (int j = curParentRoad.carsOnThisRoad.Count - 1; j >= 0; j--)
             {
-                float distanceToCar = car.GetComponent<CarBehaviour>().distance - this.distance;
-                if (car != gameObject && distanceToCar > 0.0f)
-                    return car;
+                float distanceToCar = curParentRoad.carsOnThisRoad[j].GetComponent<CarBehaviour>().distance - this.distance;
+                if (curParentRoad.carsOnThisRoad[j] != gameObject && distanceToCar > 0.0f)
+                    return curParentRoad.carsOnThisRoad[j];
             }
+            i--;
+            curParentRoad = path[i].GetComponent<SimpleRoad>();
         }
 
         return null;
@@ -102,8 +109,9 @@ public class CarBehaviourOnCrossroad : CarBehaviour
         float equidistantTime = (maxSpeedPerTick - speedPerTick) / accelerationPerTick;
         float equidistantDistance =
             speedPerTick * equidistantTime + accelerationPerTick * equidistantTime * equidistantTime / 2;
-        float equidimensionalTime = (distance - equidistantDistance) / maxSpeedPerTick;
-        Debug.Log(equidistantTime + equidimensionalTime);
-        return equidistantTime + equidimensionalTime;
+        float equidimensionalTime = (crossroadEnd * Time.deltaTime - equidistantDistance) / maxSpeedPerTick;
+        float res = equidistantTime + equidimensionalTime;
+        Debug.Log("равноус. вр. = " + equidistantTime + "; Дист. равноус. = " + equidistantDistance + "; равн. вр. = " + equidimensionalTime + "; Итог = " + res);
+        return res;
     }
 }

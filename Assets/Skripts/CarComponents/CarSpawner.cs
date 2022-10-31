@@ -54,6 +54,7 @@ public class CarSpawner : MonoBehaviour
         carBehaviour.destinationPost = destinationPosts[random];
         carBehaviour.findPathToDestination(road.gameObject);
         carBehaviour.parentRoad = carBehaviour.getNextRoad().GetComponent<SimpleRoad>();
+        carBehaviour.GetNearestCrossroad();
 
         road.carsOnThisRoad.Add(createdCar);
     }

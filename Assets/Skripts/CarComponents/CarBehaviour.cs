@@ -39,6 +39,7 @@ public abstract class CarBehaviour : MonoBehaviour
     public List<GameObject> path = new List<GameObject>();
 
     public float nearestCrossroadDistance;
+    public float crossroadEnd;
     public GameObject nearestCrossroad;
 
     public abstract bool IsItTimeToSlowDown();
@@ -59,14 +60,13 @@ public abstract class CarBehaviour : MonoBehaviour
 
     private void FixedUpdate()
     {
-        //if (IsItTimeToSlowDown())
-            //SlowDown();
-        //else
-        SpeedUp();
+        if (IsItTimeToSlowDown())
+            SlowDown();
+        else
+            SpeedUp();
         UpdateBrakingStats();
         ChangeDistance();
 
-        GetNearestCrossroad();
 
         crossroadEntrance = parentRoad.transform.Find("CrossRoadEntrance");
         if (distanceOnThisRoad >= parentRoad.prefixSumSegments[^1])
@@ -74,19 +74,23 @@ public abstract class CarBehaviour : MonoBehaviour
         TurnCar(speedPerTick);
     }
 
-    private void GetNearestCrossroad()
+    public void GetNearestCrossroad()
     {
-        nearestCrossroadDistance = parentRoad.prefixSumSegments[^1] - distanceOnThisRoad;
+        crossroadEnd = parentRoad.prefixSumSegments[^1];
         for (int i = path.Count - 1; i >= 0; i--)
         {
-            nearestCrossroadDistance += path[i].GetComponent<SimpleRoad>().prefixSumSegments[^1];
+            crossroadEnd += path[i].GetComponent<SimpleRoad>().prefixSumSegments[^1];
             var road = path[i].GetComponent<SimpleRoad>().parentConnection;
             if (roadFather.GetComponent<FrameRoadsSelector>().CheckIfIsEntranceToCrossRoad(road))
             {
+                nearestCrossroadDistance = crossroadEnd - path[i].GetComponent<SimpleRoad>().prefixSumSegments[^1];
                 nearestCrossroad = path[i];
                 return;
             }
         }
+        nearestCrossroadDistance = float.MaxValue;
+        crossroadEnd = float.MaxValue;
+        nearestCrossroad = null;
     }
 
     // Уменьшает скорость машины в этом тике
@@ -117,6 +121,14 @@ public abstract class CarBehaviour : MonoBehaviour
     // Изменяет дистанцию, пройденную автомобилем
     private void ChangeDistance()
     {
+        nearestCrossroadDistance -= speedPerTick;
+        if (nearestCrossroadDistance < 0)
+            nearestCrossroadDistance = float.MaxValue;
+
+        crossroadEnd -= speedPerTick;
+        if (crossroadEnd < 0)
+            crossroadEnd = float.MaxValue;
+
         distanceOnThisRoad += speedPerTick;
         distance += speedPerTick;
     }
@@ -125,7 +137,7 @@ public abstract class CarBehaviour : MonoBehaviour
     private void SwitchToChild()
     {
         distanceOnThisRoad -= parentRoad.prefixSumSegments[^1];
-        if (crossroadEntrance != null && crossroadEntrance.GetComponent<CrossRoadEntrance>().childRoads.Count != 0) 
+        if (path.Count > 0) 
         {
             ChangeRoad();
         }
