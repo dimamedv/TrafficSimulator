@@ -6,12 +6,14 @@ using static FrameRoadsSelector;
 public class CarBehaviourOnCrossroad : CarBehaviour
 {
     public int currentFrame = 0;
-    GameObject roadFather;
+    public GameObject roadFather;
 
     public float nearestCarDistance;
 
     // Габариты этой машины
     public float thisCarDimensions;
+    public float timeToNearestCrossroad;
+    public CrossRoadFrame activeCrossroadFrame;
 
     private void Start()
     {
@@ -30,39 +32,19 @@ public class CarBehaviourOnCrossroad : CarBehaviour
         if (nearestCrossroadDistance > brakingDistance + thisCarDimensions + GlobalSettings.SaveDistance)
             return false;
 
-        float timeToNearestCrossroad = TimeToPass(crossroadEnd);
+        timeToNearestCrossroad = TimeToPass(crossroadEnd);
         if (timeToNearestCrossroad > 30.0f)
             return true;
 
-        if (roadFather.GetComponent<RelationsEditor>().frames[currentFrame].GetRoadToTrackById(nearestCrossroad.GetComponent<SimpleRoad>().id)
-                .Count == 0)
+        activeCrossroadFrame = roadFather.GetComponent<FrameRoadsSelector>().frames[currentFrame];
+        List<int> primaryRoadForThis = activeCrossroadFrame.GetRoadToTrackById(nearestCrossroad.GetComponent<SimpleRoad>().id);
+        if (primaryRoadForThis.Count == 0)
             return false;
 
-        return true;
-        /*
-        int idRoad = nearestCrossroad.GetComponent<SimpleRoad>().id;
-        FrameRoadsSelector frameRoadsSelector = roadFather.GetComponent<FrameRoadsSelector>();
-        foreach (var road in frameRoadsSelector.frames[frameRoadsSelector.currentFrame].GetRoadToTrackById(idRoad))
-        {
-            SimpleRoad simpleRoad = frameRoadsSelector.frames[frameRoadsSelector.currentFrame].GetRoadById(road)
-                .GetComponent<SimpleRoad>();
-            SimpleRoad simpleParent = simpleRoad.childConnection.GetComponent<SimpleRoad>();
-            float distanceCar = simpleRoad.prefixSumSegments[^1];
-            while (simpleParent != null)
-            {
-                distanceCar += simpleParent.prefixSumSegments[^1];
-                if (simpleParent.carsOnThisRoad.Count > 0)
-                {
-                    float timeForCar = TimeToPass(distanceCar - simpleParent.carsOnThisRoad[0]
-                        .GetComponent<CarBehaviourOnCrossroad>().TimeToPass(distanceCar));
-                    if (timeForCar + 2.0f < timeToNearestCrossroad)
-                        return true;
-                }
-            }
-        }
+        if (FindCarForGiveWay(primaryRoadForThis))
+            return true;
 
         return false;
-        */
     }
 
 
@@ -113,5 +95,29 @@ public class CarBehaviourOnCrossroad : CarBehaviour
         float equidimensionalTime = (crossroadEnd * Time.deltaTime - equidistantDistance) / maxSpeedPerTick;
         float res = equidistantTime + equidimensionalTime;
         return res;
+    }
+
+    private bool FindCarForGiveWay(List<int> primaryRoadForThis)
+    {
+        foreach (int id in primaryRoadForThis)
+        {
+            SimpleRoad road = activeCrossroadFrame.GetRoadById(id).GetComponent<SimpleRoad>();
+            while (road != null)
+            {
+                List<GameObject> cars = road.carsOnThisRoad;
+                if (cars.Count > 0)
+                {
+                    CarBehaviourOnCrossroad carPtr = cars[0].GetComponent<CarBehaviourOnCrossroad>();
+                    if (carPtr.timeToNearestCrossroad < this.timeToNearestCrossroad + 3.0f)
+                        return true;
+                }
+
+                if (road.parentConnection != null && road.parentConnection.GetComponent<CrossRoadEntrance>().parentRoads[0] != null)
+                    road = road.parentConnection.GetComponent<CrossRoadEntrance>().parentRoads[0].GetComponent<SimpleRoad>();
+                else
+                    road = null;
+            }
+        }
+        return false;
     }
 }
