@@ -15,6 +15,7 @@ public class CarBehaviourOnCrossroad : CarBehaviour
 
     private void Start()
     {
+        roadFather = GameObject.Find("RoadFather");
         thisCarDimensions = gameObject.transform.localScale.x * gameObject.GetComponent<BoxCollider>().size.x / 2;
     }
 
