@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Net;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -22,9 +23,12 @@ public class CarSpawner : MonoBehaviour
     {
         _timeUpdate = time;
         destinationPosts = new List<GameObject>();
-        foreach (var road in SimpleRoad.RoadList) 
-            if (road.GetComponent<SimpleRoad>().endPost == null)
-                destinationPosts.Add(road.GetComponent<SimpleRoad>().endPost);
+        foreach (var roadIn in SimpleRoad.RoadList)
+        {
+            GameObject endPost = roadIn.GetComponent<SimpleRoad>().endPost;
+            if (endPost == null && endPost != road.GetComponent<SimpleRoad>().endPost)
+                destinationPosts.Add(endPost);
+        }
     }
 
     private void FixedUpdate()

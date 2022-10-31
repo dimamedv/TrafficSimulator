@@ -137,7 +137,7 @@ public abstract class CarBehaviour : MonoBehaviour
     private void ChangeRoad()
     {
         parentRoad.carsOnThisRoad.Remove(gameObject);
-        parentRoad = crossroadEntrance.GetComponent<CrossRoadEntrance>().childRoads[0].GetComponent<SimpleRoad>();
+        parentRoad = getNextRoad().GetComponent<SimpleRoad>();
         parentRoad.carsOnThisRoad.Add(gameObject);
     }
     public bool findPathToDestination(GameObject currentRoad)
