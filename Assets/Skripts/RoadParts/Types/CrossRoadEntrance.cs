@@ -7,7 +7,6 @@ public class CrossRoadEntrance : MonoBehaviour
 {
     public List<GameObject> parentRoads;
     public List<GameObject> childRoads;
-    public CrossRoad crossRoad;
     public bool state;
 
     public static List<GameObject> EntrancesList = new List<GameObject>();

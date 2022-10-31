@@ -5,36 +5,58 @@ using static FrameRoadsSelector;
 
 public class CarBehaviourOnCrossroad : CarBehaviour
 {
+    GameObject roadFather;
+    public void Start()
+    {
+        roadFather = GameObject.Find("RoadFather");
+    }
+
     // Пора ли тормозить?
     public override bool IsItTimeToSlowDown()
     {
         // Ближайшая машина
-        float nearestCarDistance = GetNearesCarDistance();
-        GameObject nearestCrossroad = new GameObject();
-        float nearestCrossroadDistance = float.MaxValue;
+        float nearestCarDistance = GetNearestCarDistance();
+        int nearestCrossroadId = 0;
+        float nearestCrossroadDistance = -distance;
+
+        if (path.Count == 0)
+            nearestCrossroadDistance = float.MaxValue;
+        for (int i = path.Count - 1; i >= 0; i--) {
+            nearestCrossroadDistance += path[i].GetComponent<SimpleRoad>().prefixSumSegments[^1];
+            if (roadFather.GetComponent<FrameRoadsSelector>().CheckIfIsEntranceToCrossRoad(path[i])) {
+                nearestCrossroadId = i;
+                break;
+            }
+        }
 
         if (nearestCarDistance < nearestCrossroadDistance)
             return nearestCarDistance < brakingDistance + GlobalSettings.SaveDistance;
 
-        if (TimeToPass(nearestCrossroadDistance) > 30.0f)
-            return true;
-
-        if (nearestCrossroad.GetComponent<CrossRoadEntrance>().childRoads.Count == 0)
+        if (nearestCrossroadDistance > brakingDistance)
             return false;
 
-        int idRoad = nearestCrossroad.GetComponent<CrossRoadEntrance>().childRoads[0].GetComponent<SimpleRoad>().id;
-        GameObject roadFather = GameObject.Find("RoadFather");
+        float timeToNearestCrossroad = TimeToPass(nearestCrossroadDistance);
+        if (timeToNearestCrossroad > 30.0f)
+            return true;
+
+        if (path[nearestCrossroadId].GetComponent<CrossRoadEntrance>().childRoads.Count == 0)
+            return false;
+        
+        int idRoad = path[nearestCrossroadId].GetComponent<SimpleRoad>().id;
         FrameRoadsSelector frameRoadsSelector  = roadFather.GetComponent<FrameRoadsSelector>();
         foreach (var road in frameRoadsSelector.frames[frameRoadsSelector.currentFrame].GetRoadToTrackById(idRoad))
         {
             SimpleRoad simpleRoad = frameRoadsSelector.frames[frameRoadsSelector.currentFrame].GetRoadById(road).GetComponent<SimpleRoad>();
-            SimpleRoad simpleParent = simpleRoad.GetComponent<SimpleRoad>().childConnection.GetComponent<SimpleRoad>();
-            float distanceCar = simpleRoad.prefixSumSegments[^1] + simpleParent.prefixSumSegments[^1];
+            SimpleRoad simpleParent = simpleRoad.childConnection.GetComponent<SimpleRoad>();
+            float distanceCar = simpleRoad.prefixSumSegments[^1];
             while (simpleParent != null)
             {
+                distanceCar += simpleParent.prefixSumSegments[^1];
                 if (simpleParent.carsOnThisRoad.Count > 0)
                 {
-                    
+                    float timeForCar = TimeToPass(distanceCar - simpleParent.carsOnThisRoad[0].GetComponent<CarBehaviourOnCrossroad>().TimeToPass(distanceCar));
+                    if (timeForCar + 2.0f < timeToNearestCrossroad) 
+                        return true;
                 }
             }
         }
@@ -45,7 +67,7 @@ public class CarBehaviourOnCrossroad : CarBehaviour
 
     
     // 
-    private float GetNearesCarDistance()
+    private float GetNearestCarDistance()
     {
         GameObject nearestCar = FindNearestCar();
         if (nearestCar != null)
@@ -67,39 +89,19 @@ public class CarBehaviourOnCrossroad : CarBehaviour
     // Возвращает ближайшую машину на пути
     private GameObject FindNearestCar()
     {
-        Transform crossroadEntrancePtr = crossroadEntrance;
-        while (crossroadEntrancePtr != null &&
-               crossroadEntrancePtr.GetComponent<CrossRoadEntrance>().childRoads.Count > 0) //
+        for (int i = path.Count - 1; i >= 0; i--) 
         {
-            foreach (var car in crossroadEntrance.GetComponent<CrossRoadEntrance>().childRoads[0] //
-                         .GetComponent<SimpleRoad>().carsOnThisRoad)
+            foreach (var car in path[i].GetComponent<SimpleRoad>().carsOnThisRoad)
             {
                 float distanceToCar = car.GetComponent<CarBehaviour>().distance - this.distance;
                 if (car != gameObject && distanceToCar > 0.0f)
                     return car;
             }
-
-            crossroadEntrancePtr = crossroadEntrance.GetComponent<CrossRoadEntrance>().childRoads[0] //
-                .GetComponent<SimpleRoad>().transform.Find("CrossRoadEntrance");
         }
 
         return null;
     }
     
-    /*
-    private GameObject FindNearestCrossroad()
-    {
-        Transform crossroadEntrancePtr = crossroadEntrance;
-        while (crossroadEntrancePtr != null &&
-               crossroadEntrancePtr.GetComponent<CrossRoadEntrance>().childRoads.Count > 0) //
-        { 
-            foreach (var road in crossroadEntrance.GetComponent<CrossRoadEntrance>().childRoads)
-                if (road )
-        }
-        return new GameObject();
-    }
-    */
-
     public float TimeToPass(float distance)
     {
         float equidistantTime = (maxSpeedPerTick - speedPerTick) / accelerationPerTick;
