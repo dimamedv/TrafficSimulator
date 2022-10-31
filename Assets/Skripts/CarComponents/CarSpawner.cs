@@ -12,13 +12,19 @@ public class CarSpawner : MonoBehaviour
     // Время, которое будет ждать спавнер
     public float time;
 
+    public List<GameObject> destinationPosts;
+
     // Отсчитывае
     private float _timeUpdate;
 
 
-    private void Awake()
+    private void Start()
     {
         _timeUpdate = time;
+        destinationPosts = new List<GameObject>();
+        foreach (var road in SimpleRoad.RoadList) 
+            if (road.GetComponent<SimpleRoad>().endPost == null)
+                destinationPosts.Add(road.GetComponent<SimpleRoad>().endPost);
     }
 
     private void FixedUpdate()
@@ -35,9 +41,17 @@ public class CarSpawner : MonoBehaviour
     {
         GameObject createdCar = Instantiate(carPrefab);
         createdCar.name = "Car";
-        createdCar.GetComponent<CarBehaviour>().parentRoad = road;
         createdCar.transform.position = road.startPost.transform.position + carPrefab.transform.position;
         createdCar.transform.Rotate(-Vector3.up * 90);
+
+        int random = Random.Range(0, destinationPosts.Count);
+        Debug.Log(random);
+
+        CarBehaviour carBehaviour = createdCar.GetComponent<CarBehaviour>();
+        carBehaviour.parentRoad = road;
+        carBehaviour.destinationPost = destinationPosts[random];
+        carBehaviour.findPathToDestination(carBehaviour.parentRoad.gameObject);
+
         road.carsOnThisRoad.Add(createdCar);
     }
 }

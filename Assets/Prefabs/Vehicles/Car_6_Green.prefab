@@ -469,9 +469,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 156c6616eaa694342a6386a191cbf528, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxSpeedPerSec: 0
-  accelerationPerSec: 0
-  brakingPerSec: 0
+  maxSpeedPerSec: 20
+  accelerationPerSec: 4
+  brakingPerSec: 2
   parentRoad: {fileID: 0}
   distance: 0
   distanceOnThisRoad: 0

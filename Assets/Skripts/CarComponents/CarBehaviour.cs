@@ -36,7 +36,7 @@ public abstract class CarBehaviour : MonoBehaviour
 
     public Transform crossroadEntrance;
     public GameObject destinationPost;
-    public List<GameObject> path;
+    public List<GameObject> path = new List<GameObject>();
 
     public abstract bool IsItTimeToSlowDown();
 
@@ -52,8 +52,6 @@ public abstract class CarBehaviour : MonoBehaviour
         maxSpeedPerTick = maxSpeedPerSec * Time.deltaTime;
         accelerationPerTick = accelerationPerSec * Time.deltaTime;
         brakingPerTick = brakingPerSec * Time.deltaTime;
-
-        path = new List<GameObject>();
     }
 
     private void FixedUpdate()
