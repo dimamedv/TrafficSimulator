@@ -145,4 +145,17 @@ public class ButtonsUI : MonoBehaviour
             roadFather.GetComponent<FrameRoadsSelector>().enabled = chooseRoad;
         }
     }
+
+    private bool ImSaySTARTUEM = false;
+    public void ButtonStartuem()
+    {
+        ImSaySTARTUEM = !ImSaySTARTUEM;
+
+        foreach (var road in SimpleRoad.RoadList)
+            if (road.GetComponent<SimpleRoad>().parentConnection == null)
+                road.GetComponent<CarSpawner>().enabled = ImSaySTARTUEM;
+
+        roadFather.GetComponent<FrameRoadsSelector>().enabled = true;
+        roadFather.GetComponent<FrameRoadsSelector>().enabled = false;
+    }
 }
