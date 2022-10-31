@@ -4,7 +4,7 @@ using UnityEngine;
 using System;
 using System.Runtime.ConstrainedExecution;
 using UnityEngine.UIElements;
-
+using static GlobalSettings;
 public abstract class CarBehaviour : MonoBehaviour
 {
     // Максимальная скорость автомобиля
@@ -38,6 +38,9 @@ public abstract class CarBehaviour : MonoBehaviour
     public GameObject destinationPost;
     public List<GameObject> path = new List<GameObject>();
 
+    public float nearestCrossroadDistance;
+    public GameObject nearestCrossroad;
+
     public abstract bool IsItTimeToSlowDown();
 
     // Событие, которое вызывается в случае столкновения машин
@@ -56,17 +59,34 @@ public abstract class CarBehaviour : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (IsItTimeToSlowDown())
-            SlowDown();
-        else
-            SpeedUp();
+        //if (IsItTimeToSlowDown())
+            //SlowDown();
+        //else
+        SpeedUp();
         UpdateBrakingStats();
         ChangeDistance();
+
+        GetNearestCrossroad();
 
         crossroadEntrance = parentRoad.transform.Find("CrossRoadEntrance");
         if (distanceOnThisRoad >= parentRoad.prefixSumSegments[^1])
             SwitchToChild();
         TurnCar(speedPerTick);
+    }
+
+    private void GetNearestCrossroad()
+    {
+        nearestCrossroadDistance = parentRoad.prefixSumSegments[^1] - distanceOnThisRoad;
+        for (int i = path.Count - 1; i >= 0; i--)
+        {
+            nearestCrossroadDistance += path[i].GetComponent<SimpleRoad>().prefixSumSegments[^1];
+            var road = path[i].GetComponent<SimpleRoad>().parentConnection;
+            if (roadFather.GetComponent<FrameRoadsSelector>().CheckIfIsEntranceToCrossRoad(road))
+            {
+                nearestCrossroad = path[i];
+                return;
+            }
+        }
     }
 
     // Уменьшает скорость машины в этом тике
@@ -119,7 +139,7 @@ public abstract class CarBehaviour : MonoBehaviour
     private void TurnCar(float speed)
     {
         int nextPointIndex = MyMath.binarySearch(ref parentRoad.prefixSumSegments, parentRoad.prefixSumSegments.Count,
-            distance);
+            distanceOnThisRoad);
         transform.LookAt(new Vector3(parentRoad.points[nextPointIndex].x,
             parentRoad.points[nextPointIndex].y + transform.position.y,
             parentRoad.points[nextPointIndex].z));

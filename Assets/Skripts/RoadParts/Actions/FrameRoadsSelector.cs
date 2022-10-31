@@ -187,6 +187,9 @@ public class FrameRoadsSelector : MonoBehaviour
     // ¬озвращает true, если entrance €вл€етс€ частью перекрестка
     public bool CheckIfIsEntranceToCrossRoad(GameObject checkedEntrance)
     {
-        return crossRoadEntrances.Contains(checkedEntrance);
+        foreach (var road in crossRoadEntrances)
+            if (road == checkedEntrance)
+                return true;
+        return false;
     }
 }

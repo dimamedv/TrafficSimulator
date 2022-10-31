@@ -22,13 +22,13 @@ public class CarSpawner : MonoBehaviour
     private void Start()
     {
         _timeUpdate = time;
-        destinationPosts = new List<GameObject>();
-        foreach (var roadIn in SimpleRoad.RoadList)
-        {
-            GameObject endPost = roadIn.GetComponent<SimpleRoad>().endPost;
-            if (endPost == null && endPost != road.GetComponent<SimpleRoad>().endPost)
-                destinationPosts.Add(endPost);
-        }
+        //destinationPosts = new List<GameObject>();
+        //foreach (var roadIn in SimpleRoad.RoadList)
+        //{
+        //    GameObject endPost = roadIn.GetComponent<SimpleRoad>().endPost;
+        //    if (endPost == null && endPost != road.GetComponent<SimpleRoad>().endPost)
+        //        destinationPosts.Add(endPost);
+        //}
     }
 
     private void FixedUpdate()
@@ -49,12 +49,11 @@ public class CarSpawner : MonoBehaviour
         createdCar.transform.Rotate(-Vector3.up * 90);
 
         int random = Random.Range(0, destinationPosts.Count);
-        Debug.Log(random);
 
         CarBehaviour carBehaviour = createdCar.GetComponent<CarBehaviour>();
-        carBehaviour.parentRoad = road;
         carBehaviour.destinationPost = destinationPosts[random];
-        carBehaviour.findPathToDestination(carBehaviour.parentRoad.gameObject);
+        carBehaviour.findPathToDestination(road.gameObject);
+        carBehaviour.parentRoad = carBehaviour.getNextRoad().GetComponent<SimpleRoad>();
 
         road.carsOnThisRoad.Add(createdCar);
     }
