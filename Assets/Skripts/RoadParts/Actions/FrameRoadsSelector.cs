@@ -12,7 +12,7 @@ public class FrameRoadsSelector : MonoBehaviour
 
     public LayerMask layerMaskUI; // Слой UI
     public LayerMask layerMaskRoad; // Слой дороги
-    
+
 
     public void Awake()
     {
@@ -32,7 +32,6 @@ public class FrameRoadsSelector : MonoBehaviour
     {
         CloseFrame();
         UpdateCrossRoadEntrances();
-        
     }
 
     public void CloseFrame()
@@ -82,7 +81,7 @@ public class FrameRoadsSelector : MonoBehaviour
     {
         UpdateFrameListByNumber(frames.Count + 1);
     }
-    
+
     public void DecreaseFrameCount()
     {
         if (frames.Count - 1 >= 0)
@@ -105,10 +104,7 @@ public class FrameRoadsSelector : MonoBehaviour
             {
                 EnableLineRenderWithMaterial(road, Color.green);
             }
-            
         }
-        
-        
     }
 
     public void UpdateFrameListByNumber(int number)
@@ -121,7 +117,6 @@ public class FrameRoadsSelector : MonoBehaviour
         while (frames.Count < number)
         {
             frames.Add(new CrossRoadFrame());
-            
         }
     }
 
@@ -147,7 +142,7 @@ public class FrameRoadsSelector : MonoBehaviour
         }
     }
 
-    public void EnableLineRenderWithMaterial(GameObject road, Color color)
+    public static void EnableLineRenderWithMaterial(GameObject road, Color color)
     {
         SimpleRoad roadScript = road.GetComponent<SimpleRoad>();
         roadScript.renderLine = true;
@@ -156,7 +151,7 @@ public class FrameRoadsSelector : MonoBehaviour
         road.GetComponent<LineRenderer>().enabled = true;
     }
 
-    public void DisableLineRender(GameObject road)
+    public static void DisableLineRender(GameObject road)
     {
         SimpleRoad roadScript = road.GetComponent<SimpleRoad>();
         roadScript.renderLine = false;
@@ -181,14 +176,21 @@ public class FrameRoadsSelector : MonoBehaviour
 
     public bool CheckIfRoadInListById(GameObject road, List<int> roadList)
     {
-        return roadList.Contains(road.GetComponent<SimpleRoad>().id);
+        foreach (var id in roadList)
+        {
+            if (road.GetComponent<SimpleRoad>().id == id)
+                return true;
+        }
+
+        return
+            false;
     }
 
     // Возвращает true, если entrance является частью перекрестка
     public bool CheckIfIsEntranceToCrossRoad(GameObject checkedEntrance)
     {
-        foreach (var enterance in crossRoadEntrances)
-            if (checkedEntrance == enterance)
+        foreach (var entrance in crossRoadEntrances)
+            if (checkedEntrance == entrance)
                 return true;
         return false;
     }

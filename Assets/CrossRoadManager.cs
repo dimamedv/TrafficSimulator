@@ -30,6 +30,9 @@ public class CrossRoadManager : MonoBehaviour
             }
 
             timeBeforeFrameChange = frames[currentFrameIndex].time;
+            
+            if (GameObject.Find("RoadFather").GetComponent<HighLightCrossRoadFrame>().enabled)
+                GameObject.Find("RoadFather").GetComponent<HighLightCrossRoadFrame>().HighLightFrame();
         }
     }
 }
