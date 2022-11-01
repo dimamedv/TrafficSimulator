@@ -151,9 +151,9 @@ public class ButtonsUI : MonoBehaviour
     {
         ImSaySTARTUEM = !ImSaySTARTUEM;
 
-        //foreach (var road in SimpleRoad.RoadList)
-            //if (road.GetComponent<SimpleRoad>().parentConnection == null)
-                //road.GetComponent<CarSpawner>().enabled = ImSaySTARTUEM;
+        foreach (var road in SimpleRoad.RoadList)
+            if (road.GetComponent<SimpleRoad>().parentConnection == null)
+                road.GetComponent<CarSpawner>().enabled = ImSaySTARTUEM;
 
         roadFather.GetComponent<FrameRoadsSelector>().enabled = true;
         roadFather.GetComponent<FrameRoadsSelector>().enabled = false;

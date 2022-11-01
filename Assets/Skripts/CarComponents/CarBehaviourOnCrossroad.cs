@@ -10,7 +10,7 @@ public class CarBehaviourOnCrossroad : CarBehaviour
 
     public float nearestCarDistance;
 
-    // Габариты этой машины
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
     public float thisCarDimensions;
     public float timeToNearestCrossroad;
     public CrossRoadFrame activeCrossroadFrame;
@@ -21,7 +21,7 @@ public class CarBehaviourOnCrossroad : CarBehaviour
         thisCarDimensions = gameObject.transform.localScale.x * gameObject.GetComponent<BoxCollider>().size.x / 2;
     }
 
-    // Пора ли тормозить?
+    // пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ?
     public override bool IsItTimeToSlowDown()
     {
         nearestCarDistance = GetNearestCarDistance();
@@ -35,8 +35,9 @@ public class CarBehaviourOnCrossroad : CarBehaviour
         if (GameObject.Find("RoadFather").GetComponent<CrossRoadManager>().timeBeforeFrameChange < 2)
             return true;
 
+        activeCrossroadFrame = roadFather.GetComponent<FrameRoadsSelector>().frames[currentFrame];
         timeToNearestCrossroad = TimeToPass(crossroadEnd);
-        if (timeToNearestCrossroad > 30.0f)
+        if (timeToNearestCrossroad > activeCrossroadFrame.time)
             return true;
 
         activeCrossroadFrame = roadFather.GetComponent<FrameRoadsSelector>()
@@ -59,10 +60,10 @@ public class CarBehaviourOnCrossroad : CarBehaviour
         GameObject nearestCar = FindNearestCar();
         if (nearestCar != null)
         {
-            // Габариты ближайшей машины
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
             float nearestCarDimensions =
                 nearestCar.transform.localScale.x * nearestCar.GetComponent<BoxCollider>().size.x / 2;
-            // Расстояние до ближайшей машины
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
             float distanceToNearestCar = nearestCar.GetComponent<CarBehaviour>().distance - this.distance -
                                          thisCarDimensions - nearestCarDimensions;
 
@@ -72,7 +73,7 @@ public class CarBehaviourOnCrossroad : CarBehaviour
         return float.MaxValue;
     }
 
-    // Возвращает ближайшую машину на пути
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ
     private GameObject FindNearestCar()
     {
         SimpleRoad curParentRoad = parentRoad;
