@@ -22,8 +22,8 @@ public class RoadCreator : MonoBehaviour
     private int _maxSteps = 1;
     private bool _isStraight = true;
     private bool _renderLine = false;
-    private float _rightLanes = 1;
-    private float _leftLanes = 1;
+    public float _rightLanes = 1;
+    public float _leftLanes = 1;
     private bool _isTemplate;
 
     public void ButtonStraightIsPressed()
