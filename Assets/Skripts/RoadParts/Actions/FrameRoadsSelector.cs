@@ -90,6 +90,8 @@ public class FrameRoadsSelector : MonoBehaviour
 
     public void OpenFrame(int frameIndex)
     {
+        CloseFrame();
+        
         if (frameIndex < frames.Count)
             currentFrame = frameIndex;
 

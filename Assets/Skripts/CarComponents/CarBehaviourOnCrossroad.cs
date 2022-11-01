@@ -36,7 +36,7 @@ public class CarBehaviourOnCrossroad : CarBehaviour
         CrossRoadManager crossRoadManager = roadFather.GetComponent<CrossRoadManager>();
         FrameRoadsSelector frameRoadsSelector = roadFather.GetComponent<FrameRoadsSelector>();
         activeCrossroadFrame = frameRoadsSelector.frames[crossRoadManager.currentFrameIndex];
-        timeToNearestCrossroad = TimeToPass(crossroadEnd + 10);
+        timeToNearestCrossroad = TimeToPass(crossroadEnd) + 1;
         if (timeToNearestCrossroad > crossRoadManager.timeBeforeFrameChange - 2)
             return true;
 
@@ -45,7 +45,7 @@ public class CarBehaviourOnCrossroad : CarBehaviour
             activeCrossroadFrame.GetRoadToTrackById(nearestCrossroad.GetComponent<SimpleRoad>().id);
         if (primaryRoadForThis == null)
             return true;
-        else if (primaryRoadForThis.Count == 0)
+        if (primaryRoadForThis.Count == 0)
             return false;
 
         if (FindCarForGiveWay(primaryRoadForThis))

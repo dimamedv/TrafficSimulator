@@ -26,6 +26,11 @@ public class HighLightCrossRoadFrame : MonoBehaviour
         }
     }
 
+    private void FixedUpdate()
+    {
+        HighLightFrame();
+    }
+
     public void HighLightFrame()
     {
         roadFather = GameObject.Find("RoadFather");
@@ -34,13 +39,15 @@ public class HighLightCrossRoadFrame : MonoBehaviour
         int frameIndex = roadFather.GetComponent<CrossRoadManager>().currentFrameIndex;
         CrossRoadFrame frameToHighLight = roadFather.GetComponent<FrameRoadsSelector>().frames[frameIndex];
         
-        foreach (var road in SimpleRoad.RoadList)
-        {
-            if (road.GetComponent<SimpleRoad>().templateOwner == null)
+        if (roadFather.GetComponent<CrossRoadManager>().timeBeforeFrameChange < 2) {
+            foreach (var road in SimpleRoad.RoadList)
             {
-                EnableLineRenderWithMaterial(road, Color.yellow);
+                if (road.name == "Road")
+                {
+                    EnableLineRenderWithMaterial(road, Color.yellow);
+                }
             }
-
+            
             return;
         }
         

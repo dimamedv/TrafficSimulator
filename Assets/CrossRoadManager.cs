@@ -31,8 +31,12 @@ public class CrossRoadManager : MonoBehaviour
 
             timeBeforeFrameChange = frames[currentFrameIndex].time;
             
-            if (GameObject.Find("RoadFather").GetComponent<HighLightCrossRoadFrame>().enabled)
-                GameObject.Find("RoadFather").GetComponent<HighLightCrossRoadFrame>().HighLightFrame();
+            GameObject.Find("RoadFather").GetComponent<HighLightCrossRoadFrame>().HighLightFrame();
+        }
+
+        if (GameObject.Find("RoadFather").GetComponent<CrossRoadManager>().timeBeforeFrameChange < 2)
+        {
+            GameObject.Find("RoadFather").GetComponent<HighLightCrossRoadFrame>().HighLightFrame();
         }
     }
 }
