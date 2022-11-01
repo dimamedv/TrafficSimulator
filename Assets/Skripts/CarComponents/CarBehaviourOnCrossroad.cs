@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static FrameRoadsSelector;
+using static CrossRoadManager;
 
 public class CarBehaviourOnCrossroad : CarBehaviour
 {
-    public int currentFrame = 0;
     public GameObject roadFather;
 
     public float nearestCarDistance;
@@ -31,13 +31,18 @@ public class CarBehaviourOnCrossroad : CarBehaviour
 
         if (nearestCrossroadDistance > brakingDistance + thisCarDimensions + GlobalSettings.SaveDistance)
             return false;
+        
+        if (GameObject.Find("RoadFather").GetComponent<CrossRoadManager>().timeBeforeFrameChange < 2)
+            return true;
 
         timeToNearestCrossroad = TimeToPass(crossroadEnd);
         if (timeToNearestCrossroad > 30.0f)
             return true;
 
-        activeCrossroadFrame = roadFather.GetComponent<FrameRoadsSelector>().frames[currentFrame];
-        List<int> primaryRoadForThis = activeCrossroadFrame.GetRoadToTrackById(nearestCrossroad.GetComponent<SimpleRoad>().id);
+        activeCrossroadFrame = roadFather.GetComponent<FrameRoadsSelector>()
+            .frames[roadFather.GetComponent<CrossRoadManager>().currentFrameIndex];
+        List<int> primaryRoadForThis =
+            activeCrossroadFrame.GetRoadToTrackById(nearestCrossroad.GetComponent<SimpleRoad>().id);
         if (primaryRoadForThis.Count == 0)
             return false;
 
@@ -66,6 +71,7 @@ public class CarBehaviourOnCrossroad : CarBehaviour
 
         return float.MaxValue;
     }
+
     // Возвращает ближайшую машину на пути
     private GameObject FindNearestCar()
     {
@@ -75,10 +81,12 @@ public class CarBehaviourOnCrossroad : CarBehaviour
         {
             for (int j = curParentRoad.carsOnThisRoad.Count - 1; j >= 0; j--)
             {
-                float distanceToCar = curParentRoad.carsOnThisRoad[j].GetComponent<CarBehaviour>().distance - this.distance;
+                float distanceToCar = curParentRoad.carsOnThisRoad[j].GetComponent<CarBehaviour>().distance -
+                                      this.distance;
                 if (curParentRoad.carsOnThisRoad[j] != gameObject && distanceToCar > 0.0f)
                     return curParentRoad.carsOnThisRoad[j];
             }
+
             i--;
             curParentRoad = path[i].GetComponent<SimpleRoad>();
         }
@@ -114,12 +122,15 @@ public class CarBehaviourOnCrossroad : CarBehaviour
                             return true;
                 }
 
-                if (road.parentConnection != null && road.parentConnection.GetComponent<CrossRoadEntrance>().parentRoads[0] != null)
-                    road = road.parentConnection.GetComponent<CrossRoadEntrance>().parentRoads[0].GetComponent<SimpleRoad>();
+                if (road.parentConnection != null &&
+                    road.parentConnection.GetComponent<CrossRoadEntrance>().parentRoads[0] != null)
+                    road = road.parentConnection.GetComponent<CrossRoadEntrance>().parentRoads[0]
+                        .GetComponent<SimpleRoad>();
                 else
                     road = null;
             }
         }
+
         return false;
     }
 }

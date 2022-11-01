@@ -18,7 +18,7 @@ public class RelationsEditor : MonoBehaviour
     public void OnEnable()
     {
         frames = gameObject.GetComponent<FrameRoadsSelector>().frames;
-        OpenFrame(currentFrame);
+        OpenFrame();
     }
 
     public void OnDisable()
@@ -26,14 +26,13 @@ public class RelationsEditor : MonoBehaviour
         CloseFrame();
     }
 
-    public void OpenFrame(int frameId)
+    public void OpenFrame()
     {
-        currentFrame = frameId;
         selectedRoad = null;
 
         foreach (var road in SimpleRoad.RoadList)
         {
-            if (CheckIfRoadInListById(road, frames[frameId].roadsInFrameId))
+            if (CheckIfRoadInListById(road, frames[currentFrame].roadsInFrameId))
             {
                 EnableLineRenderWithMaterial(road, Color.blue);
             }

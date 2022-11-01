@@ -234,7 +234,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   carPrefab: {fileID: 8343854920648327717, guid: 0400e5f842870f24c80292515edc3094, type: 3}
   road: {fileID: 3119439897122743009}
-  time: 5
+  time: 3
+  destinationPosts: []
 --- !u!64 &4903021686374321333
 MeshCollider:
   m_ObjectHideFlags: 0
