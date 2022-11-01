@@ -347,7 +347,9 @@ GameObject:
   - component: {fileID: 1715825455605581457}
   - component: {fileID: 1156650580804449565}
   - component: {fileID: 6849644535136260887}
-  - component: {fileID: 1402405558815307458}
+  - component: {fileID: 585563376334975582}
+  - component: {fileID: 3844254329005548780}
+  - component: {fileID: 2993888364251850186}
   m_Layer: 0
   m_Name: Car_6_Green
   m_TagString: Untagged
@@ -426,7 +428,36 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &1402405558815307458
+--- !u!65 &585563376334975582
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8343854920648327717}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.045798216, y: 0.013064211, z: 0.021283576}
+  m_Center: {x: 1.4791142e-31, y: -6.9849193e-10, z: 0}
+--- !u!54 &3844254329005548780
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8343854920648327717}
+  serializedVersion: 2
+  m_Mass: 0.0000001
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!114 &2993888364251850186
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -435,11 +466,25 @@ MonoBehaviour:
   m_GameObject: {fileID: 8343854920648327717}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 90aaec62220b83047837ae3e4523d7f5, type: 3}
+  m_Script: {fileID: 11500000, guid: 156c6616eaa694342a6386a191cbf528, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxSpeed: 20
-  acceleration: 5
-  speed: 0
+  maxSpeedPerSec: 20
+  accelerationPerSec: 4
+  brakingPerSec: 2
   parentRoad: {fileID: 0}
   distance: 0
+  distanceOnThisRoad: 0
+  maxSpeedPerTick: 0
+  accelerationPerTick: 0
+  brakingPerTick: 0
+  brakingTime: 0
+  brakingDistance: 0
+  speedPerTick: 0
+  crossroadEntrance: {fileID: 0}
+  destinationPost: {fileID: 0}
+  path: []
+  nearestCrossroadDistance: 0
+  nearestCrossroad: {fileID: 0}
+  currentFrame: 0
+  nearestCarDistance: 0
