@@ -22,13 +22,7 @@ public class CarSpawner : MonoBehaviour
     private void Start()
     {
         _timeUpdate = time;
-        //destinationPosts = new List<GameObject>();
-        //foreach (var roadIn in SimpleRoad.RoadList)
-        //{
-        //    GameObject endPost = roadIn.GetComponent<SimpleRoad>().endPost;
-        //    if (endPost == null && endPost != road.GetComponent<SimpleRoad>().endPost)
-        //        destinationPosts.Add(endPost);
-        //}
+        FindDestinationPosts();
     }
 
     private void FixedUpdate()
@@ -37,7 +31,8 @@ public class CarSpawner : MonoBehaviour
         if (_timeUpdate <= 0)
         {
             _timeUpdate = time;
-            CarSpawn();
+            if (road.carsOnThisRoad.Count == 0 || road.carsOnThisRoad[^1].GetComponent<CarBehaviour>().distance > 5)
+                CarSpawn();
         }
     }
 
@@ -57,5 +52,16 @@ public class CarSpawner : MonoBehaviour
         carBehaviour.GetNearestCrossroad();
 
         road.carsOnThisRoad.Add(createdCar);
+    }
+
+    public void FindDestinationPosts()
+    {
+        destinationPosts = new List<GameObject>();
+        foreach (var roadIn in SimpleRoad.RoadList)
+        {
+            SimpleRoad simple = roadIn.GetComponent<SimpleRoad>();
+            if (simple.childConnection == null && road.GetComponent<SimpleRoad>().templateOwner != simple.templateOwner)
+                destinationPosts.Add(simple.endPost);
+        }
     }
 }

@@ -108,8 +108,10 @@ public class CarBehaviourOnCrossroad : CarBehaviour
                 if (cars.Count > 0)
                 {
                     CarBehaviourOnCrossroad carPtr = cars[0].GetComponent<CarBehaviourOnCrossroad>();
-                    if (carPtr.timeToNearestCrossroad < this.timeToNearestCrossroad + 3.0f)
-                        return true;
+                    int idCarPtrCrossroad = carPtr.nearestCrossroad.GetComponent<SimpleRoad>().id;
+                    foreach (var index in primaryRoadForThis)
+                        if (idCarPtrCrossroad == index && carPtr.timeToNearestCrossroad < this.timeToNearestCrossroad)
+                            return true;
                 }
 
                 if (road.parentConnection != null && road.parentConnection.GetComponent<CrossRoadEntrance>().parentRoads[0] != null)
