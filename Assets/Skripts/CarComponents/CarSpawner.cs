@@ -22,7 +22,8 @@ public class CarSpawner : MonoBehaviour
     private void Start()
     {
         _timeUpdate = time;
-        FindDestinationPosts();
+        destinationPosts = new List<GameObject>();
+        FindDestinationPosts(gameObject);
     }
 
     private void FixedUpdate()
@@ -54,14 +55,18 @@ public class CarSpawner : MonoBehaviour
         road.carsOnThisRoad.Add(createdCar);
     }
 
-    public void FindDestinationPosts()
+    public void FindDestinationPosts(GameObject road)
     {
-        destinationPosts = new List<GameObject>();
-        foreach (var roadIn in SimpleRoad.RoadList)
+        if (road.GetComponent<SimpleRoad>().childConnection == null)
         {
-            SimpleRoad simple = roadIn.GetComponent<SimpleRoad>();
-            if (simple.childConnection == null && road.GetComponent<SimpleRoad>().templateOwner != simple.templateOwner)
-                destinationPosts.Add(simple.endPost);
+            destinationPosts.Add(road.GetComponent<SimpleRoad>().endPost);
+            return;
+        }
+
+        CrossRoadEntrance entrance = road.GetComponent<SimpleRoad>().childConnection.GetComponent<CrossRoadEntrance>();
+        foreach (var roadIn in entrance.childRoads)
+        {
+            FindDestinationPosts(roadIn);
         }
     }
 }

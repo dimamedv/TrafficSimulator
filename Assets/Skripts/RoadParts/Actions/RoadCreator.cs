@@ -110,9 +110,9 @@ public class RoadCreator : MonoBehaviour
                 _road.transform.GetChild(++_step).GetComponent<MeshRenderer>().enabled = true;
             else
             {
-                //for (int i = 0; i < _road.transform.childCount; i++)
-                    //for (int j = 0; j < _road.transform.GetChild(i).childCount; j++)
-                        //_road.transform.GetChild(j).GetComponent<MeshRenderer>().enabled = false;
+                for (int i = 0; i < _road.transform.childCount; i++)
+                    for (int j = 0; j < _road.transform.GetChild(i).childCount; j++)
+                        _road.transform.GetChild(j).GetComponent<MeshRenderer>().enabled = false;
                 if (_isTemplate)
                     CreateTemplateRoad();
                 else
@@ -131,13 +131,12 @@ public class RoadCreator : MonoBehaviour
         _road.transform.parent = transform;
         _road.name = "TemplateRoad";
 
-        _abstractRoad = _road.transform.GetComponent<AbstractRoad>();
-        _abstractRoad.isStraight = _isStraight;
-        _abstractRoad.enabled = false;
-
         TemplateRoad template = _road.transform.GetComponent<TemplateRoad>();
         template.numOfLeftSideRoads = _leftLanes;
         template.numOfRightSideRoads = _rightLanes;
+        template.isStraight = _isStraight;
+        template.render(false);
+        template.enabled = false;
 
         for (int i = 0; i < 3; i++)
             _road.transform.GetChild(i).GetComponent<MeshRenderer>().enabled = false;

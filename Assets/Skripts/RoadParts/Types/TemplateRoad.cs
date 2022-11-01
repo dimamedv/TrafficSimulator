@@ -53,6 +53,15 @@ public class TemplateRoad : AbstractRoad
         }
     }
 
+    public void render(bool render)
+    {
+        foreach (var name in RoadsOfTemplate)
+        {
+            GameObject road = transform.Find(name).gameObject;
+            road.GetComponent<MeshRenderer>().enabled = render;
+            road.GetComponent<MeshCollider>().enabled = render;
+        }
+    }
     private GameObject CreateRoadInstance(string roadName)
     {
         GameObject road = Instantiate(roadPrefab, gameObject.transform);
