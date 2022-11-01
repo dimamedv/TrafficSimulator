@@ -4139,6 +4139,7 @@ GameObject:
   - component: {fileID: 1270009638}
   - component: {fileID: 1270009640}
   - component: {fileID: 1270009639}
+  - component: {fileID: 1270009641}
   m_Layer: 0
   m_Name: RoadFather
   m_TagString: Untagged
@@ -4248,6 +4249,20 @@ MonoBehaviour:
   layerMaskRoad:
     serializedVersion: 2
     m_Bits: 128
+--- !u!114 &1270009641
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1270009634}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d556d60ec532cc4fa12afae671e632a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentFrameIndex: 0
+  timeBeforeFrameChange: 0
 --- !u!1 &1316407360
 GameObject:
   m_ObjectHideFlags: 0

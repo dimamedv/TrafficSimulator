@@ -27,24 +27,25 @@ public class CarBehaviourOnCrossroad : CarBehaviour
         nearestCarDistance = GetNearestCarDistance();
 
         if (nearestCarDistance < nearestCrossroadDistance)
-            return nearestCarDistance < brakingDistance + GlobalSettings.SaveDistance;
+            if (nearestCarDistance < brakingDistance + GlobalSettings.SaveDistance)
+                return true;
 
         if (nearestCrossroadDistance > brakingDistance + thisCarDimensions + GlobalSettings.SaveDistance)
             return false;
-        
-        if (GameObject.Find("RoadFather").GetComponent<CrossRoadManager>().timeBeforeFrameChange < 2)
+
+        CrossRoadManager crossRoadManager = roadFather.GetComponent<CrossRoadManager>();
+        FrameRoadsSelector frameRoadsSelector = roadFather.GetComponent<FrameRoadsSelector>();
+        activeCrossroadFrame = frameRoadsSelector.frames[crossRoadManager.currentFrameIndex];
+        timeToNearestCrossroad = TimeToPass(crossroadEnd + 10);
+        if (timeToNearestCrossroad > crossRoadManager.timeBeforeFrameChange - 2)
             return true;
 
-        activeCrossroadFrame = roadFather.GetComponent<FrameRoadsSelector>().frames[currentFrame];
-        timeToNearestCrossroad = TimeToPass(crossroadEnd);
-        if (timeToNearestCrossroad > activeCrossroadFrame.time)
-            return true;
-
-        activeCrossroadFrame = roadFather.GetComponent<FrameRoadsSelector>()
-            .frames[roadFather.GetComponent<CrossRoadManager>().currentFrameIndex];
+        activeCrossroadFrame = frameRoadsSelector.frames[crossRoadManager.currentFrameIndex];
         List<int> primaryRoadForThis =
             activeCrossroadFrame.GetRoadToTrackById(nearestCrossroad.GetComponent<SimpleRoad>().id);
-        if (primaryRoadForThis.Count == 0)
+        if (primaryRoadForThis == null)
+            return true;
+        else if (primaryRoadForThis.Count == 0)
             return false;
 
         if (FindCarForGiveWay(primaryRoadForThis))

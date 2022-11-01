@@ -157,5 +157,6 @@ public class ButtonsUI : MonoBehaviour
 
         roadFather.GetComponent<FrameRoadsSelector>().enabled = true;
         roadFather.GetComponent<FrameRoadsSelector>().enabled = false;
+        roadFather.GetComponent<CrossRoadManager>().enabled = ImSaySTARTUEM;
     }
 }
