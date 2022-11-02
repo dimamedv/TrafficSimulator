@@ -7,6 +7,7 @@ public class ButtonsUI : MonoBehaviour
 {
     private GameObject roadFather;
     private RoadCreator roadCreator;
+    private GameObject stopari;
 
     private void Start()
     {
@@ -15,6 +16,8 @@ public class ButtonsUI : MonoBehaviour
         CreateRoadPanel = GameObject.Find("CreateRoadPanel");
         EditTrafficLightsPanel = GameObject.Find("EditTrafficLightsPanel");
         trafficLightFrames = GameObject.Find("TrafficLightFrames");
+        stopari = GameObject.Find("Stopari");
+        stopari.SetActive(false);
         frames.Add("1");
     }
 
@@ -150,6 +153,8 @@ public class ButtonsUI : MonoBehaviour
     public void ButtonStartuem()
     {
         ImSaySTARTUEM = !ImSaySTARTUEM;
+
+        stopari.SetActive(!ImSaySTARTUEM);
 
         foreach (var road in SimpleRoad.RoadList)
             if (road.GetComponent<SimpleRoad>().parentConnection == null)
