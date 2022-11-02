@@ -40,8 +40,9 @@ public class HighLightCrossRoadFrame : MonoBehaviour
         CrossRoadFrame frameToHighLight = roadFather.GetComponent<FrameRoadsSelector>().frames[frameIndex];
         
         if (roadFather.GetComponent<CrossRoadManager>().timeBeforeFrameChange < 2) {
-            foreach (var road in SimpleRoad.RoadList)
+            for (int i = 0; i < roadFather.transform.childCount; i++)
             {
+                GameObject road = roadFather.transform.GetChild(i).gameObject;
                 if (road.name == "Road")
                 {
                     EnableLineRenderWithMaterial(road, Color.yellow);

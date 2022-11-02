@@ -205,7 +205,7 @@ public class SimpleRoad : AbstractRoad
             
             foreach (var road in copyOfParentRoads)
             {
-                road.GetComponent<SimpleRoad>().BuildRoad();
+                road.GetComponent<SimpleRoad>().CheckoutChildConnection();
             }
         }
 
