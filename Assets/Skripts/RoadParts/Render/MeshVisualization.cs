@@ -102,7 +102,7 @@ public class MeshVisualization : AbstractVisualization
         mesh.triangles = triangles;
 
         MeshCollider mc = GetComponent<MeshCollider>();
-        if (abstractRoad.startPost.transform.position != abstractRoad.endPost.transform.position)
+        if (abstractRoad.startPost.transform.position != abstractRoad.endPost.transform.position && v.Length != 0)
         {
             mc.enabled = true;
             mc.sharedMesh = mesh;

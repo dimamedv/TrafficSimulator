@@ -87,11 +87,16 @@ public class RoadCreator : MonoBehaviour
         switch (_step)
             {
                 case 0:
+                    _abstractRoad.renderMesh = false;
+                    _abstractRoad.UpdateBoolForSimpleRoads();
                     RoadEditor.MovePoint(_startPost, layerMaskGround, true);
                     break;
                 case 1:
                     _abstractRoad.enabled = true;
                     _abstractRoad.isStraight = true;
+                    _abstractRoad.renderMesh = true;
+                    _abstractRoad.UpdateBoolForSimpleRoads();
+                    _abstractRoad.renderLine = _renderLine;
                     RoadEditor.MovePoint(_endPost, layerMaskGround, true);
                     break;
                 case 2:
@@ -134,9 +139,12 @@ public class RoadCreator : MonoBehaviour
         TemplateRoad template = _road.transform.GetComponent<TemplateRoad>();
         template.numOfLeftSideRoads = _leftLanes;
         template.numOfRightSideRoads = _rightLanes;
-        template.isStraight = _isStraight;
-        template.render(false);
-        template.enabled = false;
+
+        _abstractRoad = _road.transform.GetComponent<AbstractRoad>();
+        _abstractRoad.isStraight = _isStraight;
+        _abstractRoad.renderMesh = false;
+        _abstractRoad.renderLine = false;
+        _abstractRoad.enabled = false;
 
         for (int i = 0; i < 3; i++)
             _road.transform.GetChild(i).GetComponent<MeshRenderer>().enabled = false;
@@ -158,6 +166,8 @@ public class RoadCreator : MonoBehaviour
             GameObject.Find("Game").GetComponent<GlobalSettings>().GetNextRoadNumeration();
 
         _abstractRoad = _road.transform.GetComponent<AbstractRoad>();
+        _abstractRoad.renderMesh = false;
+        _abstractRoad.renderLine = false;
         _abstractRoad.enabled = false;
 
         for (int i = 0; i < 3; i++)
@@ -167,9 +177,6 @@ public class RoadCreator : MonoBehaviour
         _startPost.GetComponent<MeshRenderer>().enabled = true;
         _endPost = _road.transform.GetChild(1);
         _formingPoint = _road.transform.GetChild(2);
-
-        if (_renderLine)
-            _road.GetComponent<SimpleRoad>().renderLine = _renderLine;
 
         _step = 0;
     }

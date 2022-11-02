@@ -18,6 +18,8 @@ public abstract class AbstractRoad : MonoBehaviour
     public GameObject endPost; // Конечная точка
     public GameObject formingPoint; // Формирующая точка
     public Vector3 _curFormingPointPosition; // "Указатель" на формирующую точку, чтобы отслеживать перемещение
+    public bool renderMesh = true;
+    public bool renderLine = false;
 
     public virtual void Awake()
     {
@@ -31,6 +33,27 @@ public abstract class AbstractRoad : MonoBehaviour
         if (NeedsRebuild())
         {
             BuildRoad(false);
+        }
+    }
+
+    public void UpdateBoolForSimpleRoads()
+    {
+        if (gameObject.GetComponent<TemplateRoad>() != null)
+        {
+            List<string> RoadsOfTemplate = gameObject.GetComponent<TemplateRoad>().RoadsOfTemplate;
+            foreach (var name in RoadsOfTemplate)
+            {
+                SimpleRoad simpleRoad = transform.Find(name).GetComponent<SimpleRoad>();
+                simpleRoad.renderLine = renderLine;
+                simpleRoad.renderMesh = renderMesh;
+
+                if (renderMesh)
+                    SimpleRoad.TurnOnKids(simpleRoad.gameObject);
+                else
+                    SimpleRoad.TurnOffKids(simpleRoad.gameObject);
+
+                simpleRoad.gameObject.GetComponent<MeshRenderer>().enabled = renderMesh;
+            }
         }
     }
 

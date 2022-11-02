@@ -15,7 +15,6 @@ public class SimpleRoad : AbstractRoad
     public GameObject crossRoadEntrancePrefab;
     public GameObject crossRoadEntrance;
     public GameObject templateOwner;
-    public bool renderLine = false;
     public int id;
 
     public override void Awake()
@@ -57,11 +56,13 @@ public class SimpleRoad : AbstractRoad
         CheckoutChildConnection();
         CheckoutParentConnection();
 
-
-        gameObject.GetComponent<MeshVisualization>().RenderingRoad();
+        if (renderMesh)
+            gameObject.GetComponent<MeshVisualization>().RenderingRoad();
+        gameObject.GetComponent<MeshRenderer>().enabled = renderMesh;
 
         if (renderLine)
             gameObject.GetComponent<LineVisualization>().RenderingRoad();
+        gameObject.GetComponent<LineRenderer>().enabled = renderLine;
 
 
         // Остаточные действия
@@ -72,8 +73,6 @@ public class SimpleRoad : AbstractRoad
             childConnection.GetComponent<SimpleRoad>().BuildRoad();
         if (parentConnection && parentConnection.GetComponent<SimpleRoad>() && !endIteration)
             parentConnection.GetComponent<SimpleRoad>().BuildRoad();
-        // if (parentConnection == null)
-        //     gameObject.GetComponent<CarSpawner>().enabled = true;
     }
 
     private void GetPoints()

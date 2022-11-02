@@ -42,14 +42,18 @@ public class TemplateRoad : AbstractRoad
         {
             string roadName = "left" + i;
             RoadsOfTemplate.Add(roadName);
-            CreateRoadInstance(roadName);
+            SimpleRoad road = CreateRoadInstance(roadName).GetComponent<SimpleRoad>();
+            road.renderMesh = renderMesh;
+            road.renderLine = renderLine;
         } 
 
         for (float i = 0.0f; i < numOfRightSideRoads; i += 1.0f)
         {
             string roadName = "right" + i;
             RoadsOfTemplate.Add(roadName);
-            CreateRoadInstance(roadName);
+            SimpleRoad road = CreateRoadInstance(roadName).GetComponent<SimpleRoad>();
+            road.renderMesh = renderMesh;
+            road.renderLine = renderLine;
         }
     }
 
