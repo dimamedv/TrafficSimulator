@@ -37,7 +37,7 @@ public class CarBehaviourOnCrossroad : CarBehaviour
         FrameRoadsSelector frameRoadsSelector = roadFather.GetComponent<FrameRoadsSelector>();
         activeCrossroadFrame = frameRoadsSelector.frames[crossRoadManager.currentFrameIndex];
         timeToNearestCrossroad = TimeToPass(crossroadEnd) + 1;
-        if (timeToNearestCrossroad > crossRoadManager.timeBeforeFrameChange - 2)
+        if (timeToNearestCrossroad > crossRoadManager.timeBeforeFrameChange)
             return true;
 
         activeCrossroadFrame = frameRoadsSelector.frames[crossRoadManager.currentFrameIndex];
