@@ -14,6 +14,11 @@ public class CameraBehaviour : MonoBehaviour
     private float cameraDistance;
 
 
+    private void Start()
+    {
+        _previousPosition = _camera.ScreenToViewportPoint(Input.mousePosition);
+    }
+
     // Update is called once per frame
     private void LateUpdate()
     {
